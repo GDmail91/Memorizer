@@ -89,31 +89,8 @@ public class MemoListAdapter extends BaseAdapter {
         }
         holder.memo_during.setText(during);
         holder.memo_term.setText(""+memoDatas.get(position).getTerm());
-        String hourStr, minStr, ampm = "am";
-        int hourOfDay = memoDatas.get(position).getTimeOfHour();
-        int minute = memoDatas.get(position).getTimeOfMinute();
-        if (hourOfDay >= 22) {
-            hourStr = String.valueOf(hourOfDay - 12);
-            ampm = "pm";
-        } else if (hourOfDay > 12) {
-            hourStr = "0" + String.valueOf(hourOfDay - 12);
-            ampm = "pm";
-        } else if (hourOfDay == 0) {
-            hourStr = "12";
-        } else if (hourOfDay < 10) {
-            hourStr = "0" + String.valueOf(hourOfDay);
-        } else if (hourOfDay == 12) {
-            hourStr = String.valueOf(hourOfDay);
-            ampm = "pm";
-        } else
-            hourStr = String.valueOf(hourOfDay);
 
-        if (minute < 10) {
-            minStr = "0" + String.valueOf(minute);
-        } else
-            minStr = String.valueOf(minute);
-        String time = hourStr + ":" + minStr + " " + ampm;
-        holder.memo_time.setText(time);
+        holder.memo_time.setText(makeTime(memoDatas.get(position).getTimeOfHour(), memoDatas.get(position).getTimeOfMinute()));
         holder.memo_posted.setText(memoDatas.get(position).getPosted().split(" ")[0]); // 시간 제거
 
         holder.setting_button.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +122,33 @@ public class MemoListAdapter extends BaseAdapter {
         this.memoDatas.remove(_position);
     }
 
+
+    protected String makeTime(int hourOfDay, int minute) {
+        String hourStr, minStr, ampm = "am";
+
+        if (hourOfDay >= 22) {
+            hourStr = String.valueOf(hourOfDay - 12);
+            ampm = "pm";
+        } else if (hourOfDay > 12) {
+            hourStr = "0" + String.valueOf(hourOfDay - 12);
+            ampm = "pm";
+        } else if (hourOfDay == 0) {
+            hourStr = "12";
+        } else if (hourOfDay < 10) {
+            hourStr = "0" + String.valueOf(hourOfDay);
+        } else if (hourOfDay == 12) {
+            hourStr = String.valueOf(hourOfDay);
+            ampm = "pm";
+        } else
+            hourStr = String.valueOf(hourOfDay);
+
+        if (minute < 10) {
+            minStr = "0" + String.valueOf(minute);
+        } else
+            minStr = String.valueOf(minute);
+
+        return hourStr +" : "+minStr+ " "+ampm;
+    }
 
 }
 

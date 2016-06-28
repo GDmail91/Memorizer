@@ -3,12 +3,13 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/made_of"
             android:title="만든이" />
-        <item
+        <!--<item
             android:id="@+id/nav_gallery"
-            android:title="설정" />
+            android:title="설정" />-->
     </group>
+<!--
 
     <item android:title="Communicate">
         <menu>
@@ -22,5 +23,6 @@
                 android:title="Send" />
         </menu>
     </item>
+-->
 
 </menu>

@@ -21,8 +21,8 @@
 
         <activity
             android:name=".create.MemoCreate"
-            android:label="MemoCreate"
-            android:theme="@style/AppTheme"
+            android:label="@string/activity_memo_create"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName="com.memorizer.memorizer.MainActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
@@ -33,6 +33,10 @@
         <activity android:name=".MemoAlarmActivity"
             android:label="MemoCreate"
             android:theme="@android:style/Theme.Material.Dialog"/>
+
+        <activity android:name=".DeveloperInfo"
+            android:label="@string/activity_developer"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <!-- 브로드캐스트 리시버 등록 -->
         <receiver android:name=".MemorizerReciver">

@@ -95,12 +95,19 @@ public class MainActivity extends AppCompatActivity
         //예제에서는 선택된 ListView의 항목(String 문자열) data와 해당 메뉴이름을 출력함
         switch( item.getItemId() ){
             case R.id.memo_delete:
-
                 MemoModel memoModel = new MemoModel(this, "Memo.db", null, 1);
                 memoModel.delete(memoDatas.get(index).get_id());
                 Toast.makeText(this, memoDatas.get(index).get_id()+"째 메모가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                 memoDatas.remove(index);
                 memoListAdapter.notifyDataSetChanged();
+                break;
+
+            case R.id.memo_edit:
+                Intent intent = new Intent(MainActivity.this, MemoCreate.class);
+                intent.putExtra("is_edit", true);
+                intent.putExtra("memo_id", memoDatas.get(index).get_id());
+
+                startActivity(intent);
                 break;
 
         }
@@ -124,14 +131,9 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.made_of) {
+            Intent intent = new Intent(MainActivity.this, DeveloperInfo.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

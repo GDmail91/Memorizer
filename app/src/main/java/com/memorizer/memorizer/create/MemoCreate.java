@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,12 +43,39 @@ public class MemoCreate extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_memo);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         alarmContent = (EditText) findViewById(R.id.alarm_content);
         alarmTermBtn = (Button) findViewById(R.id.alarm_term_btn);
         alarmWhileBtn = (Button) findViewById(R.id.alarm_while_btn);
         alarmTimeBtn = (Button) findViewById(R.id.alarm_time_btn);
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null
+        && bundle.getBoolean("is_edit")) {
+            MemoModel memoModel = new MemoModel(this, "Memo.db", null, 1);
+            this.memoData = memoModel.getData(bundle.getInt("memo_id"));
+
+            alarmContent.setText(memoData.getContent());
+            alarmTermBtn.setText(""+memoData.getTerm());
+            String during;
+            if (memoData.getWhileDate() == null
+                    || memoData.getWhileDate().getTimeInMillis() == 0)
+                during = "무제한";
+            else {
+                during = memoData.getWhileDate().get(Calendar.YEAR) + "." +
+                        memoData.getWhileDate().get(Calendar.MONTH) + "." +
+                        memoData.getWhileDate().get(Calendar.DAY_OF_MONTH);
+            }
+            alarmWhileBtn.setText(during);
+            alarmTimeBtn.setText(makeTime(memoData.getTimeOfHour(), memoData.getTimeOfMinute()));
+        }
     }
 
     protected void onClickListen(View v) {
@@ -62,7 +90,6 @@ public class MemoCreate extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         String[] days = item.getTitle().toString().split(" ");
-                        Log.d(TAG, days[0]+"/"+days[1]);
                         if (days[1].equals("일")) {
                             memoData.setTerm(Integer.parseInt(days[0]));
                         } else {
@@ -76,7 +103,6 @@ public class MemoCreate extends AppCompatActivity {
                     }
                 });
                 p.show();
-                Log.d(TAG, ""+ memoData.getTerm());
                 break;
 
             // 기간 설정
@@ -131,8 +157,6 @@ public class MemoCreate extends AppCompatActivity {
                     }
                 }, year, month, day).show();
 
-                if (memoData.getWhileDate() != null)
-                    Log.d(TAG, String.valueOf(memoData.getWhileDate().getTime()));
                 break;
 
             // 시간 설정 버튼
@@ -163,7 +187,6 @@ public class MemoCreate extends AppCompatActivity {
 
                 // Dialog창 사라짐
                 dialog.cancel();
-                Log.d(TAG, memoData.getTimeOfHour() +"/"+ memoData.getTimeOfMinute());
                 break;
 
             // 시간 설정 다이얼로그 > 직접 설정
@@ -173,38 +196,14 @@ public class MemoCreate extends AppCompatActivity {
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         memoData.setTimeOfHour(hourOfDay);
                         memoData.setTimeOfMinute(minute);
-                        String hourStr, minStr, ampm = "am";
-
-                        Log.d(TAG, hourOfDay + " " + minute);
-                        if (hourOfDay >= 22) {
-                            hourStr = String.valueOf(hourOfDay - 12);
-                            ampm = "pm";
-                        } else if (hourOfDay > 12) {
-                            hourStr = "0" + String.valueOf(hourOfDay - 12);
-                            ampm = "pm";
-                        } else if (hourOfDay == 0) {
-                            hourStr = "12";
-                        } else if (hourOfDay < 10) {
-                            hourStr = "0" + String.valueOf(hourOfDay);
-                        } else if (hourOfDay == 12) {
-                            hourStr = String.valueOf(hourOfDay);
-                            ampm = "pm";
-                        } else
-                            hourStr = String.valueOf(hourOfDay);
-
-                        if (minute < 10) {
-                            minStr = "0" + String.valueOf(minute);
-                        } else
-                            minStr = String.valueOf(minute);
 
                         // 버튼 글자 바꿈
-                        alarmTimeBtn.setText(hourStr +" : "+minStr+ " "+ampm);
+                        alarmTimeBtn.setText(makeTime(hourOfDay, minute));
 
                         // Dialog창 사라짐
                         dialog.cancel();
                     }
                 }, 0, 0, false).show();
-                Log.d(TAG, memoData.getTimeOfHour() +"/"+ memoData.getTimeOfMinute());
                 break;
         }
     }
@@ -230,11 +229,8 @@ public class MemoCreate extends AppCompatActivity {
                 MemoModel memoModel = new MemoModel(this, "Memo.db", null, 1);
                 memoData.set_id(memoModel.insert(memoData));
 
-                Log.d(TAG, "ID: "+memoData.get_id());
                 // 알림 설정
                 Scheduler.getScheduler().setSchedule(this, memoData);
-
-                Log.d(TAG, String.valueOf(memoModel.printCountOfData()));
 
                 Intent intent = new Intent(MemoCreate.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -249,6 +245,33 @@ public class MemoCreate extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected String makeTime(int hourOfDay, int minute) {
+        String hourStr, minStr, ampm = "am";
+
+        if (hourOfDay >= 22) {
+            hourStr = String.valueOf(hourOfDay - 12);
+            ampm = "pm";
+        } else if (hourOfDay > 12) {
+            hourStr = "0" + String.valueOf(hourOfDay - 12);
+            ampm = "pm";
+        } else if (hourOfDay == 0) {
+            hourStr = "12";
+        } else if (hourOfDay < 10) {
+            hourStr = "0" + String.valueOf(hourOfDay);
+        } else if (hourOfDay == 12) {
+            hourStr = String.valueOf(hourOfDay);
+            ampm = "pm";
+        } else
+            hourStr = String.valueOf(hourOfDay);
+
+        if (minute < 10) {
+            minStr = "0" + String.valueOf(minute);
+        } else
+            minStr = String.valueOf(minute);
+
+        return hourStr +" : "+minStr+ " "+ampm;
     }
 
 }

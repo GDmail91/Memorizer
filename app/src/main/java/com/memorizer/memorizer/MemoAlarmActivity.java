@@ -31,7 +31,6 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
 
         Intent intent = getIntent();
         Bundle intentBundle = intent.getExtras();
-        Log.d(TAG, intentBundle.toString());
         MemoData memoData = (MemoData) intentBundle.getSerializable("memoId");
         intentBundle.clear();
 
