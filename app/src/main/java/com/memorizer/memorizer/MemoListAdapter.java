@@ -112,9 +112,9 @@ public class MemoListAdapter extends BaseAdapter {
             minStr = "0" + String.valueOf(minute);
         } else
             minStr = String.valueOf(minute);
-        String time = "알림시간 : " + hourStr + ":" + minStr + " " + ampm;
+        String time = hourStr + ":" + minStr + " " + ampm;
         holder.memo_time.setText(time);
-        holder.memo_posted.setText("등록한 날짜 : " + memoDatas.get(position).getPosted().split(" ")[0]);
+        holder.memo_posted.setText(memoDatas.get(position).getPosted().split(" ")[0]); // 시간 제거
 
         holder.setting_button.setOnClickListener(new View.OnClickListener() {
             @Override
