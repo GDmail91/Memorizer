@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="9"
+    android:background="@color/colorPrimaryDark">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:layout_margin="4dp"
+        android:minLines="6"
+        android:maxLines="6"
+        android:background="@color/colorPrimary"
+        android:hint="메모를 작성하세요"
+        android:textSize="14dp"
+        android:id="@+id/alarm_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/colorAccent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/divider1"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="간격"
+            android:textSize="16dp"
+            android:textColor="@color/colorPrimary" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="horizontal"
+            android:id="@+id/divider1"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider1"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:background="@color/colorPrimary"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="1일"
+            android:id="@+id/alarm_term_btn"
+            android:onClick="onClickListen" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/colorAccent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/divider2"
+            android:layout_alignParentTop="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="기간"
+                android:textSize="16dp"
+                android:textColor="@color/colorPrimary"
+                android:id="@+id/alarm_while"
+                />
+            <!--<Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:checked="false"/>-->
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="horizontal"
+            android:id="@+id/divider2"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider2"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="무제한"
+            android:id="@+id/alarm_while_btn"
+            android:onClick="onClickListen" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/colorAccent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/divider3"
+            android:layout_alignParentTop="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="알림 시간"
+                android:textSize="16dp"
+                android:textColor="@color/colorPrimary"
+                android:id="@+id/alarm_time"
+                />
+<!--
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:checked="false"/>
+-->
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal"
+            android:id="@+id/divider3"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider3"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="랜덤"
+            android:id="@+id/alarm_time_btn"
+            android:onClick="onClickListen" />
+    </RelativeLayout>
+</LinearLayout>

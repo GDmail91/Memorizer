@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="200dp"
+    android:layout_height="300dp"
+    android:layout_gravity="center"
+    android:background="@color/colorPrimaryDark">
+    <!--<TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:gravity="center"
+        android:text="시간 설정"
+        android:textColor="@color/black"/>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="3dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        android:gravity="center">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="랜덤"
+            android:id="@+id/alarm_time_random"
+            android:onClick="onClickListen" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="시간 설정"
+            android:id="@+id/alarm_time_set"
+            android:onClick="onClickListen" />
+    </LinearLayout>
+</LinearLayout>
