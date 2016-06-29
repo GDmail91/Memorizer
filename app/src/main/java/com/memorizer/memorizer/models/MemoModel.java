@@ -99,17 +99,16 @@ public class MemoModel extends SQLiteOpenHelper {
     /** 수정 SQL
      *
      * @param memoData
-     * @param ids
-     * @return ids
+     * @return id
      */
-    public int update(MemoData memoData, int ids) {
-        String sql = "UPDATE AlarmList SET " +
+    public int update(MemoData memoData) {
+        String sql = "UPDATE Memo SET " +
                 "memoContent='" + memoData.getContent() + "', " +
                 "memoDuring='" + memoData.getWhileDate().getTimeInMillis() + "', " +
                 "memoTerm='" + memoData.getTerm() + "', " +
                 "memoTimeHour='" + memoData.getTimeOfHour() + "', " +
                 "memoTimeMinute='" + memoData.getTimeOfMinute() + "' " +
-                "WHERE _id='"+ids+"' ;";
+                "WHERE _id='"+memoData.get_id()+"' ;";
 
         // DB 작업 실행
         SQLiteDatabase dbW = getWritableDatabase();
@@ -125,7 +124,7 @@ public class MemoModel extends SQLiteOpenHelper {
 
         dbW.close();
 
-        return ids;
+        return memoData.get_id();
     }
 
     public void update(String _query) {

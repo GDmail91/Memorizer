@@ -223,14 +223,23 @@ public class MemoCreate extends AppCompatActivity {
         if (id == R.id.memo_create) {
             Log.d(TAG, alarmContent.getText().toString());
             if (alarmContent.getText().toString().length() != 0) {
+                Bundle bundle = getIntent().getExtras();
                 memoData.setContent(alarmContent.getText().toString());
 
                 // DB에 저장
                 MemoModel memoModel = new MemoModel(this, "Memo.db", null, 1);
-                memoData.set_id(memoModel.insert(memoData));
+                if (bundle != null
+                && bundle.getBoolean("is_edit")) {
+                    memoModel.update(memoData);
 
-                // 알림 설정
-                Scheduler.getScheduler().setSchedule(this, memoData);
+                    // 알림 설정
+                    Scheduler.getScheduler().setSchedule(this, memoData, 1);
+                } else {
+                    memoData.set_id(memoModel.insert(memoData));
+
+                    // 알림 설정
+                    Scheduler.getScheduler().setSchedule(this, memoData);
+                }
 
                 Intent intent = new Intent(MemoCreate.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
