@@ -15,7 +15,7 @@ import java.util.Calendar;
 public class Scheduler {
     static Scheduler scheduler = new Scheduler();
     final String TAG = "Scheduler";
-    public static final int NEXT = 24 * 3600 * 1000;
+    public static final long NEXT = 24 * 3600 * 1000;
 
     public static Scheduler getScheduler() {return scheduler;}
 
@@ -44,8 +44,9 @@ public class Scheduler {
         if (next != 0)
             setDay.setTimeInMillis(System.currentTimeMillis());
         else
-            setDay.setTimeInMillis(System.currentTimeMillis() + (memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
-        
+            setDay.setTimeInMillis(System.currentTimeMillis() + ((long)memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
+        //setDay.setTimeInMillis(System.currentTimeMillis());
+
         setDay.set(
                 setDay.get(Calendar.YEAR),
                 setDay.get(Calendar.MONTH),

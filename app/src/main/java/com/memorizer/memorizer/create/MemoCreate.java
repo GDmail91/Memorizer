@@ -110,13 +110,13 @@ public class MemoCreate extends AppCompatActivity {
                 // Dialog 생성
                 LayoutInflater whileInflater=getLayoutInflater();
                 View dialogWhileView = whileInflater.inflate(R.layout.dialog_during_select, null);
-                AlertDialog.Builder whileDialogBuider= new AlertDialog.Builder(this); //AlertDialog.Builder 객체 생성
-                whileDialogBuider.setTitle("기간 설정"); //Dialog 제목
-                whileDialogBuider.setIcon(android.R.drawable.ic_menu_today); //제목옆의 아이콘 이미지(원하는 이미지 설정)
-                whileDialogBuider.setView(dialogWhileView);
+                AlertDialog.Builder whileDialogBuilder= new AlertDialog.Builder(this); //AlertDialog.Builder 객체 생성
+                whileDialogBuilder.setTitle("기간 설정"); //Dialog 제목
+                whileDialogBuilder.setIcon(android.R.drawable.ic_menu_today); //제목옆의 아이콘 이미지(원하는 이미지 설정)
+                whileDialogBuilder.setView(dialogWhileView);
 
                 //설정한 값으로 AlertDialog 객체 생성
-                dialog=whileDialogBuider.create();
+                dialog=whileDialogBuilder.create();
 
                 //Dialog의 바깥쪽을 터치했을 때 Dialog를 없앨지 설정
                 dialog.setCanceledOnTouchOutside(true); // 없어지도록 설정
@@ -249,7 +249,7 @@ public class MemoCreate extends AppCompatActivity {
                 Toast.makeText(this, "메모 내용이 없습니다.", Toast.LENGTH_SHORT).show();
             }
 
-            Toast.makeText(this, "액션버튼 이벤트", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show();
             return true;
         }
 

@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.memorizer.memorizer.create.MemoData;
 import com.memorizer.memorizer.scheduler.Scheduler;
 
+import java.io.Serializable;
+
 /**
  * Created by YS on 2016-06-27.
  */
@@ -30,7 +32,8 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
 
         Intent intent = getIntent();
         Bundle intentBundle = intent.getExtras();
-        MemoData memoData = (MemoData) intentBundle.getSerializable("memoId");
+        Serializable tempData = intent.getSerializableExtra("memoId");
+        MemoData memoData = (MemoData) tempData;
         intentBundle.clear();
 
         TextView messageView = (TextView) findViewById(R.id.message_view);
