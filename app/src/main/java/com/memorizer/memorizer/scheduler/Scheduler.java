@@ -44,13 +44,15 @@ public class Scheduler {
         if (next != 0)
             setDay.setTimeInMillis(System.currentTimeMillis());
         else
-            setDay.setTimeInMillis(System.currentTimeMillis() + (memoData.getTerm() * NEXT));
+            setDay.setTimeInMillis(System.currentTimeMillis() + (memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
+        
         setDay.set(
                 setDay.get(Calendar.YEAR),
                 setDay.get(Calendar.MONTH),
                 setDay.get(Calendar.DAY_OF_MONTH),
                 memoData.getTimeOfHour(),
-                memoData.getTimeOfMinute());
+                memoData.getTimeOfMinute(),
+                0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, setDay.getTimeInMillis(), pIntent);
