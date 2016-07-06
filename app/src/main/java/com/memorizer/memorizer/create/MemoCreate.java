@@ -1,10 +1,10 @@
 package com.memorizer.memorizer.create;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,7 +37,7 @@ public class MemoCreate extends AppCompatActivity {
     EditText alarmContent;
     Button alarmWhileBtn, alarmTermBtn, alarmTimeBtn;
     MemoData memoData = new MemoData();
-    AlertDialog dialog;
+    android.support.v7.app.AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,7 @@ public class MemoCreate extends AppCompatActivity {
         alarmWhileBtn = (Button) findViewById(R.id.alarm_while_btn);
         alarmTimeBtn = (Button) findViewById(R.id.alarm_time_btn);
 
+        dialog = new AlertDialog.Builder(this).create();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null
         && bundle.getBoolean("is_edit")) {
@@ -78,13 +79,13 @@ public class MemoCreate extends AppCompatActivity {
         }
     }
 
-    protected void onClickListen(View v) {
+    public void onClickListen(View v) {
         switch (v.getId()) {
             case R.id.alarm_term_btn:
                 // 버튼 클릭시 팝업 메뉴가 나오게 하기
                 // PopupMenu 는 API 11 레벨부터 제공한다
                 PopupMenu p = new PopupMenu(getApplicationContext(), v);
-                getMenuInflater().inflate(R.menu.activity_create_memo_termpick, p.getMenu());
+                this.getMenuInflater().inflate(R.menu.activity_create_memo_termpick, p.getMenu());
                 // 이벤트 처리
                 p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -108,9 +109,10 @@ public class MemoCreate extends AppCompatActivity {
             // 기간 설정
             case R.id.alarm_while_btn:
                 // Dialog 생성
-                LayoutInflater whileInflater=getLayoutInflater();
+                LayoutInflater whileInflater = this.getLayoutInflater();
                 View dialogWhileView = whileInflater.inflate(R.layout.dialog_during_select, null);
-                AlertDialog.Builder whileDialogBuilder= new AlertDialog.Builder(this); //AlertDialog.Builder 객체 생성
+                android.support.v7.app.AlertDialog.Builder whileDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+                //AlertDialog.Builder whileDialogBuilder= new AlertDialog.Builder(this); //AlertDialog.Builder 객체 생성
                 whileDialogBuilder.setTitle("기간 설정"); //Dialog 제목
                 whileDialogBuilder.setIcon(android.R.drawable.ic_menu_today); //제목옆의 아이콘 이미지(원하는 이미지 설정)
                 whileDialogBuilder.setView(dialogWhileView);
@@ -162,9 +164,9 @@ public class MemoCreate extends AppCompatActivity {
             // 시간 설정 버튼
             case R.id.alarm_time_btn:
                 // Dialog 생성
-                LayoutInflater timeInflater=getLayoutInflater();
+                LayoutInflater timeInflater = this.getLayoutInflater();
                 View dialogTimeView = timeInflater.inflate(R.layout.dialog_time_select, null);
-                AlertDialog.Builder timeDialogBuider= new AlertDialog.Builder(this); //AlertDialog.Builder 객체 생성
+                android.support.v7.app.AlertDialog.Builder timeDialogBuider= new android.support.v7.app.AlertDialog.Builder(this); //AlertDialog.Builder 객체 생성
                 timeDialogBuider.setTitle("시간 설정"); //Dialog 제목
                 timeDialogBuider.setIcon(android.R.drawable.ic_menu_day); //제목옆의 아이콘 이미지(원하는 이미지 설정)
                 timeDialogBuider.setView(dialogTimeView);
@@ -282,5 +284,4 @@ public class MemoCreate extends AppCompatActivity {
 
         return hourStr +" : "+minStr+ " "+ampm;
     }
-
 }
