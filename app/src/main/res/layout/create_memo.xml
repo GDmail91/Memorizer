@@ -20,6 +20,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:text="생성/수정한 메모는 현재 시간부터 간격에 맞춰 진행됩니다."
+        android:textAlignment="center" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -47,7 +55,7 @@
             android:layout_above="@+id/divider1"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="간격"
+            android:text="간격(일 단위)"
             android:textSize="16dp"
             android:textColor="@color/colorPrimary" />
 
@@ -91,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:text="기간"
+                android:text="종료 기간"
                 android:textSize="16dp"
                 android:textColor="@color/colorPrimary"
                 android:id="@+id/alarm_while"

@@ -41,20 +41,20 @@ public class Scheduler {
         Calendar setDay = Calendar.getInstance();
 
         // 현재 시간부터 다음 간격시간 후에 알림
-        if (next != 0)
+        if (next != 0) {
             setDay.setTimeInMillis(System.currentTimeMillis());
-        else
-            setDay.setTimeInMillis(System.currentTimeMillis() + ((long)memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
-        //setDay.setTimeInMillis(System.currentTimeMillis());
+        } else {
+            setDay.setTimeInMillis(System.currentTimeMillis() + ((long) memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
+            //setDay.setTimeInMillis(System.currentTimeMillis());
 
-        setDay.set(
-                setDay.get(Calendar.YEAR),
-                setDay.get(Calendar.MONTH),
-                setDay.get(Calendar.DAY_OF_MONTH),
-                memoData.getTimeOfHour(),
-                memoData.getTimeOfMinute(),
-                0);
-
+            setDay.set(
+                    setDay.get(Calendar.YEAR),
+                    setDay.get(Calendar.MONTH),
+                    setDay.get(Calendar.DAY_OF_MONTH),
+                    memoData.getTimeOfHour(),
+                    memoData.getTimeOfMinute(),
+                    0);
+        }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, setDay.getTimeInMillis(), pIntent);
     }

@@ -240,7 +240,7 @@ public class MemoCreate extends AppCompatActivity {
                     memoData.set_id(memoModel.insert(memoData));
 
                     // 알림 설정
-                    Scheduler.getScheduler().setSchedule(this, memoData);
+                    Scheduler.getScheduler().setSchedule(this, memoData, 1);
                 }
 
                 Intent intent = new Intent(MemoCreate.this, MainActivity.class);
