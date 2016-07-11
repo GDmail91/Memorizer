@@ -1,4 +1,4 @@
-package com.memorizer.memorizer.create;
+package com.memorizer.memorizer.models;
 
 import java.io.Serializable;
 import java.util.Calendar;

@@ -42,6 +42,7 @@
         <receiver android:name=".MemorizerReciver">
             <intent-filter>
                 <action android:name="com.memorizer.memorizer.alarmTrigger"/>
+                <action android:name="com.memorizer.memorizer.nextAlarm"/>
             </intent-filter>
         </receiver>
     </application>

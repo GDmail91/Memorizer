@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.memorizer.memorizer.create.MemoData;
+import com.memorizer.memorizer.models.MemoData;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -8,8 +8,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.memorizer.memorizer.create.MemoData;
-import com.memorizer.memorizer.scheduler.Scheduler;
+import com.memorizer.memorizer.models.MemoData;
 
 import java.io.Serializable;
 
@@ -40,8 +39,6 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
 
         messageView.setText(memoData.getContent());
 
-        // 알림 설정
-        Scheduler.getScheduler().setSchedule(this, memoData);
     }
 
     public void onClick(View v) {

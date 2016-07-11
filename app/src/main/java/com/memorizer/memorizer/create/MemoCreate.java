@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.memorizer.memorizer.MainActivity;
 import com.memorizer.memorizer.R;
+import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
 
@@ -244,6 +245,7 @@ public class MemoCreate extends AppCompatActivity {
                 }
 
                 Intent intent = new Intent(MemoCreate.this, MainActivity.class);
+                intent.putExtra("mCreate", memoData);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);

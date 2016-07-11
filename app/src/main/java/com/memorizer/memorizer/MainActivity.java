@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.memorizer.memorizer.create.MemoCreate;
-import com.memorizer.memorizer.create.MemoData;
+import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 
 import java.util.ArrayList;
@@ -71,6 +71,16 @@ public class MainActivity extends AppCompatActivity
 
         //ListView를 Context 메뉴로 등록
         registerForContextMenu(memoListView);
+
+        Intent mIntent = getIntent();
+        MemoData memoData = (MemoData)mIntent.getSerializableExtra("mCreate");
+        if (memoData != null) {
+            Intent popupIntent = new Intent(MainActivity.this, MemoAlarmActivity.class);
+            popupIntent.putExtra("memoId", memoData);
+            popupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(popupIntent);
+        }
+
     }
 
     //Context 메뉴로 등록한 View(여기서는 ListView)가 처음 클릭되어 만들어질 때 호출되는 메소드
@@ -97,7 +107,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.memo_delete:
                 MemoModel memoModel = new MemoModel(this, "Memo.db", null, 1);
                 memoModel.delete(memoDatas.get(index).get_id());
-                Toast.makeText(this, memoDatas.get(index).get_id()+"째 메모가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, memoDatas.get(index).get_id()+"번 메모가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                 memoDatas.remove(index);
                 memoListAdapter.notifyDataSetChanged();
                 break;

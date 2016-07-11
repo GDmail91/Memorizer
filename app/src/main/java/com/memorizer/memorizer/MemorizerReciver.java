@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.memorizer.memorizer.create.MemoData;
+import com.memorizer.memorizer.models.MemoData;
+import com.memorizer.memorizer.scheduler.Scheduler;
 
 import java.io.Serializable;
 
@@ -21,12 +22,21 @@ public class MemorizerReciver extends BroadcastReceiver {
 
         String name = intent.getAction();
         Log.i(TAG, "알람 리시브: "+name);
-        Serializable tempData = intent.getSerializableExtra("memoId");
-        MemoData memoData = (MemoData) tempData;
 
         if(name.equals("com.memorizer.memorizer.alarmTrigger")){
+            Scheduler.getScheduler().setNextAlarm(context);
+        }
+
+        if(name.equals("com.memorizer.memorizer.nextAlarm")){
             Bundle bundle = intent.getExtras();
             bundle.clear();
+
+            Serializable tempData = intent.getSerializableExtra("memoId");
+            MemoData memoData = (MemoData) tempData;
+
+
+            // 다음 알림 설정
+            Scheduler.getScheduler().setSchedule(context, memoData);
 
             Intent popupIntent = new Intent(context.getApplicationContext(), MemoAlarmActivity.class);
             popupIntent.putExtra("memoId", memoData);

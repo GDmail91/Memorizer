@@ -3,9 +3,6 @@ package com.memorizer.memorizer.models;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
-import com.memorizer.memorizer.create.MemoData;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,31 +10,10 @@ import java.util.Calendar;
 /**
  * Created by YS on 2016-06-21.
  */
-public class MemoModel extends SQLiteOpenHelper {
+public class MemoModel extends DBmanager {
 
     public MemoModel(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        // 새로운 테이블을 생성한다.
-        // create table 테이블명 (컬럼명 타입 옵션);
-        db.execSQL("CREATE TABLE Memo ( " +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "memoContent TEXT, " +
-                "memoDuring INTEGER, " +
-                "memoTerm INTEGER, " +
-                "memoTimeHour INTEGER, " +
-                "memoTimeMinute INTEGER, " +
-                "posted DATETIME DEFAULT CURRENT_TIMESTAMP);");
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS dic");
-        onCreate(db);
-        db.close();
     }
 
     /** 삽입 SQL
@@ -200,13 +176,15 @@ public class MemoModel extends SQLiteOpenHelper {
 
     public MemoData getData(int id) {
         SQLiteDatabase db = getReadableDatabase();
-        MemoData data = new MemoData();
+        MemoData data = null;
 
         Cursor cursor = db.rawQuery("SELECT * FROM Memo WHERE _id='"+id+"' ORDER BY _id DESC", null);
-        while(cursor.moveToNext()) {
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getInt(2));
 
+            data = new MemoData();
             data.set_id(cursor.getInt(0));
             data.setContent(cursor.getString(1));
             data.setWhileDate(calendar);
