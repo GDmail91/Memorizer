@@ -182,6 +182,7 @@ public class MemoCreate extends AppCompatActivity {
 
             // 시간 설정 다이얼로그 > 랜덤
             case R.id.alarm_time_random:
+                memoData.setRandom();
                 Random random = new Random(System.currentTimeMillis());
                 memoData.setTimeOfHour(random.nextInt(24));
                 memoData.setTimeOfMinute(random.nextInt(60));

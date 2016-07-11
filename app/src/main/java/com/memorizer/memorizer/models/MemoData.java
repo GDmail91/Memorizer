@@ -12,6 +12,7 @@ public class MemoData implements Serializable{
     private String content;
     private int term;
     private Calendar whileDate;
+    private boolean isRandom;
     private int timeOfHour;
     private int timeOfMinute;
     private String posted = "";
@@ -20,6 +21,7 @@ public class MemoData implements Serializable{
         this.content = "";
         this.term = 1;
         this.whileDate = null;
+        this.isRandom = true;
         Random random = new Random(System.currentTimeMillis());
         this.timeOfHour = random.nextInt(24);
         this.timeOfMinute = random.nextInt(60);
@@ -30,6 +32,7 @@ public class MemoData implements Serializable{
         this.content = content;
         this.term = term;
         this.whileDate = whileDate;
+        this.isRandom = false;
         this.timeOfHour = hour;
         this.timeOfMinute = minute;
         this.posted = posted;
@@ -49,6 +52,10 @@ public class MemoData implements Serializable{
 
     public Calendar getWhileDate() {
         return whileDate;
+    }
+
+    public boolean isRandom() {
+        return isRandom;
     }
 
     public int getTimeOfHour() {
@@ -79,11 +86,17 @@ public class MemoData implements Serializable{
         this.whileDate = whileDate;
     }
 
+    public void setRandom() {
+        this.isRandom = true;
+    }
+
     public void setTimeOfHour(int timeOfHour) {
+        this.isRandom = false;
         this.timeOfHour = timeOfHour;
     }
 
     public void setTimeOfMinute(int timeOfMinute) {
+        this.isRandom = false;
         this.timeOfMinute = timeOfMinute;
     }
 

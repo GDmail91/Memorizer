@@ -22,6 +22,7 @@ public class DBmanager extends SQLiteOpenHelper {
                 "memoContent TEXT, " +
                 "memoDuring INTEGER, " +
                 "memoTerm INTEGER, " +
+                "isRandom BOOLEAN, " +
                 "memoTimeHour INTEGER, " +
                 "memoTimeMinute INTEGER, " +
                 "posted DATETIME DEFAULT CURRENT_TIMESTAMP);");
