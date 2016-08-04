@@ -61,8 +61,9 @@ public class MemoCreate extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null
         && bundle.getBoolean("is_edit")) {
-            MemoModel memoModel = new MemoModel(this, "Memo.db", null, 1);
+            MemoModel memoModel = new MemoModel(this, "Memo.db", null);
             this.memoData = memoModel.getData(bundle.getInt("memo_id"));
+            memoModel.close();
 
             alarmContent.setText(memoData.getContent());
             alarmTermBtn.setText(""+memoData.getTerm());
@@ -231,7 +232,7 @@ public class MemoCreate extends AppCompatActivity {
                 memoData.setContent(alarmContent.getText().toString());
 
                 // DB에 저장
-                MemoModel memoModel = new MemoModel(this, "Memo.db", null, 1);
+                MemoModel memoModel = new MemoModel(this, "Memo.db", null);
                 if (bundle != null
                 && bundle.getBoolean("is_edit")) {
                     memoModel.update(memoData);
@@ -241,9 +242,12 @@ public class MemoCreate extends AppCompatActivity {
                 } else {
                     memoData.set_id(memoModel.insert(memoData));
 
+                    Log.d("TEST", "설정하는 시간: "+memoData.getTimeOfHour()+":"+memoData.getTimeOfMinute());
                     // 알림 설정
                     Scheduler.getScheduler().setSchedule(this, memoData, 1);
                 }
+
+                memoModel.close();
 
                 Intent intent = new Intent(MemoCreate.this, MainActivity.class);
                 intent.putExtra("mCreate", memoData);

@@ -27,12 +27,12 @@ public class MemoData implements Serializable{
         this.timeOfMinute = random.nextInt(60);
     }
 
-    public MemoData(int _id, String content, Calendar whileDate, int term, int hour, int minute, String posted) {
+    public MemoData(int _id, String content, Calendar whileDate, int term, int isRandom, int hour, int minute, String posted) {
         this._id = _id;
         this.content = content;
         this.term = term;
         this.whileDate = whileDate;
-        this.isRandom = false;
+        this.isRandom = Boolean.valueOf(""+isRandom);
         this.timeOfHour = hour;
         this.timeOfMinute = minute;
         this.posted = posted;
@@ -102,5 +102,17 @@ public class MemoData implements Serializable{
 
     public void setPosted(String posted) {
         this.posted = posted;
+    }
+
+    public String printItem() {
+        String str = "ID: "+_id
+                +"\nContent: "+content
+                +"\nTerm: "+term
+                +"\nisRandom: "+isRandom
+                +"\nHour: "+timeOfHour
+                +"\nMinute: "+timeOfMinute
+                +"\nPosted: "+posted;
+
+        return str;
     }
 }

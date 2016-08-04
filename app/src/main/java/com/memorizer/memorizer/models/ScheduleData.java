@@ -48,4 +48,9 @@ public class ScheduleData implements Serializable {
     public void setAlarmDate(Calendar alarmDate) {
         this.alarmDate = alarmDate;
     }
+
+    public String toString() {
+
+        return memoId+"-"+alarmDate.get(Calendar.DAY_OF_MONTH)+"-"+alarmDate.get(Calendar.HOUR_OF_DAY)+"-"+alarmDate.get(Calendar.MINUTE);
+    }
 }

@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
@@ -41,21 +42,24 @@ public class Scheduler {
     }
 
     protected void deleteAlarm(Context context) {
-        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null, 1);
+        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
         scheduleModel.deletePrevious();
+        scheduleModel.close();
     }
 
     public void setNextAlarm(Context context) {
         // 가장 가까운 알람 가져옴
-        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null, 1);
-scheduleModel.printCountOfData();
+        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
+        scheduleModel.printCountOfData();
         ScheduleData nextSchedule = scheduleModel.getNextData(System.currentTimeMillis());
+        scheduleModel.close();
 
         // nextSchedule이 null이 아닐경우 등록
         if (nextSchedule != null) {
             // 알림용 intent 등록
-            MemoModel memoModel = new MemoModel(context, "Memo.db", null, 1);
+            MemoModel memoModel = new MemoModel(context, "Memo.db", null);
             MemoData memoData = memoModel.getData(nextSchedule.getMemoId());
+            memoModel.close();
 
             // memoData가 지워진 경우 등록하지 않음
             if (memoData != null) {
@@ -94,24 +98,45 @@ scheduleModel.printCountOfData();
             // 현재 시간부터 다음 간격시간 후에 알림
             if (next != 0) {
                 setDay.setTimeInMillis(System.currentTimeMillis());
+                Log.d(TAG, "next!");
+                setDay.set(
+                        setDay.get(Calendar.YEAR),
+                        setDay.get(Calendar.MONTH),
+                        setDay.get(Calendar.DAY_OF_MONTH),
+                        memoData.getTimeOfHour(),
+                        memoData.getTimeOfMinute(),
+                        0);
             } else {
                 setDay.setTimeInMillis(System.currentTimeMillis() + ((long) memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
+                Log.d(TAG, "not next!");
+                //setDay.setTimeInMillis(System.currentTimeMillis() + ((long) memoData.getTerm() * 60 * 1000));
                 //setDay.setTimeInMillis(System.currentTimeMillis());
+                setDay.set(
+                        setDay.get(Calendar.YEAR),
+                        setDay.get(Calendar.MONTH),
+                        setDay.get(Calendar.DAY_OF_MONTH),
+                        //memoData.getTimeOfHour(),
+                        //memoData.getTimeOfMinute(),
+                        setDay.get(Calendar.HOUR_OF_DAY),
+                        setDay.get(Calendar.MINUTE),
+                        0);
             }
-
-            setDay.set(
+/*            setDay.set(
                     setDay.get(Calendar.YEAR),
                     setDay.get(Calendar.MONTH),
                     setDay.get(Calendar.DAY_OF_MONTH),
-                    memoData.getTimeOfHour(),
-                    memoData.getTimeOfMinute(),
-                    0);
+                    //memoData.getTimeOfHour(),
+                    //memoData.getTimeOfMinute(),
+                    setDay.get(Calendar.HOUR_OF_DAY),
+                    setDay.get(Calendar.MINUTE),
+                    0);*/
         }
 
         ScheduleData scheduleData = new ScheduleData(memoData.get_id(), setDay);
         // DB에 저장
-        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null, 1);
+        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
         scheduleModel.insert(scheduleData);
+        scheduleModel.close();
 
         setNextAlarm(context);
 

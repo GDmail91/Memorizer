@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.memorizer.memorizer.create.MemoCreate;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
+import com.memorizer.memorizer.models.ScheduleModel;
 
 import java.util.ArrayList;
 
@@ -57,8 +59,12 @@ public class MainActivity extends AppCompatActivity
 
 
         // DB에서 메모목록 가져옴
-        MemoModel memoModel = new MemoModel(this, "Memo.db", null, 1);
+        MemoModel memoModel = new MemoModel(this, "Memo.db", null);
         memoDatas = memoModel.getAllData();
+        memoModel.close();
+
+        ScheduleModel scheduleModel = new ScheduleModel(this, "Memo.db", null);
+        Log.d("TEST", "스케쥴: "+scheduleModel.getAllData());
 
         // ListView 생성하면서 작성할 값 초기화
         memoListAdapter = new MemoListAdapter(memoDatas);
@@ -105,8 +111,9 @@ public class MainActivity extends AppCompatActivity
         //예제에서는 선택된 ListView의 항목(String 문자열) data와 해당 메뉴이름을 출력함
         switch( item.getItemId() ){
             case R.id.memo_delete:
-                MemoModel memoModel = new MemoModel(this, "Memo.db", null, 1);
+                MemoModel memoModel = new MemoModel(this, "Memo.db", null);
                 memoModel.delete(memoDatas.get(index).get_id());
+                memoModel.close();
                 Toast.makeText(this, memoDatas.get(index).get_id()+"번 메모가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                 memoDatas.remove(index);
                 memoListAdapter.notifyDataSetChanged();

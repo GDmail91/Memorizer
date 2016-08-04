@@ -37,6 +37,7 @@ public class MemorizerReciver extends BroadcastReceiver {
 
             // 다음 알림 설정
             Scheduler.getScheduler().setSchedule(context, memoData);
+            Log.d(TAG, "다음 알림 설정: "+memoData.getContent());
 
             Intent popupIntent = new Intent(context.getApplicationContext(), MemoAlarmActivity.class);
             popupIntent.putExtra("memoId", memoData);

@@ -3,7 +3,6 @@ package com.memorizer.memorizer.models;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,9 +11,13 @@ import java.util.Calendar;
  * Created by YS on 2016-07-11.
  */
 public class ScheduleModel extends DBmanager {
+    public static final int SCHEDULE_VERSION = 3;
 
-    public ScheduleModel(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    SQLiteDatabase dbR = getReadableDatabase();
+    SQLiteDatabase dbW = getWritableDatabase();
+
+    public ScheduleModel(Context context, String name, SQLiteDatabase.CursorFactory factory) {
+        super(context, name, factory);
     }
 
     /** 삽입 SQL
@@ -23,7 +26,6 @@ public class ScheduleModel extends DBmanager {
      * @return topNumber
      */
     public int insert(ScheduleData scheduleData) {
-        SQLiteDatabase dbR = getReadableDatabase();
         int topNumber = 0;
 
         Cursor cursor = dbR.rawQuery("SELECT _id FROM MemoSchedule ORDER BY _id DESC LIMIT 1", null);
@@ -44,7 +46,6 @@ public class ScheduleModel extends DBmanager {
                 "'" + (int)(scheduleData.getAlarmDate().getTimeInMillis() / 1000) + "');";
 
         // DB 작업 실행
-        SQLiteDatabase dbW = getWritableDatabase();
         dbW.beginTransaction();
         try {
             dbW.execSQL(sql);
@@ -55,8 +56,6 @@ public class ScheduleModel extends DBmanager {
             dbW.endTransaction(); //트랜잭션을 끝내는 메소드.
         }
 
-        dbW.close();
-        dbR.close();
         return topNumber;
     }
 
@@ -72,7 +71,6 @@ public class ScheduleModel extends DBmanager {
                 "WHERE _id='"+ scheduleData.get_id() +"' ;";
 
         // DB 작업 실행
-        SQLiteDatabase dbW = getWritableDatabase();
         dbW.beginTransaction();
         try {
             dbW.execSQL(sql);
@@ -83,80 +81,64 @@ public class ScheduleModel extends DBmanager {
             dbW.endTransaction(); //트랜잭션을 끝내는 메소드.
         }
 
-        dbW.close();
-
         return scheduleData.get_id();
     }
 
     public void update(String _query) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(_query);
-        db.close();
+        dbW.execSQL(_query);
     }
 
     public void delete(int ids) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.beginTransaction();
+        dbW.beginTransaction();
         try {
-            db.execSQL("DELETE FROM MemoSchedule WHERE _id='" + ids + "'");
-            db.setTransactionSuccessful();
+            dbW.execSQL("DELETE FROM MemoSchedule WHERE _id='" + ids + "'");
+            dbW.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            db.endTransaction();
+            dbW.endTransaction();
         }
-        db.close();
     }
 
     public void deletePrevious() {
-        SQLiteDatabase db = getWritableDatabase();
-        db.beginTransaction();
+        dbW.beginTransaction();
         try {
-            db.execSQL("DELETE FROM MemoSchedule WHERE alarmDate<" + (int)(System.currentTimeMillis()/1000) + " OR memoId = 0");
-            db.setTransactionSuccessful();
+            dbW.execSQL("DELETE FROM MemoSchedule WHERE alarmDate<" + (int)(System.currentTimeMillis()/1000) + " OR memoId = 0");
+            dbW.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            db.endTransaction();
+            dbW.endTransaction();
         }
-        db.close();
+        dbW.close();
     }
 
     public void deleteAll() {
-        SQLiteDatabase db = getWritableDatabase();
-        db.beginTransaction();
+        dbW.beginTransaction();
         try {
-            db.execSQL("DELETE FROM MemoSchedule");
-            db.setTransactionSuccessful();
+            dbW.execSQL("DELETE FROM MemoSchedule");
+            dbW.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            db.endTransaction();
+            dbW.endTransaction();
         }
-        db.close();
     }
 
     public int printCountOfData() {
-        SQLiteDatabase db = getReadableDatabase();
         int count=0;
 
-        Cursor cursor = db.rawQuery("SELECT * FROM MemoSchedule ORDER BY _id DESC", null);
+        Cursor cursor = dbR.rawQuery("SELECT * FROM MemoSchedule ORDER BY _id DESC", null);
 
         count = cursor.getCount();
-        while(cursor.moveToNext()) {
-            Log.d("TEST", ""+cursor.getInt(0));
-            Log.d("TEST", ""+cursor.getInt(1));
-            Log.d("TEST", ""+cursor.getInt(2));
-        }
         cursor.close();
-        db.close();
         return count;
     }
 
-    public ScheduleData getData(int id) {
-        SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM MemoSchedule WHERE _id='"+id+"' ORDER BY _id DESC", null);
+    public ScheduleData getData(int id) {
+
+        Cursor cursor = dbR.rawQuery("SELECT * FROM MemoSchedule WHERE _id='"+id+"' ORDER BY _id DESC", null);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(cursor.getInt(2));
@@ -166,15 +148,13 @@ public class ScheduleModel extends DBmanager {
                 cursor.getInt(1),
                 calendar);
 
-        db.close();
         return data;
     }
 
     public ScheduleData getNextData(long timeMiles) {
-        SQLiteDatabase db = getReadableDatabase();
 
         // 오름 차순 정렬후 첫번째꺼 (timeMiles와 가장 가까운 알람)
-        Cursor cursor = db.rawQuery("SELECT DISTINCT memoId, alarmDate FROM MemoSchedule WHERE alarmDate>"+(int)(timeMiles/1000)+" ORDER BY alarmDate ASC LIMIT 1", null);
+        Cursor cursor = dbR.rawQuery("SELECT DISTINCT memoId, alarmDate FROM MemoSchedule WHERE alarmDate>"+(int)(timeMiles/1000)+" ORDER BY alarmDate ASC LIMIT 1", null);
 
         ScheduleData data = null;
         if (cursor.getCount() != 0) {
@@ -187,16 +167,14 @@ public class ScheduleModel extends DBmanager {
                     calendar);
         }
         cursor.close();
-        db.close();
 
         return data;
     }
 
     public ArrayList<ScheduleData> getAllData() {
-        SQLiteDatabase db = getReadableDatabase();
 
         // 오름 차순 정렬후 첫번째꺼 (timeMiles와 가장 가까운 알람)
-        Cursor cursor = db.rawQuery("SELECT * FROM MemoSchedule", null);
+        Cursor cursor = dbR.rawQuery("SELECT * FROM MemoSchedule", null);
 
         ArrayList<ScheduleData> arrData = new ArrayList<>();
         ScheduleData data;
@@ -211,8 +189,12 @@ public class ScheduleModel extends DBmanager {
             arrData.add(data);
         }
         cursor.close();
-        db.close();
 
         return arrData;
+    }
+
+    public void close() {
+        dbW.close();
+        dbR.close();
     }
 }
