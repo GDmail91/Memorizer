@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by YS on 2016-07-25.
  */
+@Deprecated
 public class DatabaseManager {
 
     private AtomicInteger mOpenCounter = new AtomicInteger();

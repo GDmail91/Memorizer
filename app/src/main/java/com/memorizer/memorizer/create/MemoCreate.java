@@ -238,13 +238,13 @@ public class MemoCreate extends AppCompatActivity {
                     memoModel.update(memoData);
 
                     // 알림 설정
-                    Scheduler.getScheduler().setSchedule(this, memoData, 1);
+                    Scheduler.getScheduler().setSchedule(this, memoData, true);
                 } else {
                     memoData.set_id(memoModel.insert(memoData));
 
                     Log.d("TEST", "설정하는 시간: "+memoData.getTimeOfHour()+":"+memoData.getTimeOfMinute());
                     // 알림 설정
-                    Scheduler.getScheduler().setSchedule(this, memoData, 1);
+                    Scheduler.getScheduler().setSchedule(this, memoData, true);
                 }
 
                 memoModel.close();

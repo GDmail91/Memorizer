@@ -11,9 +11,6 @@ public class ScheduleData implements Serializable {
     private int memoId;
     private Calendar alarmDate;
 
-    public ScheduleData() {
-
-    }
     public ScheduleData(int memoId, Calendar alarmDate) {
         this.memoId = memoId;
         this.alarmDate = alarmDate;

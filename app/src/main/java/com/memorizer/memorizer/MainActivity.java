@@ -22,6 +22,7 @@ import com.memorizer.memorizer.create.MemoCreate;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
+import com.memorizer.memorizer.scheduler.Scheduler;
 
 import java.util.ArrayList;
 
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // 스케쥴 주기 시작
+        Scheduler.getScheduler().startSchedule(this);
 
         // DB에서 메모목록 가져옴
         MemoModel memoModel = new MemoModel(this, "Memo.db", null);
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity
 
         ScheduleModel scheduleModel = new ScheduleModel(this, "Memo.db", null);
         Log.d("TEST", "스케쥴: "+scheduleModel.getAllData());
+        scheduleModel.close();
 
         // ListView 생성하면서 작성할 값 초기화
         memoListAdapter = new MemoListAdapter(memoDatas);
