@@ -9,6 +9,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.memorizer.memorizer.models.MemoData;
+import com.memorizer.memorizer.models.ScheduleData;
+import com.memorizer.memorizer.models.ScheduleModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,11 +62,13 @@ public class MemoListAdapter extends BaseAdapter {
 
             holder = new ViewHolder();
 
+            holder.memo_number = (TextView) view.findViewById(R.id.memoPad_number);
             holder.memo_content = (TextView) view.findViewById(R.id.memo_content);
             holder.memo_during = (TextView) view.findViewById(R.id.memo_during);
             holder.memo_term = (TextView) view.findViewById(R.id.memo_term);
             holder.memo_time = (TextView) view.findViewById(R.id.memo_time);
             holder.memo_posted = (TextView) view.findViewById(R.id.memo_posted);
+            holder.memo_next_alarm = (TextView) view.findViewById(R.id.memo_next);
             holder.setting_button = (ImageButton) view.findViewById(R.id.setting_button);
 
             view.setTag(holder);
@@ -77,6 +81,7 @@ public class MemoListAdapter extends BaseAdapter {
         // 각 뷰에 값넣기
 
         // TextView에 현재 position의 문자열 추가
+        holder.memo_number.setText(""+memoDatas.get(position).get_id());
         holder.memo_content.setText(memoDatas.get(position).getContent());
         String during;
         if (memoDatas.get(position).getWhileDate() == null
@@ -93,6 +98,16 @@ public class MemoListAdapter extends BaseAdapter {
         holder.memo_time.setText(makeTime(memoDatas.get(position).getTimeOfHour(), memoDatas.get(position).getTimeOfMinute()));
         holder.memo_posted.setText(memoDatas.get(position).getPosted().split(" ")[0]); // 시간 제거
 
+        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
+        ScheduleData nextSchedule = scheduleModel.getMemoSchedule(memoDatas.get(position).get_id());
+        Calendar calendar = nextSchedule.getAlarmDate();
+        String nextDate = calendar.get(Calendar.YEAR) + "."
+                + (calendar.get(Calendar.MONTH) + 1) + "."
+                + calendar.get(Calendar.DAY_OF_MONTH) + " "
+                + makeTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+        scheduleModel.close();
+        holder.memo_next_alarm.setText(nextDate);
+
         holder.setting_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,11 +119,13 @@ public class MemoListAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
+        TextView memo_number;
         TextView memo_content;
         TextView memo_during;
         TextView memo_term;
         TextView memo_time;
         TextView memo_posted;
+        TextView memo_next_alarm;
         ImageButton setting_button;
     }
 

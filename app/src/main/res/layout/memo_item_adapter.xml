@@ -1,28 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="wrap_content"
+    android:minHeight="250dp"
     android:background="@color/colorPrimaryTrans" >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="6dp"
-        android:background="@color/colorPrimary" >
+        android:padding="1dp"
+        android:background="@color/memoPadAccent" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/memo_pad_block"
+            android:id="@+id/memo_header">
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/setting"
+                style="?android:attr/borderlessButtonStyle"
+                android:scaleType="fitCenter"
+                android:id="@+id/setting_button"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginLeft="7dp"
+                android:gravity="center"
+                android:text="1"
+                android:textSize="18sp"
+                android:textColor="@color/memoPadAccent"
+                android:id="@+id/memoPad_number"/>
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_toStartOf="@+id/info_bar"
-            android:layout_toLeftOf="@+id/info_bar"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/memo_header"
+            android:paddingTop="4dp"
+            android:paddingStart="7dp"
+            android:paddingLeft="7dp"
+            android:paddingBottom="4dp"
+            android:paddingEnd="7dp"
+            android:paddingRight="7dp"
+            android:minHeight="100dp"
             android:gravity="center_vertical"
-            android:text="메모"
-            android:textColor="@color/black"
-            android:background="@color/colorPrimary"
-            android:id="@+id/memo_content"/>
+            android:text="@string/memo"
+            android:background="@drawable/memo_pad_block"
+            android:id="@+id/memo_content" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/memo_content"
+            android:weightSum="10"
+            android:id="@+id/memo_footer1">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_weight="4"
+                android:background="@drawable/memo_pad_block">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginLeft="7dp"
+                    android:text="간격"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/memoPadFont"
+                    android:id="@+id/memoPad_title_term"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/memoPad_title_term"
+                    android:text="5"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:id="@+id/memo_term"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_weight="6"
+                android:background="@drawable/memo_pad_block">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginLeft="7dp"
+                    android:text="기간"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/memoPadFont"
+                    android:id="@+id/memoPad_title_until"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/memoPad_title_until"
+                    android:text="0000-00-00 ~ 0000-00-00"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:id="@+id/memo_during"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/memo_footer1"
+            android:weightSum="10"
+            android:id="@+id/memo_footer2">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_weight="5"
+                android:background="@drawable/memo_pad_block">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginLeft="7dp"
+                    android:text="알림시간"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/memoPadFont"
+                    android:id="@+id/memoPad_title_alarm"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/memoPad_title_alarm"
+                    android:text="00:00 am"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:id="@+id/memo_time"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_weight="5"
+                android:background="@drawable/memo_pad_block">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginLeft="7dp"
+                    android:text="다음알림"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/memoPadFont"
+                    android:id="@+id/memoPad_title_next"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/memoPad_title_next"
+                    android:text="0000-00-00 00:00 am"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:id="@+id/memo_next"/>
+            </RelativeLayout>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_below="@+id/memo_footer2"
+            android:background="@drawable/memo_pad_block"
+            android:id="@+id/memo_footer3">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginLeft="7dp"
+                android:text="등록한 날짜"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/memoPadFont"
+                android:id="@+id/memoPad_title_postdate"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/memoPad_title_postdate"
+                android:text="0000-00-00"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:id="@+id/memo_posted"/>
+        </RelativeLayout>
+<!--
         <LinearLayout
             android:layout_width="150dp"
             android:layout_height="match_parent"
@@ -33,31 +245,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:background="@color/colorAccent">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:textAlignment="center"/>
-                <ImageButton
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="10dp"
-                    android:src="@drawable/setting"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:scaleType="fitCenter"
-                    android:id="@+id/setting_button"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:orientation="horizontal"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/memoPad"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -72,12 +262,12 @@
                     android:text="간격"
                     android:textColor="@color/colorPrimary"
                     android:layout_gravity="center"
-                    android:gravity="center"/>
+                    android:gravity="center" />
                 <LinearLayout
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/memoPad"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -94,7 +284,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:orientation="horizontal"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/memoPad"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -114,7 +304,7 @@
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/memoPad"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -130,7 +320,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:orientation="horizontal"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/memoPad"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -150,7 +340,7 @@
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/memoPad"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -166,7 +356,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:orientation="horizontal"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/memoPad"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -186,7 +376,7 @@
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/memoPad"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -198,6 +388,6 @@
                     android:id="@+id/memo_posted"/>
             </LinearLayout>
 
-        </LinearLayout>
+        </LinearLayout>-->
     </RelativeLayout>
 </RelativeLayout>

@@ -151,6 +151,26 @@ public class ScheduleModel extends DBmanager {
         return data;
     }
 
+    public ScheduleData getMemoSchedule(int memoId) {
+
+        Cursor cursor = dbR.rawQuery("SELECT * FROM MemoSchedule WHERE memoId='"+memoId+"' ORDER BY _id DESC LIMIT 1", null);
+
+        ScheduleData data = null;
+        if (cursor.getCount() != 0) {
+            cursor.moveToFirst();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis((long)cursor.getInt(2)*1000);
+
+            data = new ScheduleData(
+                    cursor.getInt(0),
+                    cursor.getInt(1),
+                    calendar);
+        }
+        cursor.close();
+
+        return data;
+    }
+
     public ScheduleData getNextData(long timeMiles) {
 
         // 오름 차순 정렬후 첫번째꺼 (timeMiles와 가장 가까운 알람)

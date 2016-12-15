@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">메모라이저</string>
+    <string name="action_settings">설정</string>
+    <string name="activity_developer">만든이</string>
+    <string name="activity_memo_create">메모 생성</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="memo">메모</string>
+</resources>

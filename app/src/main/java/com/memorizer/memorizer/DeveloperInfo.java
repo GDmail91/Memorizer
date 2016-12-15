@@ -1,9 +1,11 @@
 package com.memorizer.memorizer;
 
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.util.Linkify;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 /**
@@ -30,4 +32,16 @@ public class DeveloperInfo extends AppCompatActivity {
         Linkify.addLinks(emailBtn, Linkify.EMAIL_ADDRESSES);
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }
