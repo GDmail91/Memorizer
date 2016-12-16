@@ -70,7 +70,7 @@ public class MemoCreate extends AppCompatActivity {
             String during;
             if (memoData.getWhileDate() == null
                     || memoData.getWhileDate().getTimeInMillis() == 0)
-                during = "무제한";
+                during = getString(R.string.unlimit);
             else {
                 during = memoData.getWhileDate().get(Calendar.YEAR) + "." +
                         memoData.getWhileDate().get(Calendar.MONTH) + "." +
@@ -79,6 +79,8 @@ public class MemoCreate extends AppCompatActivity {
             alarmWhileBtn.setText(during);
             alarmTimeBtn.setText(makeTime(memoData.getTimeOfHour(), memoData.getTimeOfMinute()));
         }
+
+        setTimeRandom();
     }
 
     public void onClickListen(View v) {
@@ -93,7 +95,7 @@ public class MemoCreate extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         String[] days = item.getTitle().toString().split(" ");
-                        if (days[1].equals("일")) {
+                        if (days[1].equals("일") || days[1].equals("day") || days[1].equals("days")) {
                             memoData.setTerm(Integer.parseInt(days[0]));
                         } else {
                             // TODO 달로 저장
@@ -115,7 +117,7 @@ public class MemoCreate extends AppCompatActivity {
                 View dialogWhileView = whileInflater.inflate(R.layout.dialog_during_select, null);
                 android.support.v7.app.AlertDialog.Builder whileDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
                 //AlertDialog.Builder whileDialogBuilder= new AlertDialog.Builder(this); //AlertDialog.Builder 객체 생성
-                whileDialogBuilder.setTitle("기간 설정"); //Dialog 제목
+                whileDialogBuilder.setTitle(getString(R.string.choice_date)); //Dialog 제목
                 whileDialogBuilder.setIcon(android.R.drawable.ic_menu_today); //제목옆의 아이콘 이미지(원하는 이미지 설정)
                 whileDialogBuilder.setView(dialogWhileView);
 
@@ -131,7 +133,7 @@ public class MemoCreate extends AppCompatActivity {
             case R.id.alarm_while_unlimit:
                 memoData.setWhileDate(null);
                 // 버튼 글자 바꿈
-                alarmWhileBtn.setText("무제한");
+                alarmWhileBtn.setText(getString(R.string.unlimit));
 
                 // Dialog창 사라짐
                 dialog.cancel();
@@ -169,7 +171,7 @@ public class MemoCreate extends AppCompatActivity {
                 LayoutInflater timeInflater = this.getLayoutInflater();
                 View dialogTimeView = timeInflater.inflate(R.layout.dialog_time_select, null);
                 android.support.v7.app.AlertDialog.Builder timeDialogBuider= new android.support.v7.app.AlertDialog.Builder(this); //AlertDialog.Builder 객체 생성
-                timeDialogBuider.setTitle("시간 설정"); //Dialog 제목
+                timeDialogBuider.setTitle(getString(R.string.choice_time)); //Dialog 제목
                 timeDialogBuider.setIcon(android.R.drawable.ic_menu_day); //제목옆의 아이콘 이미지(원하는 이미지 설정)
                 timeDialogBuider.setView(dialogTimeView);
 
@@ -183,15 +185,7 @@ public class MemoCreate extends AppCompatActivity {
 
             // 시간 설정 다이얼로그 > 랜덤
             case R.id.alarm_time_random:
-                memoData.setRandom();
-                Random random = new Random(System.currentTimeMillis());
-                memoData.setTimeOfHour(random.nextInt(24));
-                memoData.setTimeOfMinute(random.nextInt(60));
-                // 버튼 글자 바꿈
-                alarmTimeBtn.setText("랜덤");
-
-                // Dialog창 사라짐
-                dialog.cancel();
+                setTimeRandom();
                 break;
 
             // 시간 설정 다이얼로그 > 직접 설정
@@ -211,6 +205,18 @@ public class MemoCreate extends AppCompatActivity {
                 }, 0, 0, false).show();
                 break;
         }
+    }
+
+    protected void setTimeRandom() {
+        memoData.setRandom();
+        Random random = new Random(System.currentTimeMillis());
+        memoData.setTimeOfHour(random.nextInt(24));
+        memoData.setTimeOfMinute(random.nextInt(60));
+        // 버튼 글자 바꿈
+        alarmTimeBtn.setText(getString(R.string.random));
+
+        // Dialog창 사라짐
+        dialog.cancel();
     }
 
     @Override
@@ -238,14 +244,16 @@ public class MemoCreate extends AppCompatActivity {
                     memoModel.update(memoData);
 
                     // 알림 설정
+                    Scheduler.getScheduler().deleteSelectedAlarm(this, memoData.get_id());
                     Scheduler.getScheduler().setSchedule(this, memoData, true);
                 } else {
                     memoData.set_id(memoModel.insert(memoData));
 
-                    Log.d("TEST", "설정하는 시간: "+memoData.getTimeOfHour()+":"+memoData.getTimeOfMinute());
                     // 알림 설정
                     Scheduler.getScheduler().setSchedule(this, memoData, true);
                 }
+
+                Log.d("TEST", "설정하는 시간: "+memoData.getTimeOfHour()+":"+memoData.getTimeOfMinute());
 
                 memoModel.close();
 
@@ -255,10 +263,10 @@ public class MemoCreate extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "메모 내용이 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.empty_memo), Toast.LENGTH_SHORT).show();
             }
 
-            Toast.makeText(this, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.memo_saved), Toast.LENGTH_SHORT).show();
             return true;
         }
 

@@ -1,13 +1,53 @@
 <resources>
     <string name="app_name">Memorizer</string>
-    <string name="activity_memo_create">메모 생성</string>
-    <string name="activity_developer">만든이</string>
+    <string name="activity_memo_create">Create Memo</string>
+
+    <string name="ok">OK</string>
 
     <!-- 메모 Content -->
-    <string name="memo">메모</string>
-
+    <string name="memo">Memo</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
+    <string name="next_alert">Next</string>
+    <string name="posted_date">Posted date</string>
+    <string name="deleted"> was deleted.</string>
+
+    <!-- 메모 생성 -->
+    <string name="create_notice">The created/edited memo will progress from the current time.</string>
+    <string name="write_memo">Write Memo.</string>
+    <string name="term">Interval(in Days)</string>
+    <string name="one_day">1 day</string>
+    <string name="two_day">2 days</string>
+    <string name="three_day">3 days</string>
+    <string name="four_day">4 days</string>
+    <string name="five_day">5 days</string>
+    <string name="six_day">6 days</string>
+    <string name="a_week">7 days</string>
+    <string name="ten_day">10 days</string>
+    <string name="two_week">14 days</string>
+    <string name="twenty_day">20 days</string>
+    <string name="thirty_day">30 days</string>
+    <string name="end_date">End Date</string>
+    <string name="unlimit">Unlimit</string>
+    <string name="alert_time">Alert Time</string>
+    <string name="random">Random</string>
+    <string name="choice_date">Choice Date</string>
+    <string name="choice_time">Choice Time</string>
+    <string name="during_date">Until</string>
+    <string name="edit">edit</string>
+    <string name="delete">delete</string>
+    <string name="empty_memo">Empty Memo.</string>
+    <string name="memo_saved">Memo saved.</string>
+
+    <!-- 알람 -->
+    <string name="remember">Do you remember?</string>
+    <string name="memo_placeholder">Memo contents</string>
+
+    <!-- 만든이 -->
+    <string name="activity_developer">Dev Info</string>
+    <string name="devInfo_intro">DevGD\'s Work</string>
+    <string name="contact">Please contact me by mail at the following\nquestions or problems are discovered.</string>
+    <string name="email" translatable="false">GDmail91@gmail.com</string>
+    <string name="copyright" translatable="false">Copyright ⓒ 2016 DevGD. All rights reserved.</string>
 </resources>

@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:text="생성/수정한 메모는 현재 시간부터 간격에 맞춰 진행됩니다."
+        android:text="@string/create_notice"
         android:textAlignment="center" />
 
     <EditText
@@ -35,7 +35,7 @@
         android:layout_margin="4dp"
         android:minLines="6"
         android:background="@color/memoPad"
-        android:hint="메모를 작성하세요"
+        android:hint="@string/write_memo"
         android:textSize="14dp"
         android:id="@+id/alarm_content" />
 
@@ -54,7 +54,7 @@
             android:layout_above="@+id/divider1"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="간격(일 단위)"
+            android:text="@string/term"
             android:textSize="16dp"
             android:textColor="@color/colorPrimary" />
 
@@ -74,7 +74,7 @@
             android:gravity="center"
             android:background="@color/memoPad"
             style="?android:attr/borderlessButtonStyle"
-            android:text="1일"
+            android:text="@string/one_day"
             android:id="@+id/alarm_term_btn"
             android:onClick="onClickListen" />
     </RelativeLayout>
@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:text="종료 기간"
+                android:text="@string/end_date"
                 android:textSize="16dp"
                 android:textColor="@color/colorPrimary"
                 android:id="@+id/alarm_while"
@@ -127,7 +127,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/memoPad"
             style="?android:attr/borderlessButtonStyle"
-            android:text="무제한"
+            android:text="@string/unlimit"
             android:id="@+id/alarm_while_btn"
             android:onClick="onClickListen" />
     </RelativeLayout>
@@ -151,7 +151,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="알림 시간"
+                android:text="@string/alert_time"
                 android:textSize="16dp"
                 android:textColor="@color/colorPrimary"
                 android:id="@+id/alarm_time"
@@ -182,7 +182,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/memoPad"
             style="?android:attr/borderlessButtonStyle"
-            android:text="랜덤"
+            android:text="@string/random"
             android:id="@+id/alarm_time_btn"
             android:onClick="onClickListen" />
     </RelativeLayout>

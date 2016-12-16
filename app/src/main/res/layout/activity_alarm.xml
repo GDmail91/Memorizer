@@ -4,7 +4,7 @@
     android:layout_height="400dp"
     android:orientation="vertical"
     android:layout_gravity="center"
-    android:background="@color/colorPrimary">
+    android:background="@color/memoPad">
 
     <TextView
         android:layout_width="match_parent"
@@ -14,12 +14,12 @@
         android:paddingBottom="10dp"
         android:layout_alignParentTop="true"
         android:gravity="center"
-        android:text="기억하시나요?"
+        android:text="@string/remember"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/colorPrimary"
         android:id="@+id/title_view"
-        android:background="@color/colorAccent" />
+        android:background="@color/memoPadAccent" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
-        android:text="메모 내용"
+        android:text="@string/memo_placeholder"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:id="@+id/message_view" />
@@ -42,9 +42,9 @@
         android:paddingBottom="10dp"
         android:layout_alignParentBottom="true"
         style="?android:attr/borderlessButtonStyle"
-        android:text="OK"
+        android:text="@string/ok"
         android:textSize="18sp"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/memoPadAccent"
         android:id="@+id/alram_confirm"/>
 
 </RelativeLayout>

@@ -15,13 +15,13 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="무제한"
+            android:text="@string/unlimit"
             android:id="@+id/alarm_while_unlimit"
             android:onClick="onClickListen" />
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="기간 설정"
+            android:text="@string/choice_date"
             android:id="@+id/alarm_while_set_limit"
             android:onClick="onClickListen" />
     </LinearLayout>

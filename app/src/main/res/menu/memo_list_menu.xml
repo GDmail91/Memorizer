@@ -5,10 +5,10 @@
         android:id="@+id/memo_edit"
         android:orderInCategory="1"
         android:showAsAction="never"
-        android:title="수정"/>
+        android:title="@string/edit"/>
     <item
         android:id="@+id/memo_delete"
         android:orderInCategory="1"
         android:showAsAction="never"
-        android:title="삭제"/>
+        android:title="@string/delete"/>
 </menu>

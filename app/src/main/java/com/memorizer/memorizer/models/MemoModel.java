@@ -11,6 +11,7 @@ import java.util.Calendar;
  * Created by YS on 2016-06-21.
  */
 public class MemoModel extends DBmanager {
+    private static final String TAG = "MemoModel";
     SQLiteDatabase dbR = getReadableDatabase();
     SQLiteDatabase dbW = getWritableDatabase();
 
@@ -146,7 +147,7 @@ public class MemoModel extends DBmanager {
         Cursor cursor = dbR.rawQuery("SELECT * FROM Memo ORDER BY _id DESC", null);
         while(cursor.moveToNext()) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(cursor.getInt(2));
+            calendar.setTimeInMillis(cursor.getLong(2));
 
             MemoData tempData = new MemoData(
                     cursor.getInt(0),
@@ -171,7 +172,7 @@ public class MemoModel extends DBmanager {
         if(cursor.getCount() > 0) {
             cursor.moveToFirst();
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(cursor.getInt(2));
+            calendar.setTimeInMillis(cursor.getLong(2));
 
             data = new MemoData();
             data.set_id(cursor.getInt(0));

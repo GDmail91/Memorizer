@@ -27,13 +27,13 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="랜덤"
+            android:text="@string/random"
             android:id="@+id/alarm_time_random"
             android:onClick="onClickListen" />
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="시간 설정"
+            android:text="@string/choice_time"
             android:id="@+id/alarm_time_set"
             android:onClick="onClickListen" />
     </LinearLayout>

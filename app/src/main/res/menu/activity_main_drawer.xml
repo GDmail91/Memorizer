@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/made_of"
-            android:title="만든이" />
+            android:title="@string/activity_developer" />
         <!--<item
             android:id="@+id/nav_gallery"
             android:title="설정" />-->

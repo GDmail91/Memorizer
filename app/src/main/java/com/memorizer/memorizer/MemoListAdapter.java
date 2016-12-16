@@ -86,7 +86,7 @@ public class MemoListAdapter extends BaseAdapter {
         String during;
         if (memoDatas.get(position).getWhileDate() == null
          || memoDatas.get(position).getWhileDate().getTimeInMillis() == 0)
-            during = "무제한";
+            during = context.getString(R.string.unlimit);
         else {
             during = memoDatas.get(position).getWhileDate().get(Calendar.YEAR) + "."
                     + memoDatas.get(position).getWhileDate().get(Calendar.MONTH) + "."
@@ -100,13 +100,17 @@ public class MemoListAdapter extends BaseAdapter {
 
         ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
         ScheduleData nextSchedule = scheduleModel.getMemoSchedule(memoDatas.get(position).get_id());
-        Calendar calendar = nextSchedule.getAlarmDate();
-        String nextDate = calendar.get(Calendar.YEAR) + "."
+        if (nextSchedule != null) {
+            Calendar calendar = nextSchedule.getAlarmDate();
+            String nextDate = calendar.get(Calendar.YEAR) + "."
                 + (calendar.get(Calendar.MONTH) + 1) + "."
                 + calendar.get(Calendar.DAY_OF_MONTH) + " "
                 + makeTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+            holder.memo_next_alarm.setText(nextDate);
+        } else {
+            holder.memo_next_alarm.setText("-");
+        }
         scheduleModel.close();
-        holder.memo_next_alarm.setText(nextDate);
 
         holder.setting_button.setOnClickListener(new View.OnClickListener() {
             @Override

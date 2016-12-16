@@ -2,9 +2,51 @@
 <resources>
     <string name="app_name">메모라이저</string>
     <string name="action_settings">설정</string>
-    <string name="activity_developer">만든이</string>
+
+    <string name="ok">확인</string>
+
+    <!-- 메모 Content -->
     <string name="activity_memo_create">메모 생성</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="memo">메모</string>
+    <string name="next_alert">다음알림</string>
+    <string name="posted_date">등록한 날짜</string>
+    <string name="deleted">번 메모가 삭제되었습니다.</string>
+
+    <!-- 메모 생성 -->
+    <string name="create_notice">생성/수정한 메모는 현재 시간부터 간격에 맞춰 진행됩니다.</string>
+    <string name="write_memo">메모를 작성하세요.</string>
+    <string name="term">간격(일 단위)</string>
+    <string name="one_day">1 일</string>
+    <string name="two_day">2 일</string>
+    <string name="three_day">3 일</string>
+    <string name="four_day">4 일</string>
+    <string name="five_day">5 일</string>
+    <string name="six_day">6 일</string>
+    <string name="a_week">7 일</string>
+    <string name="ten_day">10 일</string>
+    <string name="two_week">14 일</string>
+    <string name="twenty_day">20 일</string>
+    <string name="thirty_day">30 일</string>
+    <string name="end_date">종료 기간</string>
+    <string name="unlimit">무제한</string>
+    <string name="alert_time">알림시간</string>
+    <string name="random">랜덤</string>
+    <string name="choice_date">기간 설정</string>
+    <string name="choice_time">시간 설정</string>
+    <string name="during_date">기간</string>
+    <string name="edit">수정</string>
+    <string name="delete">삭제</string>
+    <string name="empty_memo">메모 내용이 없습니다.</string>
+    <string name="memo_saved">메모가 저장되었습니다.</string>
+
+    <!-- 알람 -->
+    <string name="remember">기억하시나요?</string>
+    <string name="memo_placeholder">메모 내용</string>
+
+    <!-- 만든이 -->
+    <string name="activity_developer">만든이</string>
+    <string name="devInfo_intro">개발자 GD</string>
+    <string name="contact">문의 사항이나 문제점이 발견될시에\n아래 메일로 연락해주세요.</string>
 </resources>

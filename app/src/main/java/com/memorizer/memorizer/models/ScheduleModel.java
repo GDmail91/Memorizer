@@ -100,6 +100,19 @@ public class ScheduleModel extends DBmanager {
         }
     }
 
+    public void deleteByMemoId(int memoId) {
+        dbW.beginTransaction();
+        try {
+            dbW.execSQL("DELETE FROM MemoSchedule WHERE memoId=" + memoId);
+            dbW.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbW.endTransaction();
+        }
+        dbW.close();
+    }
+
     public void deletePrevious() {
         dbW.beginTransaction();
         try {

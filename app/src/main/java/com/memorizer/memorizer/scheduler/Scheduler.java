@@ -50,6 +50,12 @@ public class Scheduler {
         scheduleModel.close();
     }
 
+    public void deleteSelectedAlarm(Context context, int deleteMemoId) {
+        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
+        scheduleModel.deleteByMemoId(deleteMemoId);
+        scheduleModel.close();
+    }
+
     /**
      * 실제 알람 등록
      * Schedule 중 가장 가까운 알람 울리도록 등록
@@ -117,6 +123,12 @@ public class Scheduler {
             // 현재 시간부터 다음 간격시간 후에 알림
             if (next) {
                 setDay.setTimeInMillis(System.currentTimeMillis());
+                // 설정 시간이 이미 지난 시간일경우
+                if (memoData.getTimeOfHour() <= setDay.get(Calendar.HOUR_OF_DAY)
+                        && memoData.getTimeOfMinute() <= setDay.get(Calendar.MINUTE)) {
+                    setDay.setTimeInMillis(System.currentTimeMillis() + (memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
+                }
+
                 Log.d(TAG, "오늘부터 시작!");
                 setDay.set(
                         setDay.get(Calendar.YEAR),
@@ -160,14 +172,15 @@ public class Scheduler {
     }
 
     protected boolean checkEndDay(Calendar endDay, int term) {
+        // 무제한인 경우
         if (endDay == null
         || endDay.getTimeInMillis() == 0) {
             return false;
         }
 
         Calendar setDay = Calendar.getInstance();
-        setDay.setTimeInMillis(System.currentTimeMillis() + term * 1000);
+        setDay.setTimeInMillis(System.currentTimeMillis() + term * NEXT);
 
-        return setDay.get(Calendar.DAY_OF_YEAR) < endDay.get(Calendar.DAY_OF_YEAR);
+        return setDay.get(Calendar.DAY_OF_YEAR) > endDay.get(Calendar.DAY_OF_YEAR);
     }
 }

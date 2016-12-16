@@ -118,7 +118,10 @@ public class MainActivity extends AppCompatActivity
                 MemoModel memoModel = new MemoModel(this, "Memo.db", null);
                 memoModel.delete(memoDatas.get(index).get_id());
                 memoModel.close();
-                Toast.makeText(this, memoDatas.get(index).get_id()+"번 메모가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                ScheduleModel scheduleModel = new ScheduleModel(this, "Memo.db", null);
+                scheduleModel.deleteByMemoId(memoDatas.get(index).get_id());
+                scheduleModel.close();
+                Toast.makeText(this, memoDatas.get(index).get_id() + getString(R.string.deleted), Toast.LENGTH_SHORT).show();
                 memoDatas.remove(index);
                 memoListAdapter.notifyDataSetChanged();
                 break;

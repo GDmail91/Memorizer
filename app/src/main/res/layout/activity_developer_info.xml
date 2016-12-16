@@ -34,21 +34,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="DevGD's Work"
+                android:text="@string/devInfo_intro"
                 android:textSize="30sp"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="문의 사항이나 문제점이 발견될시에\n아래 메일로 연락해주세요."
-                android:textAlignment="center"
-                android:textSize="12sp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Please contact me by mail at the following\nquestions or problems are discovered."
+                android:text="@string/contact"
                 android:textAlignment="center"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -70,7 +63,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GDmail91@gmail.com"
+                android:text="@string/email"
                 android:textSize="14sp"
                 android:id="@+id/email_txt" />
 
@@ -81,6 +74,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:text="Copyright ⓒ 2016 DevGD. All rights reserved."/>
+            android:text="@string/copyright"/>
     </RelativeLayout>
 </LinearLayout>

@@ -16,7 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/memo_pad_block"
+            android:background="@color/memoPadAccent"
             android:id="@+id/memo_header">
 
             <ImageButton
@@ -43,7 +43,7 @@
                 android:gravity="center"
                 android:text="1"
                 android:textSize="18sp"
-                android:textColor="@color/memoPadAccent"
+                android:textColor="@color/colorPrimary"
                 android:id="@+id/memoPad_number"/>
 
         </RelativeLayout>
@@ -86,7 +86,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginStart="7dp"
                     android:layout_marginLeft="7dp"
-                    android:text="간격"
+                    android:text="@string/term"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/memoPadFont"
@@ -95,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/memoPad_title_term"
-                    android:text="5"
+                    android:text="1"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -117,7 +117,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginStart="7dp"
                     android:layout_marginLeft="7dp"
-                    android:text="기간"
+                    android:text="@string/during_date"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/memoPadFont"
@@ -156,7 +156,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginStart="7dp"
                     android:layout_marginLeft="7dp"
-                    android:text="알림시간"
+                    android:text="@string/alert_time"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/memoPadFont"
@@ -187,7 +187,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginStart="7dp"
                     android:layout_marginLeft="7dp"
-                    android:text="다음알림"
+                    android:text="@string/next_alert"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/memoPadFont"
@@ -219,7 +219,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginStart="7dp"
                 android:layout_marginLeft="7dp"
-                android:text="등록한 날짜"
+                android:text="@string/posted_date"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/memoPadFont"
@@ -234,160 +234,5 @@
                 android:textSize="20sp"
                 android:id="@+id/memo_posted"/>
         </RelativeLayout>
-<!--
-        <LinearLayout
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:orientation="vertical"
-            android:id="@+id/info_bar">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:orientation="horizontal"
-                android:background="@color/memoPad"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:background="@color/colorAccent">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="간격"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_gravity="center"
-                    android:gravity="center" />
-                <LinearLayout
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:background="@color/memoPad"/>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="3"
-                    android:textColor="@color/colorPrimary"
-                    android:textAlignment="center"
-                    android:id="@+id/memo_term"
-                    android:layout_gravity="center"
-                    android:gravity="center"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:orientation="horizontal"
-                android:background="@color/memoPad"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:background="@color/colorAccent">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:text="기간"
-                    android:textColor="@color/colorPrimary"
-                    android:gravity="center"/>
-                <LinearLayout
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:background="@color/memoPad"/>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:text="일/월"
-                    android:textColor="@color/colorPrimary"
-                    android:gravity="center"
-                    android:id="@+id/memo_during"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:orientation="horizontal"
-                android:background="@color/memoPad"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:background="@color/colorAccent">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:text="알림시간"
-                    android:textColor="@color/colorPrimary"
-                    android:gravity="center"/>
-                <LinearLayout
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:background="@color/memoPad"/>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:text="09:00 am"
-                    android:textColor="@color/colorPrimary"
-                    android:gravity="center"
-                    android:id="@+id/memo_time"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:orientation="horizontal"
-                android:background="@color/memoPad"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:background="@color/colorAccent">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:text="등록한 날짜"
-                    android:textColor="@color/colorPrimary"
-                    android:gravity="center"/>
-                <LinearLayout
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:background="@color/memoPad"/>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:text="2016-03-13"
-                    android:textColor="@color/colorPrimary"
-                    android:gravity="center"
-                    android:id="@+id/memo_posted"/>
-            </LinearLayout>
-
-        </LinearLayout>-->
     </RelativeLayout>
 </RelativeLayout>
