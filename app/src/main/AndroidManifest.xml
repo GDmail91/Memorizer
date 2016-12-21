@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.memorizer.memorizer">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo5"
@@ -45,10 +48,20 @@
         </activity>
 
         <!-- 브로드캐스트 리시버 등록 -->
-        <receiver android:name=".MemorizerReciver">
+        <receiver android:name=".MemorizerReceiver">
             <intent-filter>
                 <action android:name="com.memorizer.memorizer.alarmTrigger"/>
                 <action android:name="com.memorizer.memorizer.nextAlarm"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- 부팅 정보 리시버 등록 -->
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>

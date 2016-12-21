@@ -14,7 +14,7 @@ import java.io.Serializable;
 /**
  * Created by YS on 2016-06-27.
  */
-public class MemorizerReciver extends BroadcastReceiver {
+public class MemorizerReceiver extends BroadcastReceiver {
     private String TAG = "RECIEVER";
 
     @Override
@@ -24,7 +24,9 @@ public class MemorizerReciver extends BroadcastReceiver {
         Log.i(TAG, "알람 리시브: "+name);
 
         if(name.equals("com.memorizer.memorizer.alarmTrigger")){
+            // 실제 알람 등록
             Scheduler.getScheduler().setNextAlarm(context);
+            Scheduler.getScheduler().startSchedule(context);
         }
 
         if(name.equals("com.memorizer.memorizer.nextAlarm")){
@@ -35,7 +37,8 @@ public class MemorizerReciver extends BroadcastReceiver {
             MemoData memoData = (MemoData) tempData;
 
 
-            // 다음 알림 설정
+            // 다음 알림 등록
+            Scheduler.getScheduler().deletePreviousAlarm(context);
             Scheduler.getScheduler().setSchedule(context, memoData, false);
             Log.d(TAG, "다음 알림 설정: "+memoData.getContent());
 

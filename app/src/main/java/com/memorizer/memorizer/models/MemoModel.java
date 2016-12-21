@@ -44,20 +44,22 @@ public class MemoModel extends DBmanager {
 
         String sql;
         if (memoData.getWhileDate() != null) {
-            sql = "INSERT INTO Memo (_id, memoContent, memoDuring, memoTerm, memoTimeHour, memoTimeMinute) " +
+            sql = "INSERT INTO Memo (_id, memoContent, memoDuring, memoTerm, isRandom, memoTimeHour, memoTimeMinute) " +
                     "VALUES(" +
                     "'" + topNumber + "', " +
                     "'" + memoData.getContent() + "', " +
                     "'" + memoData.getWhileDate().getTimeInMillis() + "', " +
                     "'" + memoData.getTerm() + "', " +
+                    "'" + memoData.isRandom() + "', " +
                     "'" + memoData.getTimeOfHour() + "', " +
                     "'" + memoData.getTimeOfMinute() + "');";
         } else {
-            sql = "INSERT INTO Memo (_id, memoContent, memoTerm, memoTimeHour, memoTimeMinute) " +
+            sql = "INSERT INTO Memo (_id, memoContent, memoTerm, isRandom, memoTimeHour, memoTimeMinute) " +
                     "VALUES(" +
                     "'" + topNumber + "', " +
                     "'" + memoData.getContent() + "', " +
                     "'" + memoData.getTerm() + "', " +
+                    "'" + memoData.isRandom() + "', " +
                     "'" + memoData.getTimeOfHour() + "', " +
                     "'" + memoData.getTimeOfMinute() + "');";
         }
@@ -85,6 +87,7 @@ public class MemoModel extends DBmanager {
                 "memoContent='" + memoData.getContent() + "', " +
                 "memoDuring='" + memoData.getWhileDate().getTimeInMillis() + "', " +
                 "memoTerm='" + memoData.getTerm() + "', " +
+                "isRandom='" + memoData.isRandom() + "', " +
                 "memoTimeHour='" + memoData.getTimeOfHour() + "', " +
                 "memoTimeMinute='" + memoData.getTimeOfMinute() + "' " +
                 "WHERE _id='"+memoData.get_id()+"' ;";
@@ -179,9 +182,10 @@ public class MemoModel extends DBmanager {
             data.setContent(cursor.getString(1));
             data.setWhileDate(calendar);
             data.setTerm(cursor.getInt(3));
-            data.setTimeOfHour(cursor.getInt(4));
-            data.setTimeOfMinute(cursor.getInt(5));
-            data.setPosted(cursor.getString(6));
+            data.setRandom(cursor.getInt(4));
+            data.setTimeOfHour(cursor.getInt(5));
+            data.setTimeOfMinute(cursor.getInt(6));
+            data.setPosted(cursor.getString(7));
         }
 
         return data;

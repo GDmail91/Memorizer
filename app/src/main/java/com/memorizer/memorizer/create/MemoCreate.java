@@ -58,6 +58,10 @@ public class MemoCreate extends AppCompatActivity {
         alarmTimeBtn = (Button) findViewById(R.id.alarm_time_btn);
 
         dialog = new AlertDialog.Builder(this).create();
+
+        // Default 랜덤
+        setTimeRandom();
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null
         && bundle.getBoolean("is_edit")) {
@@ -77,10 +81,9 @@ public class MemoCreate extends AppCompatActivity {
                         memoData.getWhileDate().get(Calendar.DAY_OF_MONTH);
             }
             alarmWhileBtn.setText(during);
+            Log.d(TAG, makeTime(memoData.getTimeOfHour(), memoData.getTimeOfMinute()));
             alarmTimeBtn.setText(makeTime(memoData.getTimeOfHour(), memoData.getTimeOfMinute()));
         }
-
-        setTimeRandom();
     }
 
     public void onClickListen(View v) {
@@ -208,7 +211,7 @@ public class MemoCreate extends AppCompatActivity {
     }
 
     protected void setTimeRandom() {
-        memoData.setRandom();
+        memoData.setRandom(true);
         Random random = new Random(System.currentTimeMillis());
         memoData.setTimeOfHour(random.nextInt(24));
         memoData.setTimeOfMinute(random.nextInt(60));

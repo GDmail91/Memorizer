@@ -3,6 +3,7 @@ package com.memorizer.memorizer.models;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,6 +12,7 @@ import java.util.Calendar;
  * Created by YS on 2016-07-11.
  */
 public class ScheduleModel extends DBmanager {
+    public static final String TAG = "ScheduleModel";
     public static final int SCHEDULE_VERSION = 3;
 
     SQLiteDatabase dbR = getReadableDatabase();
@@ -67,7 +69,7 @@ public class ScheduleModel extends DBmanager {
     public int update(ScheduleData scheduleData) {
         String sql = "UPDATE MemoSchedule SET " +
                 "memoId='" + scheduleData.getMemoId() + "', " +
-                "alarmDate='" + scheduleData.getAlarmDate().getTimeInMillis() + " " +
+                "alarmDate='" + (int)(scheduleData.getAlarmDate().getTimeInMillis() / 1000) + "' " +
                 "WHERE _id='"+ scheduleData.get_id() +"' ;";
 
         // DB 작업 실행
@@ -101,6 +103,7 @@ public class ScheduleModel extends DBmanager {
     }
 
     public void deleteByMemoId(int memoId) {
+        Log.d(TAG, "삭제가??");
         dbW.beginTransaction();
         try {
             dbW.execSQL("DELETE FROM MemoSchedule WHERE memoId=" + memoId);
@@ -114,6 +117,7 @@ public class ScheduleModel extends DBmanager {
     }
 
     public void deletePrevious() {
+        Log.d(TAG, "왜!?");
         dbW.beginTransaction();
         try {
             dbW.execSQL("DELETE FROM MemoSchedule WHERE alarmDate<" + (int)(System.currentTimeMillis()/1000) + " OR memoId = 0");
@@ -184,7 +188,28 @@ public class ScheduleModel extends DBmanager {
         return data;
     }
 
-    public ScheduleData getNextData(long timeMiles) {
+    public ScheduleData getNextData() {
+
+        // 오름 차순 정렬후 첫번째꺼 (timeMiles와 가장 가까운 알람)
+        Cursor cursor = dbR.rawQuery("SELECT DISTINCT _id, memoId, alarmDate FROM MemoSchedule ORDER BY alarmDate ASC LIMIT 1", null);
+
+        ScheduleData data = null;
+        if (cursor.getCount() != 0) {
+            cursor.moveToFirst();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis((long) cursor.getInt(2) * 1000);
+
+            data = new ScheduleData(
+                    cursor.getInt(0),
+                    cursor.getInt(1),
+                    calendar);
+        }
+        cursor.close();
+
+        return data;
+    }
+
+    public ScheduleData getNextDataByTime(long timeMiles) {
 
         // 오름 차순 정렬후 첫번째꺼 (timeMiles와 가장 가까운 알람)
         Cursor cursor = dbR.rawQuery("SELECT DISTINCT memoId, alarmDate FROM MemoSchedule WHERE alarmDate>"+(int)(timeMiles/1000)+" ORDER BY alarmDate ASC LIMIT 1", null);

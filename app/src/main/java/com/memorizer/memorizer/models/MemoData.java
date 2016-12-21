@@ -86,8 +86,15 @@ public class MemoData implements Serializable{
         this.whileDate = whileDate;
     }
 
-    public void setRandom() {
-        this.isRandom = true;
+    public void setRandom(boolean isRandom) {
+        this.isRandom = isRandom;
+    }
+
+    public void setRandom(int isRandom) {
+        if (isRandom > 0)
+            this.isRandom = true;
+        else
+            this.isRandom = false;
     }
 
     public void setTimeOfHour(int timeOfHour) {

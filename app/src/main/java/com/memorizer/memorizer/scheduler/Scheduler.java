@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import com.memorizer.memorizer.models.MemoData;
@@ -14,6 +15,8 @@ import com.memorizer.memorizer.models.ScheduleModel;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+
+import static java.lang.System.currentTimeMillis;
 
 /**
  * Created by YS on 2016-06-27.
@@ -34,22 +37,40 @@ public class Scheduler {
 
         // 반복되는 시간 설정
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60 * 1000, pIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, currentTimeMillis() + 60 * 1000, pIntent);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, currentTimeMillis() + 60 * 1000, pIntent);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, currentTimeMillis() + 60 * 1000, pIntent);
+            }
+        }
     }
 
     public void setSchedule(Context context, MemoData memoData, boolean isCreate) {
         // 종료날짜가 아닐경우 실행
         if (!checkEndDay(memoData.getWhileDate(), memoData.getTerm())) {
-            setAlarm(context, memoData, isCreate);
+            // 알람 일정 등록
+            setAlarmSchedule(context, memoData, isCreate);
         }
     }
 
-    protected void deleteAlarm(Context context) {
+    /**
+     * 이전 알람 제거
+     * @param context
+     */
+    public void deletePreviousAlarm(Context context) {
         ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
         scheduleModel.deletePrevious();
         scheduleModel.close();
     }
 
+    /**
+     * 선택된 알람 제거
+     * @param context
+     * @param deleteMemoId Memo ID
+     */
     public void deleteSelectedAlarm(Context context, int deleteMemoId) {
         ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
         scheduleModel.deleteByMemoId(deleteMemoId);
@@ -64,12 +85,11 @@ public class Scheduler {
     public void setNextAlarm(Context context) {
         // 가장 가까운 알람 가져옴
         ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
-        scheduleModel.printCountOfData();
-        ScheduleData nextSchedule = scheduleModel.getNextData(System.currentTimeMillis());
-        scheduleModel.close();
+        ScheduleData nextSchedule = scheduleModel.getNextData();
 
         // nextSchedule이 null이 아닐경우 등록
         if (nextSchedule != null) {
+            Log.d(TAG, nextSchedule.toString());
             // 알림용 intent 등록
             MemoModel memoModel = new MemoModel(context, "Memo.db", null);
             MemoData memoData = memoModel.getData(nextSchedule.getMemoId());
@@ -77,14 +97,51 @@ public class Scheduler {
 
             // memoData가 지워진 경우 등록하지 않음
             if (memoData != null) {
+                // 안지워진 경우 다시 등록
                 Intent intent = new Intent("com.memorizer.memorizer.nextAlarm");
                 intent.putExtra("memoId", memoData);
 
                 PendingIntent pIntent = PendingIntent.getBroadcast(context, nextAlarmFlag, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                long nextTime;
 
-                // 알람 실행
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, nextSchedule.getAlarmDate().getTimeInMillis(), pIntent);
+                // 알람이 누락된 경우
+                Log.d(TAG, "설정:"+nextSchedule.getAlarmDate().getTimeInMillis() + ", 현재:"+System.currentTimeMillis());
+                long duringTime = System.currentTimeMillis() - nextSchedule.getAlarmDate().getTimeInMillis();
+                if (duringTime >= 0) {
+                    Log.d(TAG, "누락됨");
+                    nextTime = nextSchedule.getAlarmDate().getTimeInMillis() // 현재 등록된 시간
+                            + (duringTime/(memoData.getTerm() * NEXT) // 남은시간/알림간격
+                                    * memoData.getTerm()) * NEXT    // 총 지나간 간격
+                            + memoData.getTerm() * NEXT;    // 다음 알림 간격
+
+                    // 기존 스케쥴 제거
+                    // deleteSelectedAlarm(context, memoData.get_id());
+                    // 새 스케쥴 등록
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(nextTime);
+                    Log.d(TAG, calendar.get(Calendar.YEAR) + "-"+calendar.get(Calendar.MONTH) + "-"+ calendar.get(Calendar.DAY_OF_MONTH) +" " +calendar.get(Calendar.HOUR_OF_DAY) + ":"+calendar.get(Calendar.MINUTE));
+                    nextSchedule.setAlarmDate(calendar);
+                    Log.d(TAG, nextSchedule.toString());
+                    scheduleModel.update(nextSchedule);
+
+                } else {
+                    nextTime = nextSchedule.getAlarmDate().getTimeInMillis();
+                }
+
+                if (memoData.getWhileDate().getTimeInMillis() > nextTime ) {
+                    Log.d(TAG, "다음알람 등록");
+                    // 다음 알람 등록
+                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    if(Build.VERSION.SDK_INT >= 23)
+                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextSchedule.getAlarmDate().getTimeInMillis(), pIntent);
+                    else {
+                        if(Build.VERSION.SDK_INT >= 19) {
+                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextSchedule.getAlarmDate().getTimeInMillis(), pIntent);
+                        } else {
+                            alarmManager.set(AlarmManager.RTC_WAKEUP, nextSchedule.getAlarmDate().getTimeInMillis(), pIntent);
+                        }
+                    }
+                }
             } else {
                 // 해당 스케쥴 삭제
                 scheduleModel.delete(nextSchedule.get_id());
@@ -92,7 +149,8 @@ public class Scheduler {
                 setNextAlarm(context);
             }
         }
-        deleteAlarm(context);
+
+        scheduleModel.close();
     }
 
     /**
@@ -102,13 +160,13 @@ public class Scheduler {
      * @param memoData
      * @param next
      */
-    protected void setAlarm(Context context, MemoData memoData, boolean next) {
+    protected void setAlarmSchedule(Context context, MemoData memoData, boolean next) {
         Calendar setDay = Calendar.getInstance();
 
         if (memoData.isRandom()) {
-            setDay.setTimeInMillis(System.currentTimeMillis());
+            setDay.setTimeInMillis(currentTimeMillis());
 
-            Random random = new Random(System.currentTimeMillis());
+            Random random = new Random(currentTimeMillis());
             int hour = 24 - setDay.get(Calendar.HOUR_OF_DAY);
             int minute = 60 - setDay.get(Calendar.MINUTE);
 
@@ -122,11 +180,11 @@ public class Scheduler {
         } else {
             // 현재 시간부터 다음 간격시간 후에 알림
             if (next) {
-                setDay.setTimeInMillis(System.currentTimeMillis());
+                setDay.setTimeInMillis(currentTimeMillis());
                 // 설정 시간이 이미 지난 시간일경우
                 if (memoData.getTimeOfHour() <= setDay.get(Calendar.HOUR_OF_DAY)
                         && memoData.getTimeOfMinute() <= setDay.get(Calendar.MINUTE)) {
-                    setDay.setTimeInMillis(System.currentTimeMillis() + (memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
+                    setDay.setTimeInMillis(currentTimeMillis() + (memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
                 }
 
                 Log.d(TAG, "오늘부터 시작!");
@@ -139,7 +197,7 @@ public class Scheduler {
                         0);
             } else {
                 long term = memoData.getTerm();
-                setDay.setTimeInMillis(System.currentTimeMillis() + (term * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
+                setDay.setTimeInMillis(currentTimeMillis() + (term * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
                 Log.d(TAG, "다음꺼!");
                 //setDay.setTimeInMillis(System.currentTimeMillis() + ((long) memoData.getTerm() * 60 * 1000));
                 //setDay.setTimeInMillis(System.currentTimeMillis());
@@ -164,6 +222,8 @@ public class Scheduler {
             Log.d(TAG, sd.get(i).toString());
         }
         scheduleModel.insert(scheduleData);
+        Log.d(TAG, "들어가는 데이터 "+scheduleData.toString());
+        Log.d(TAG, scheduleModel.printCountOfData()+"");
         scheduleModel.close();
 
         // 변경된 스케쥴 반영
@@ -179,7 +239,7 @@ public class Scheduler {
         }
 
         Calendar setDay = Calendar.getInstance();
-        setDay.setTimeInMillis(System.currentTimeMillis() + term * NEXT);
+        setDay.setTimeInMillis(currentTimeMillis() + term * NEXT);
 
         return setDay.get(Calendar.DAY_OF_YEAR) > endDay.get(Calendar.DAY_OF_YEAR);
     }
