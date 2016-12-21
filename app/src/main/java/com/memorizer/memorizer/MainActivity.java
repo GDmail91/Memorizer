@@ -23,6 +23,7 @@ import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
+import com.newrelic.agent.android.NewRelic;
 
 import java.util.ArrayList;
 
@@ -49,7 +50,10 @@ public class MainActivity extends AppCompatActivity
             });
         }
 
+        NewRelic.withApplicationToken(
 
+                "AAc483aa8dc9458949bf00b5e1bd56257947fdf68b"
+        ).start(this.getApplication());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
