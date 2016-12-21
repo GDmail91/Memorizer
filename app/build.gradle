@@ -8,7 +8,7 @@ android {
         applicationId "com.memorizer.memorizer"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 15
+        versionCode 16
         versionName "1.8"
     }
     buildTypes {

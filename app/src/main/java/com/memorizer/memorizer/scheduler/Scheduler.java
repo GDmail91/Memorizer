@@ -32,6 +32,7 @@ public class Scheduler {
     public static Scheduler getScheduler() {return scheduler;}
 
     public void startSchedule(Context context) {
+        Log.d(TAG, "스케쥴링 시작");
         Intent intent = new Intent("com.memorizer.memorizer.alarmTrigger");
         PendingIntent pIntent = PendingIntent.getBroadcast(context, addAlarmFlag, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -128,7 +129,8 @@ public class Scheduler {
                     nextTime = nextSchedule.getAlarmDate().getTimeInMillis();
                 }
 
-                if (memoData.getWhileDate().getTimeInMillis() > nextTime ) {
+                if (memoData.getWhileDate().getTimeInMillis() == 0
+                || memoData.getWhileDate().getTimeInMillis() > nextTime ) {
                     Log.d(TAG, "다음알람 등록");
                     // 다음 알람 등록
                     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

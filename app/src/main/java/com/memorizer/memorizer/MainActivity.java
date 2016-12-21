@@ -24,9 +24,6 @@ import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
@@ -50,30 +47,6 @@ public class MainActivity extends AppCompatActivity
                     startActivity(intent);
                 }
             });
-        }
-
-
-        Runtime runtime = Runtime.getRuntime();
-        Process process;
-        String res = "-0-";
-        try {
-            String cmd = "hprof";
-            process = runtime.exec(cmd);
-            InputStream is = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line ;
-            while ((line = br.readLine()) != null) {
-                Log.d("SHELL", line);
-                //String segs[] = line.trim().split("[ ]+");
-                /*if (segs[0].equalsIgnoreCase([Your Process ID])) {
-                    res = segs[1];
-                    break;
-                }*/
-            }
-        } catch (Exception e) {
-            e.fillInStackTrace();
-            Log.e("Process Manager", "Unable to execute top command");
         }
 
 
@@ -119,6 +92,7 @@ public class MainActivity extends AppCompatActivity
             popupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(popupIntent);
         }
+
 
     }
 

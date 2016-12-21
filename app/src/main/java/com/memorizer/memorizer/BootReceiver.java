@@ -3,6 +3,7 @@ package com.memorizer.memorizer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.memorizer.memorizer.scheduler.Scheduler;
 
@@ -14,9 +15,11 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
 
+        Log.d("BOOT", action);
         switch (action) {
             case Intent.ACTION_PACKAGE_ADDED:
                 // 앱이 설치되었을 때
+                Scheduler.getScheduler().setNextAlarm(context);
                 Scheduler.getScheduler().startSchedule(context);
                 break;
             case Intent.ACTION_PACKAGE_REMOVED:
@@ -24,9 +27,11 @@ public class BootReceiver extends BroadcastReceiver {
                 break;
             case Intent.ACTION_PACKAGE_REPLACED:
                 // 앱이 업데이트 되었을 때
+                Scheduler.getScheduler().setNextAlarm(context);
                 Scheduler.getScheduler().startSchedule(context);
                 break;
             case Intent.ACTION_BOOT_COMPLETED:
+                Scheduler.getScheduler().setNextAlarm(context);
                 Scheduler.getScheduler().startSchedule(context);
                 break;
         }
