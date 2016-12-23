@@ -10,4 +10,9 @@
     <color name="memoPadFont">#E9AE2B</color>
 
     <color name="black">#000000</color>
+    <color name="blue">#0072C5</color>
+    <color name="red">#DE2A27</color>
+    <color name="orange">#FFBB00</color>
+    <color name="green">#00BB44</color>
+
 </resources>

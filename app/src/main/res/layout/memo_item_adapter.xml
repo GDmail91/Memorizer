@@ -19,18 +19,6 @@
             android:background="@color/memoPadAccent"
             android:id="@+id/memo_header">
 
-            <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="10dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/setting"
-                style="?android:attr/borderlessButtonStyle"
-                android:scaleType="fitCenter"
-                android:id="@+id/setting_button"/>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
@@ -45,6 +33,26 @@
                 android:textSize="18sp"
                 android:textColor="@color/colorPrimary"
                 android:id="@+id/memoPad_number"/>
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/setting_button"
+                android:background="@drawable/label_border"/>
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/setting"
+                style="?android:attr/borderlessButtonStyle"
+                android:scaleType="fitCenter"
+                android:id="@+id/setting_button"/>
 
         </RelativeLayout>
 
