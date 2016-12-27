@@ -39,6 +39,7 @@
     <string name="delete">delete</string>
     <string name="empty_memo">Empty Memo.</string>
     <string name="memo_saved">Memo saved.</string>
+    <string name="label_name">Label Name</string>
 
     <!-- 알람 -->
     <string name="remember">Do you remember?</string>

@@ -1,6 +1,7 @@
 package com.memorizer.memorizer;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.memorizer.memorizer.models.Constants;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.ScheduleData;
 import com.memorizer.memorizer.models.ScheduleModel;
@@ -63,6 +65,7 @@ public class MemoListAdapter extends BaseAdapter {
             holder = new ViewHolder();
 
             holder.memo_number = (TextView) view.findViewById(R.id.memoPad_number);
+            holder.label = (TextView) view.findViewById(R.id.label);
             holder.memo_content = (TextView) view.findViewById(R.id.memo_content);
             holder.memo_during = (TextView) view.findViewById(R.id.memo_during);
             holder.memo_term = (TextView) view.findViewById(R.id.memo_term);
@@ -82,6 +85,25 @@ public class MemoListAdapter extends BaseAdapter {
 
         // TextView에 현재 position의 문자열 추가
         holder.memo_number.setText(""+memoDatas.get(position).get_id());
+        holder.label.setText(memoDatas.get(position).getLabel());
+        int color = 0;
+        switch (memoDatas.get(position).getLabelPos()) {
+            case Constants.COLOR_BLUE:
+                color = R.drawable.color_selector_blue;
+                break;
+            case Constants.COLOR_RED:
+                color = R.drawable.color_selector_red;
+                break;
+            case Constants.COLOR_ORANGE:
+                color = R.drawable.color_selector_orange;
+                break;
+            case Constants.COLOR_GREEN:
+                color = R.drawable.color_selector_green;
+                break;
+            default:
+                color = R.drawable.color_selector;
+        }
+        holder.label.setBackground(ContextCompat.getDrawable(context, color));
         holder.memo_content.setText(memoDatas.get(position).getContent());
         String during;
         if (memoDatas.get(position).getWhileDate() == null
@@ -124,6 +146,7 @@ public class MemoListAdapter extends BaseAdapter {
 
     static class ViewHolder {
         TextView memo_number;
+        TextView label;
         TextView memo_content;
         TextView memo_during;
         TextView memo_term;

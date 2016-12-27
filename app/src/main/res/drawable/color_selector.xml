@@ -9,7 +9,7 @@
                 android:bottom="5dp"
                 android:left="5dp"
                 android:right="5dp"/>
-            <solid android:color="@color/blue" />
+            <solid android:color="@color/colorPrimaryTrans" />
         </shape>
     </item>
     <item android:state_checked="false">
@@ -20,7 +20,7 @@
                 android:bottom="5dp"
                 android:left="5dp"
                 android:right="5dp"/>
-            <solid android:color="@color/blue" />
+            <solid android:color="@color/colorPrimaryTrans" />
         </shape>
     </item>
 </selector>

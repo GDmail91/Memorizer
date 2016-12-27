@@ -44,21 +44,25 @@ public class MemoModel extends DBmanager {
 
         String sql;
         if (memoData.getWhileDate() != null) {
-            sql = "INSERT INTO Memo (_id, memoContent, memoDuring, memoTerm, isRandom, memoTimeHour, memoTimeMinute) " +
+            sql = "INSERT INTO Memo (_id, memoContent, memoDuring, memoTerm, memoLabel, memoLabelPos, isRandom, memoTimeHour, memoTimeMinute) " +
                     "VALUES(" +
                     "'" + topNumber + "', " +
                     "'" + memoData.getContent() + "', " +
                     "'" + memoData.getWhileDate().getTimeInMillis() + "', " +
                     "'" + memoData.getTerm() + "', " +
+                    "'" + memoData.getLabel() + "', " +
+                    "'" + memoData.getLabelPos() + "', " +
                     "'" + memoData.isRandom() + "', " +
                     "'" + memoData.getTimeOfHour() + "', " +
                     "'" + memoData.getTimeOfMinute() + "');";
         } else {
-            sql = "INSERT INTO Memo (_id, memoContent, memoTerm, isRandom, memoTimeHour, memoTimeMinute) " +
+            sql = "INSERT INTO Memo (_id, memoContent, memoTerm, memoLabel, memoLabelPos, isRandom, memoTimeHour, memoTimeMinute) " +
                     "VALUES(" +
                     "'" + topNumber + "', " +
                     "'" + memoData.getContent() + "', " +
                     "'" + memoData.getTerm() + "', " +
+                    "'" + memoData.getLabel() + "', " +
+                    "'" + memoData.getLabelPos() + "', " +
                     "'" + memoData.isRandom() + "', " +
                     "'" + memoData.getTimeOfHour() + "', " +
                     "'" + memoData.getTimeOfMinute() + "');";
@@ -87,6 +91,8 @@ public class MemoModel extends DBmanager {
                 "memoContent='" + memoData.getContent() + "', " +
                 "memoDuring='" + memoData.getWhileDate().getTimeInMillis() + "', " +
                 "memoTerm='" + memoData.getTerm() + "', " +
+                "memoLabel='" + memoData.getLabel() + "', " +
+                "memoLabelPos='" + memoData.getLabelPos() + "', " +
                 "isRandom='" + memoData.isRandom() + "', " +
                 "memoTimeHour='" + memoData.getTimeOfHour() + "', " +
                 "memoTimeMinute='" + memoData.getTimeOfMinute() + "' " +
@@ -157,6 +163,8 @@ public class MemoModel extends DBmanager {
                     cursor.getString(1),
                     calendar,
                     cursor.getInt(3),
+                    cursor.getString(8),
+                    cursor.getInt(9),
                     cursor.getInt(4),
                     cursor.getInt(5),
                     cursor.getInt(6),
@@ -182,6 +190,8 @@ public class MemoModel extends DBmanager {
             data.setContent(cursor.getString(1));
             data.setWhileDate(calendar);
             data.setTerm(cursor.getInt(3));
+            data.setLabel(cursor.getString(8));
+            data.setLabelPos(cursor.getInt(9));
             data.setRandom(cursor.getInt(4));
             data.setTimeOfHour(cursor.getInt(5));
             data.setTimeOfMinute(cursor.getInt(6));

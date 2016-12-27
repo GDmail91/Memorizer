@@ -66,14 +66,19 @@
             android:orientation="horizontal"
             android:id="@+id/divider0"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <RadioGroup
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/divider0"
             android:layout_alignParentBottom="true"
-            android:background="@color/memoPad">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/memoPad"
+            android:id="@+id/label_group">
 
-            <ToggleButton
+            <!-- TODO 컬러 픽커를 통해 한개만 띄워두고 색 바꾸는 형태로 바꿀 것 -->
+            <!-- TODO 기본 셀렉터의 경우 투명 + / 표시로 바꿀 것 -->
+            <RadioButton
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="10dp"
@@ -81,49 +86,84 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center_vertical"
+                android:button="@null"
+                android:background="@drawable/color_selector"
+                android:checked="false"
+                android:textOff=""
+                android:textOn=""
+                android:id="@+id/label_none"
+                style="?android:attr/borderlessButtonStyle" />
+
+            <RadioButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center_vertical"
+                android:button="@null"
                 android:background="@drawable/color_selector_blue"
                 android:checked="false"
                 android:textOff=""
                 android:textOn=""
-                style="?android:attr/borderlessButtonStyle"/>
+                android:id="@+id/label_blue"
+                style="?android:attr/borderlessButtonStyle" />
 
-            <ToggleButton
+            <RadioButton
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center_vertical"
+                android:button="@null"
                 android:background="@drawable/color_selector_red"
                 android:checked="false"
                 android:textOff=""
                 android:textOn=""
+                android:id="@+id/label_red"
                 style="?android:attr/borderlessButtonStyle"/>
 
-            <ToggleButton
+            <RadioButton
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center_vertical"
+                android:button="@null"
                 android:background="@drawable/color_selector_orange"
                 android:checked="false"
                 android:textOff=""
                 android:textOn=""
+                android:id="@+id/label_orange"
                 style="?android:attr/borderlessButtonStyle"/>
 
-            <ToggleButton
+            <RadioButton
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center_vertical"
+                android:button="@null"
                 android:background="@drawable/color_selector_green"
                 android:checked="false"
                 android:textOff=""
                 android:textOn=""
+                android:id="@+id/label_green"
                 style="?android:attr/borderlessButtonStyle"/>
 
-        </LinearLayout>
+        </RadioGroup>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider0"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/label_group"
+            android:layout_toRightOf="@+id/label_group"
+            android:background="@color/memoPad"
+            android:hint="@string/label_name"
+            android:minLines="1"
+            android:maxLength="8"
+            android:textSize="13dp"
+            android:id="@+id/label_name"/>
     </RelativeLayout>
 
     <RelativeLayout

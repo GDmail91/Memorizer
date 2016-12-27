@@ -17,11 +17,13 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.memorizer.memorizer.MainActivity;
 import com.memorizer.memorizer.R;
+import com.memorizer.memorizer.models.Constants;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
@@ -36,6 +38,9 @@ import java.util.Random;
 public class MemoCreate extends AppCompatActivity {
     String TAG = "MemoCreate";
     EditText alarmContent;
+    RadioGroup labelGroup;
+    int labelCheck;
+    EditText labelName;
     Button alarmWhileBtn, alarmTermBtn, alarmTimeBtn;
     MemoData memoData = new MemoData();
     android.support.v7.app.AlertDialog dialog;
@@ -52,6 +57,8 @@ public class MemoCreate extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        labelGroup = (RadioGroup) findViewById(R.id.label_group);
+        labelName = (EditText) findViewById(R.id.label_name);
         alarmContent = (EditText) findViewById(R.id.alarm_content);
         alarmTermBtn = (Button) findViewById(R.id.alarm_term_btn);
         alarmWhileBtn = (Button) findViewById(R.id.alarm_while_btn);
@@ -59,8 +66,18 @@ public class MemoCreate extends AppCompatActivity {
 
         dialog = new AlertDialog.Builder(this).create();
 
+        // 라벨 선택
+        labelGroup.clearCheck();
+        labelGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                labelCheck = checkedId;
+            }
+        });
+
         // Default 랜덤
         setTimeRandom();
+        labelGroup.check(R.id.label_none);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null
@@ -83,11 +100,34 @@ public class MemoCreate extends AppCompatActivity {
             alarmWhileBtn.setText(during);
             Log.d(TAG, makeTime(memoData.getTimeOfHour(), memoData.getTimeOfMinute()));
             alarmTimeBtn.setText(makeTime(memoData.getTimeOfHour(), memoData.getTimeOfMinute()));
+            labelName.setText(memoData.getLabel());
+            if (memoData.getLabelPos() != 0) {
+                int pos = 0;
+                switch (memoData.getLabelPos()) {
+                    case Constants.COLOR_BLUE:
+                        pos = R.id.label_blue;
+                        break;
+                    case Constants.COLOR_RED:
+                        pos = R.id.label_red;
+                        break;
+                    case Constants.COLOR_ORANGE:
+                        pos = R.id.label_orange;
+                        break;
+                    case Constants.COLOR_GREEN:
+                        pos = R.id.label_green;
+                        break;
+                }
+                labelGroup.check(pos);
+            }
         }
     }
 
     public void onClickListen(View v) {
         switch (v.getId()) {
+            // TODO 컬러 픽커 삽입
+            case R.id.label_group:
+
+
             case R.id.alarm_term_btn:
                 // 버튼 클릭시 팝업 메뉴가 나오게 하기
                 // PopupMenu 는 API 11 레벨부터 제공한다
@@ -239,6 +279,30 @@ public class MemoCreate extends AppCompatActivity {
             if (alarmContent.getText().toString().length() != 0) {
                 Bundle bundle = getIntent().getExtras();
                 memoData.setContent(alarmContent.getText().toString());
+                /*RadioButton labelColor = (RadioButton) findViewById(labelCheck);
+                labelColor.buildDrawingCache();
+                Bitmap bitmap = labelColor.getDrawingCache();
+                int color = bitmap.getPixel(0, 0);
+                Log.e("ChecktedText","Background Color: " + color);
+                labelColor.destroyDrawingCache();
+                memoData.setLabel(""+color);*/
+                int color = 0;
+                switch (labelCheck) {
+                    case R.id.label_blue:
+                        color = Constants.COLOR_BLUE;
+                        break;
+                    case R.id.label_red:
+                        color = Constants.COLOR_RED;
+                        break;
+                    case R.id.label_orange:
+                        color = Constants.COLOR_ORANGE;
+                        break;
+                    case R.id.label_green:
+                        color = Constants.COLOR_GREEN;
+                        break;
+                }
+                memoData.setLabel(labelName.getText().toString());
+                memoData.setLabelPos(color);
 
                 // DB에 저장
                 MemoModel memoModel = new MemoModel(this, "Memo.db", null);

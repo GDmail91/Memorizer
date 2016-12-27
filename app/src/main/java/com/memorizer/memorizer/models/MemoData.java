@@ -12,6 +12,8 @@ public class MemoData implements Serializable{
     private String content;
     private int term;
     private Calendar whileDate;
+    private String label;
+    private int labelPos;
     private boolean isRandom;
     private int timeOfHour;
     private int timeOfMinute;
@@ -21,17 +23,21 @@ public class MemoData implements Serializable{
         this.content = "";
         this.term = 1;
         this.whileDate = null;
+        this.label = "";
+        this.labelPos = 0;
         this.isRandom = true;
         Random random = new Random(System.currentTimeMillis());
         this.timeOfHour = random.nextInt(24);
         this.timeOfMinute = random.nextInt(60);
     }
 
-    public MemoData(int _id, String content, Calendar whileDate, int term, int isRandom, int hour, int minute, String posted) {
+    public MemoData(int _id, String content, Calendar whileDate, int term, String label, int labelPos, int isRandom, int hour, int minute, String posted) {
         this._id = _id;
         this.content = content;
         this.term = term;
         this.whileDate = whileDate;
+        this.label = label;
+        this.labelPos = labelPos;
         this.isRandom = Boolean.valueOf(""+isRandom);
         this.timeOfHour = hour;
         this.timeOfMinute = minute;
@@ -52,6 +58,14 @@ public class MemoData implements Serializable{
 
     public Calendar getWhileDate() {
         return whileDate;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public int getLabelPos() {
+        return labelPos;
     }
 
     public boolean isRandom() {
@@ -86,6 +100,14 @@ public class MemoData implements Serializable{
         this.whileDate = whileDate;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setLabelPos(int labelPos) {
+        this.labelPos = labelPos;
+    }
+
     public void setRandom(boolean isRandom) {
         this.isRandom = isRandom;
     }
@@ -115,6 +137,8 @@ public class MemoData implements Serializable{
         String str = "ID: "+_id
                 +"\nContent: "+content
                 +"\nTerm: "+term
+                +"\nLabel: "+label
+                +"\nLabelPos: "+labelPos
                 +"\nisRandom: "+isRandom
                 +"\nHour: "+timeOfHour
                 +"\nMinute: "+timeOfMinute

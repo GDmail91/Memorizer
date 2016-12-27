@@ -9,7 +9,7 @@ import android.util.Log;
  * Created by YS on 2016-07-11.
  */
 public class DBmanager extends SQLiteOpenHelper {
-    protected static final int DB_VERSION = 4;
+    protected static final int DB_VERSION = 6;
 
     public DBmanager(Context context, String name, SQLiteDatabase.CursorFactory factory) {
         super(context, name, factory, DB_VERSION);
@@ -21,6 +21,7 @@ public class DBmanager extends SQLiteOpenHelper {
     private static final String COLUMN_MEMO_DURING= "memoDuring";
     private static final String COLUMN_MEMO_TERM = "memoTerm";
     private static final String COLUMN_MEMO_LABEL = "memoLabel";
+    private static final String COLUMN_MEMO_LABEL_POS = "memoLabelPos";
     private static final String COLUMN_MEMO_IS_RANDOM = "isRandom";
     private static final String COLUMN_MEMO_HOUR = "memoTimeHour";
     private static final String COLUMN_MEMO_MINUTE = "memoTimeMinute";
@@ -42,11 +43,13 @@ public class DBmanager extends SQLiteOpenHelper {
                 COLUMN_MEMO_CONTENT+" TEXT, " +
                 COLUMN_MEMO_DURING+" INTEGER DEFAULT 0, " +
                 COLUMN_MEMO_TERM+" INTEGER, " +
-                COLUMN_MEMO_LABEL+" TEXT, " +
                 COLUMN_MEMO_IS_RANDOM+" INTEGER DEFAULT 0, " +
                 COLUMN_MEMO_HOUR+" INTEGER, " +
                 COLUMN_MEMO_MINUTE+" INTEGER, " +
-                COLUMN_MEMO_POSTED+" DATETIME DEFAULT CURRENT_TIMESTAMP);");
+                COLUMN_MEMO_POSTED+" DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                COLUMN_MEMO_LABEL+" TEXT " +
+                COLUMN_MEMO_LABEL_POS+" INTEGER " +
+                ");");
 
         db.execSQL("CREATE TABLE "+TABLE_NAME_SCHEDULE+" ( " +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -63,9 +66,6 @@ public class DBmanager extends SQLiteOpenHelper {
         switch (oldVersion)
         {
             case 1:
-            case 2:
-            case 3:
-            case 4:
                 // 기존 버전
                 db.execSQL("CREATE TABLE "+TABLE_NAME_MEMO+" ( " +
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -81,9 +81,13 @@ public class DBmanager extends SQLiteOpenHelper {
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         COLUMN_SCHEDULE_MEMO_ID+" INTEGER, " +
                         COLUMN_SCHEDULE_ALARM_DATE+" INTEGER);");
-            case 5:
+            case 2:
+            case 3:
+            case 4:
                 //upgrade from version 4 to 5
                 db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_LABEL + " TEXT;");
+            case 5:
+                db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_LABEL_POS + " INTEGER;");
         }
     }
 
