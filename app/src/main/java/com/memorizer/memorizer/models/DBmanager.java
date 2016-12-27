@@ -15,34 +15,79 @@ public class DBmanager extends SQLiteOpenHelper {
         super(context, name, factory, DB_VERSION);
     }
 
+    // Memo 테이블
+    private static final String TABLE_NAME_MEMO = "Memo";
+    private static final String COLUMN_MEMO_CONTENT = "memoContent";
+    private static final String COLUMN_MEMO_DURING= "memoDuring";
+    private static final String COLUMN_MEMO_TERM = "memoTerm";
+    private static final String COLUMN_MEMO_LABEL = "memoLabel";
+    private static final String COLUMN_MEMO_IS_RANDOM = "isRandom";
+    private static final String COLUMN_MEMO_HOUR = "memoTimeHour";
+    private static final String COLUMN_MEMO_MINUTE = "memoTimeMinute";
+    private static final String COLUMN_MEMO_POSTED = "posted";
+
+    private static final String TABLE_NAME_SCHEDULE = "MemoSchedule";
+    private static final String COLUMN_SCHEDULE_MEMO_ID = "memoId";
+    private static final String COLUMN_SCHEDULE_ALARM_DATE = "alarmDate";
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         // 새로운 테이블을 생성한다.
         // create table 테이블명 (컬럼명 타입 옵션);
 
         Log.d("MEMOMODEL", "생성");
-        db.execSQL("CREATE TABLE Memo ( " +
+        db.execSQL("CREATE TABLE "+TABLE_NAME_MEMO+" ( " +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "memoContent TEXT, " +
-                "memoDuring INTEGER DEFAULT 0, " +
-                "memoTerm INTEGER, " +
-                "isRandom INTEGER DEFAULT 0, " +
-                "memoTimeHour INTEGER, " +
-                "memoTimeMinute INTEGER, " +
-                "posted DATETIME DEFAULT CURRENT_TIMESTAMP);");
+                COLUMN_MEMO_CONTENT+" TEXT, " +
+                COLUMN_MEMO_DURING+" INTEGER DEFAULT 0, " +
+                COLUMN_MEMO_TERM+" INTEGER, " +
+                COLUMN_MEMO_LABEL+" TEXT, " +
+                COLUMN_MEMO_IS_RANDOM+" INTEGER DEFAULT 0, " +
+                COLUMN_MEMO_HOUR+" INTEGER, " +
+                COLUMN_MEMO_MINUTE+" INTEGER, " +
+                COLUMN_MEMO_POSTED+" DATETIME DEFAULT CURRENT_TIMESTAMP);");
 
-        db.execSQL("CREATE TABLE MemoSchedule ( " +
+        db.execSQL("CREATE TABLE "+TABLE_NAME_SCHEDULE+" ( " +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "memoId INTEGER, " +
-                "alarmDate INTEGER);");
+                COLUMN_SCHEDULE_MEMO_ID+" INTEGER, " +
+                COLUMN_SCHEDULE_ALARM_DATE+" INTEGER);");
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d("MEMOMODEL", oldVersion + " => " +newVersion);
-        db.execSQL("DROP TABLE IF EXISTS Memo");
-        db.execSQL("DROP TABLE IF EXISTS MemoSchedule");
+
+        switch (oldVersion)
+        {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                db.execSQL("CREATE TABLE "+TABLE_NAME_MEMO+" ( " +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_MEMO_CONTENT+" TEXT, " +
+                        COLUMN_MEMO_DURING+" INTEGER DEFAULT 0, " +
+                        COLUMN_MEMO_TERM+" INTEGER, " +
+                        COLUMN_MEMO_IS_RANDOM+" INTEGER DEFAULT 0, " +
+                        COLUMN_MEMO_HOUR+" INTEGER, " +
+                        COLUMN_MEMO_MINUTE+" INTEGER, " +
+                        COLUMN_MEMO_POSTED+" DATETIME DEFAULT CURRENT_TIMESTAMP);");
+
+                db.execSQL("CREATE TABLE "+TABLE_NAME_SCHEDULE+" ( " +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_SCHEDULE_MEMO_ID+" INTEGER, " +
+                        COLUMN_SCHEDULE_ALARM_DATE+" INTEGER);");
+            case 5:
+                //upgrade from version 4 to 5
+                db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_LABEL + " TEXT;");
+        }
+    }
+
+    public void onRecreate(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d("MEMOMODEL", oldVersion + " => " +newVersion);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_MEMO);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_SCHEDULE);
         onCreate(db);
     }
 }
