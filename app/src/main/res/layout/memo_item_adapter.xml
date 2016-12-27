@@ -44,6 +44,7 @@
                 android:layout_toStartOf="@+id/setting_button"
                 android:background="@drawable/label_border"
                 android:gravity="center"
+                android:textColor="@color/colorPrimary"
                 android:textSize="12dp"
                 android:id="@+id/label"/>
 
