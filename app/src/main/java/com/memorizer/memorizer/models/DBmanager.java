@@ -47,7 +47,7 @@ public class DBmanager extends SQLiteOpenHelper {
                 COLUMN_MEMO_HOUR+" INTEGER, " +
                 COLUMN_MEMO_MINUTE+" INTEGER, " +
                 COLUMN_MEMO_POSTED+" DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                COLUMN_MEMO_LABEL+" TEXT " +
+                COLUMN_MEMO_LABEL+" TEXT, " +
                 COLUMN_MEMO_LABEL_POS+" INTEGER " +
                 ");");
 

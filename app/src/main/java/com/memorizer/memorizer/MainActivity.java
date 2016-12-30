@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity
             });
         }
 
+        // NewRelic 용
         NewRelic.withApplicationToken(
-
                 "AAc483aa8dc9458949bf00b5e1bd56257947fdf68b"
         ).start(this.getApplication());
 
