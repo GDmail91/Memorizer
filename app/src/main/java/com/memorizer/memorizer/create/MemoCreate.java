@@ -21,11 +21,12 @@ import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.memorizer.memorizer.MainActivity;
 import com.memorizer.memorizer.R;
+import com.memorizer.memorizer.memolist.MainActivity;
 import com.memorizer.memorizer.models.Constants;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
+import com.memorizer.memorizer.models.ScheduleModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
 
 import java.util.Calendar;
@@ -40,6 +41,7 @@ public class MemoCreate extends AppCompatActivity {
     EditText alarmContent;
     RadioGroup labelGroup;
     int labelCheck;
+    boolean isEdit = false;
     EditText labelName;
     Button alarmWhileBtn, alarmTermBtn, alarmTimeBtn;
     MemoData memoData = new MemoData();
@@ -80,8 +82,7 @@ public class MemoCreate extends AppCompatActivity {
         labelGroup.check(R.id.label_none);
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null
-        && bundle.getBoolean("is_edit")) {
+        if (bundle != null && bundle.getBoolean("is_edit")) {
             MemoModel memoModel = new MemoModel(this, "Memo.db", null);
             this.memoData = memoModel.getData(bundle.getInt("memo_id"));
             memoModel.close();
@@ -119,6 +120,9 @@ public class MemoCreate extends AppCompatActivity {
                 }
                 labelGroup.check(pos);
             }
+
+            isEdit = true;
+            invalidateOptionsMenu();
         }
     }
 
@@ -163,7 +167,6 @@ public class MemoCreate extends AppCompatActivity {
                 whileDialogBuilder.setTitle(getString(R.string.choice_date)); //Dialog 제목
                 whileDialogBuilder.setIcon(android.R.drawable.ic_menu_today); //제목옆의 아이콘 이미지(원하는 이미지 설정)
                 whileDialogBuilder.setView(dialogWhileView);
-
                 //설정한 값으로 AlertDialog 객체 생성
                 dialog=whileDialogBuilder.create();
 
@@ -267,6 +270,12 @@ public class MemoCreate extends AppCompatActivity {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_create_memo_menu, menu);
+
+        if (!isEdit) {
+            MenuItem deleteBtn = menu.findItem(R.id.memo_delete);
+            deleteBtn.setVisible(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -274,67 +283,82 @@ public class MemoCreate extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.memo_create) {
-            Log.d(TAG, alarmContent.getText().toString());
-            if (alarmContent.getText().toString().length() != 0) {
-                Bundle bundle = getIntent().getExtras();
-                memoData.setContent(alarmContent.getText().toString());
-                /*RadioButton labelColor = (RadioButton) findViewById(labelCheck);
-                labelColor.buildDrawingCache();
-                Bitmap bitmap = labelColor.getDrawingCache();
-                int color = bitmap.getPixel(0, 0);
-                Log.e("ChecktedText","Background Color: " + color);
-                labelColor.destroyDrawingCache();
-                memoData.setLabel(""+color);*/
-                int color = 0;
-                switch (labelCheck) {
-                    case R.id.label_blue:
-                        color = Constants.COLOR_BLUE;
-                        break;
-                    case R.id.label_red:
-                        color = Constants.COLOR_RED;
-                        break;
-                    case R.id.label_orange:
-                        color = Constants.COLOR_ORANGE;
-                        break;
-                    case R.id.label_green:
-                        color = Constants.COLOR_GREEN;
-                        break;
-                }
-                memoData.setLabel(labelName.getText().toString());
-                memoData.setLabelPos(color);
+        switch (id) {
+            case R.id.memo_create:
+                Log.d(TAG, alarmContent.getText().toString());
+                if (alarmContent.getText().toString().length() != 0) {
+                    Bundle bundle = getIntent().getExtras();
+                    memoData.setContent(alarmContent.getText().toString());
+                    /*RadioButton labelColor = (RadioButton) findViewById(labelCheck);
+                    labelColor.buildDrawingCache();
+                    Bitmap bitmap = labelColor.getDrawingCache();
+                    int color = bitmap.getPixel(0, 0);
+                    Log.e("ChecktedText","Background Color: " + color);
+                    labelColor.destroyDrawingCache();
+                    memoData.setLabel(""+color);*/
+                    int color = 0;
+                    switch (labelCheck) {
+                        case R.id.label_blue:
+                            color = Constants.COLOR_BLUE;
+                            break;
+                        case R.id.label_red:
+                            color = Constants.COLOR_RED;
+                            break;
+                        case R.id.label_orange:
+                            color = Constants.COLOR_ORANGE;
+                            break;
+                        case R.id.label_green:
+                            color = Constants.COLOR_GREEN;
+                            break;
+                    }
+                    memoData.setLabel(labelName.getText().toString());
+                    memoData.setLabelPos(color);
 
-                // DB에 저장
-                MemoModel memoModel = new MemoModel(this, "Memo.db", null);
-                if (bundle != null
-                && bundle.getBoolean("is_edit")) {
-                    memoModel.update(memoData);
+                    // DB에 저장
+                    MemoModel memoModel = new MemoModel(this, "Memo.db", null);
+                    if (bundle != null
+                    && bundle.getBoolean("is_edit")) {
+                        memoModel.update(memoData);
 
-                    // 알림 설정
-                    Scheduler.getScheduler().deleteSelectedAlarm(this, memoData.get_id());
-                    Scheduler.getScheduler().setSchedule(this, memoData, true);
+                        // 알림 설정
+                        Scheduler.getScheduler().deleteSelectedAlarm(this, memoData.get_id());
+                        Scheduler.getScheduler().setSchedule(this, memoData, true);
+                    } else {
+                        memoData.set_id(memoModel.insert(memoData));
+
+                        // 알림 설정
+                        Scheduler.getScheduler().setSchedule(this, memoData, true);
+                    }
+
+                    Log.d("TEST", "설정하는 시간: "+memoData.getTimeOfHour()+":"+memoData.getTimeOfMinute());
+
+                    memoModel.close();
+
+                    Intent intent = new Intent(MemoCreate.this, MainActivity.class);
+                    intent.putExtra("mCreate", memoData);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 } else {
-                    memoData.set_id(memoModel.insert(memoData));
-
-                    // 알림 설정
-                    Scheduler.getScheduler().setSchedule(this, memoData, true);
+                    Toast.makeText(this, getString(R.string.empty_memo), Toast.LENGTH_SHORT).show();
                 }
 
-                Log.d("TEST", "설정하는 시간: "+memoData.getTimeOfHour()+":"+memoData.getTimeOfMinute());
+                Toast.makeText(this, getString(R.string.memo_saved), Toast.LENGTH_SHORT).show();
+                return true;
 
+            case R.id.memo_delete: // 메모 삭제시
+                MemoModel memoModel = new MemoModel(this, "Memo.db", null);
+                memoModel.delete(memoData.get_id());
                 memoModel.close();
+                ScheduleModel scheduleModel = new ScheduleModel(this, "Memo.db", null);
+                scheduleModel.deleteByMemoId(memoData.get_id());
+                scheduleModel.close();
+                Toast.makeText(this, memoData.get_id() + getString(R.string.deleted), Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(MemoCreate.this, MainActivity.class);
-                intent.putExtra("mCreate", memoData);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, getString(R.string.empty_memo), Toast.LENGTH_SHORT).show();
-            }
-
-            Toast.makeText(this, getString(R.string.memo_saved), Toast.LENGTH_SHORT).show();
-            return true;
+                // 메인 화면 돌아감
+                setResult(RESULT_OK);
+                finish();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

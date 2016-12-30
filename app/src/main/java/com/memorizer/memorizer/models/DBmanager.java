@@ -9,6 +9,7 @@ import android.util.Log;
  * Created by YS on 2016-07-11.
  */
 public class DBmanager extends SQLiteOpenHelper {
+    private static final String TAG = "DBManager";
     protected static final int DB_VERSION = 6;
 
     public DBmanager(Context context, String name, SQLiteDatabase.CursorFactory factory) {
@@ -37,7 +38,7 @@ public class DBmanager extends SQLiteOpenHelper {
         // 새로운 테이블을 생성한다.
         // create table 테이블명 (컬럼명 타입 옵션);
 
-        Log.d("MEMOMODEL", "생성");
+        Log.d(TAG, "생성");
         db.execSQL("CREATE TABLE "+TABLE_NAME_MEMO+" ( " +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_MEMO_CONTENT+" TEXT, " +
@@ -61,7 +62,7 @@ public class DBmanager extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // SQLite DB 버전 관리
-        Log.d("MEMOMODEL", oldVersion + " => " +newVersion);
+        Log.d(TAG, oldVersion + " => " +newVersion);
 
         switch (oldVersion)
         {
@@ -98,7 +99,7 @@ public class DBmanager extends SQLiteOpenHelper {
      * @param newVersion
      */
     public void onRecreate(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("MEMOMODEL", oldVersion + " => " +newVersion);
+        Log.d(TAG, oldVersion + " => " +newVersion);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_MEMO);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_SCHEDULE);
         onCreate(db);

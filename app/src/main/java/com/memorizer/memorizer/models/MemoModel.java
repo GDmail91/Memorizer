@@ -176,6 +176,35 @@ public class MemoModel extends DBmanager {
         return allData;
     }
 
+    public ArrayList<MemoData> getAllDataShort() {
+        ArrayList<MemoData> allData = new ArrayList<>();
+        int i =0;
+        Cursor cursor = dbR.rawQuery("SELECT _id, " +
+                "substr(memoContent,0,25) AS memoContent, memoDuring, memoTerm, memoLabel, memoLabelPos, " +
+                "isRandom, memoTimeHour, memoTimeMinute, Posted " +
+                "FROM Memo ORDER BY _id DESC", null);
+        while(cursor.moveToNext()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(cursor.getLong(2));
+
+            MemoData tempData = new MemoData(
+                    cursor.getInt(0),
+                    cursor.getString(1),
+                    calendar,
+                    cursor.getInt(3),
+                    cursor.getString(4),
+                    cursor.getInt(5),
+                    cursor.getInt(6),
+                    cursor.getInt(7),
+                    cursor.getInt(8),
+                    cursor.getString(9));
+
+            allData.add(i++, tempData);
+        }
+
+        return allData;
+    }
+
     public MemoData getData(int id) {
         MemoData data = null;
 

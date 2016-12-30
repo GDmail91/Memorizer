@@ -6,6 +6,7 @@
 
     <!-- 메모 Content -->
     <string name="memo">Memo</string>
+    <string name="alarm_desc">Alarm</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
@@ -40,6 +41,8 @@
     <string name="empty_memo">Empty Memo.</string>
     <string name="memo_saved">Memo saved.</string>
     <string name="label_name">Label Name</string>
+    <string name="memo_create">memo create</string>
+    <string name="memo_delete">memo delete</string>
 
     <!-- 알람 -->
     <string name="remember">Do you remember?</string>

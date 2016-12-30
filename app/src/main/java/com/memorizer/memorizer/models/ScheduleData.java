@@ -46,6 +46,16 @@ public class ScheduleData implements Serializable {
         this.alarmDate = alarmDate;
     }
 
+    public int getDaysNext() {
+        Calendar today = Calendar.getInstance();
+        today.setTimeInMillis(System.currentTimeMillis());
+        int term = alarmDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR);
+        if (term < 0) {
+            term += 365;
+        }
+        return term;
+    }
+
     public String toString() {
 
         return memoId+"-"+alarmDate.get(Calendar.DAY_OF_MONTH)+"-"+alarmDate.get(Calendar.HOUR_OF_DAY)+"-"+alarmDate.get(Calendar.MINUTE);

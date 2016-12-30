@@ -10,4 +10,6 @@ public class Constants {
     public static final int COLOR_RED = 2;
     public static final int COLOR_ORANGE = 3;
     public static final int COLOR_GREEN = 4;
+
+    public static final int ITEM_DELETE = 100;
 }

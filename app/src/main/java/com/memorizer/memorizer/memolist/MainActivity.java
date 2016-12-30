@@ -1,4 +1,4 @@
-package com.memorizer.memorizer;
+package com.memorizer.memorizer.memolist;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,18 +6,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
 
+import com.memorizer.memorizer.DeveloperInfo;
+import com.memorizer.memorizer.MemoAlarmActivity;
+import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.create.MemoCreate;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
@@ -27,11 +28,16 @@ import com.newrelic.agent.android.NewRelic;
 
 import java.util.ArrayList;
 
+import static com.memorizer.memorizer.models.Constants.ITEM_DELETE;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "MainActivity";
     ArrayList<MemoData> memoDatas;
-    MemoListAdapter memoListAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerView;
+    private MemoListAdapter memoListAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,26 +73,35 @@ public class MainActivity extends AppCompatActivity
         // 스케쥴 주기 시작
         Scheduler.getScheduler().startSchedule(this);
 
-        // DB에서 메모목록 가져옴
-        MemoModel memoModel = new MemoModel(this, "Memo.db", null);
-        memoDatas = memoModel.getAllData();
-        memoModel.close();
+        // 데이터 채우기
+        setMemoDatas();
 
         ScheduleModel scheduleModel = new ScheduleModel(this, "Memo.db", null);
         Log.d("TEST", "스케쥴: "+scheduleModel.getAllData());
         scheduleModel.close();
 
-        // ListView 생성하면서 작성할 값 초기화
-        memoListAdapter = new MemoListAdapter(memoDatas);
+        // RecyclerView Swipe 기능
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // TODO 리프레쉬
+                swipeRefreshLayout.setRefreshing(false);
+                setMemoDatas();
+            }
+        });
+        // RecyclerView 생성
+        recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.memo_list);
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager1);
 
-        // ListView 어댑터 연결
-        ListView memoListView = (ListView) findViewById(R.id.memo_list);
-        if (memoListView != null) {
-            memoListView.setAdapter(memoListAdapter);
-        }
+        // memoListAdapter 생성하면서 연결
+        memoListAdapter = new MemoListAdapter(this, memoDatas);
+        recyclerView.setAdapter(memoListAdapter);
 
-        //ListView를 Context 메뉴로 등록
-        registerForContextMenu(memoListView);
+        // RecyclerView를 Context 메뉴로 등록
+        registerForContextMenu(recyclerView);
 
         Intent mIntent = getIntent();
         MemoData memoData = (MemoData)mIntent.getSerializableExtra("mCreate");
@@ -100,51 +115,20 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    //Context 메뉴로 등록한 View(여기서는 ListView)가 처음 클릭되어 만들어질 때 호출되는 메소드
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.memo_list_menu, menu);
-    }
-
-    //Context 메뉴로 등록한 View(여기서는 ListView)가 클릭되었을 때 자동으로 호출되는 메소드
-    public boolean onContextItemSelected(MenuItem item) {
-
-        //AdapterContextMenuInfo
-        //AdapterView가 onCreateContextMenu할때의 추가적인 menu 정보를 관리하는 클래스
-        //ContextMenu로 등록된 AdapterView(여기서는 Listview)의 선택된 항목에 대한 정보를 관리하는 클래스
-        AdapterView.AdapterContextMenuInfo info= (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-
-        int index= info.position; //AdapterView안에서 ContextMenu를 보여즈는 항목의 위치
-
-        //선택된 ContextMenu의  아이템아이디를 구별하여 원하는 작업 수행
-        //예제에서는 선택된 ListView의 항목(String 문자열) data와 해당 메뉴이름을 출력함
-        switch( item.getItemId() ){
-            case R.id.memo_delete:
-                MemoModel memoModel = new MemoModel(this, "Memo.db", null);
-                memoModel.delete(memoDatas.get(index).get_id());
-                memoModel.close();
-                ScheduleModel scheduleModel = new ScheduleModel(this, "Memo.db", null);
-                scheduleModel.deleteByMemoId(memoDatas.get(index).get_id());
-                scheduleModel.close();
-                Toast.makeText(this, memoDatas.get(index).get_id() + getString(R.string.deleted), Toast.LENGTH_SHORT).show();
-                memoDatas.remove(index);
-                memoListAdapter.notifyDataSetChanged();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ITEM_DELETE:
+                if (resultCode == RESULT_OK) {
+                    Log.d(TAG, "리프레쉬");
+                    setMemoDatas();
+                }
                 break;
 
-            case R.id.memo_edit:
-                Intent intent = new Intent(MainActivity.this, MemoCreate.class);
-                intent.putExtra("is_edit", true);
-                intent.putExtra("memo_id", memoDatas.get(index).get_id());
-
-                startActivity(intent);
-                break;
-
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
-
-        return true;
-    };
+    }
 
     @Override
     public void onBackPressed() {
@@ -170,5 +154,17 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // memoDatas 재배치
+    private void setMemoDatas() {
+        // DB에서 메모목록 가져옴
+        MemoModel memoModel = new MemoModel(this, "Memo.db", null);
+        memoDatas = memoModel.getAllDataShort(); // Content 글자수 제한
+        memoModel.close();
+
+        if (memoListAdapter != null) {
+            memoListAdapter.swap(memoDatas);
+        }
     }
 }

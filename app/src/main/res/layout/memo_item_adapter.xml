@@ -2,11 +2,110 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="250dp"
-    android:background="@color/colorPrimaryTrans" >
+    android:layout_height="100dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginEnd="10dp"
+    android:padding="1dp"
+    android:background="@color/memoPadAccent"
+    android:id="@+id/memo_item">
 
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/memoPad">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@color/memoPadAccent"
+            android:id="@+id/memo_header">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="25dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginStart="10dp"
+                android:text="0000-00-00"
+                android:textAlignment="viewStart"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:id="@+id/memo_posted" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/label_border"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15sp"
+                android:id="@+id/label"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="25dp"
+            android:layout_below="@+id/memo_header"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/next_schedule">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/alarm_grey"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/alarm_desc"
+                android:id="@+id/alarm_icon" />
+
+            <TextView
+                android:layout_width="15dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:text="1"
+                android:textSize="20sp"
+                android:id="@+id/memo_term"/>
+
+            <TextView
+                android:layout_width="55dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="5dp"
+                android:text="00:00 am"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                android:id="@+id/memo_time"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/memo_header"
+            android:layout_toStartOf="@+id/next_schedule"
+            android:layout_toLeftOf="@+id/next_schedule"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical"
+            android:text="@string/memo"
+            android:id="@+id/memo_content" />
+    </RelativeLayout>
+    <!--<RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="6dp"
@@ -248,5 +347,5 @@
                 android:textSize="20sp"
                 android:id="@+id/memo_posted"/>
         </RelativeLayout>
-    </RelativeLayout>
+    </RelativeLayout>-->
 </RelativeLayout>

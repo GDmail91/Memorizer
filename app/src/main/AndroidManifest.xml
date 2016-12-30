@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".memolist.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -29,11 +29,11 @@
             android:name=".create.MemoCreate"
             android:label="@string/activity_memo_create"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName="com.memorizer.memorizer.MainActivity">
+            android:parentActivityName="com.memorizer.memorizer.memolist.MainActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.memorizer.memorizer.MainActivity" />
+                android:value="com.memorizer.memorizer.memolist.MainActivity" />
         </activity>
 
         <activity android:name=".MemoAlarmActivity"
@@ -43,11 +43,11 @@
         <activity android:name=".DeveloperInfo"
             android:label="@string/activity_developer"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName="com.memorizer.memorizer.MainActivity">
+            android:parentActivityName="com.memorizer.memorizer.memolist.MainActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.memorizer.memorizer.MainActivity" />
+                android:value="com.memorizer.memorizer.memolist.MainActivity" />
         </activity>
 
         <!-- 브로드캐스트 리시버 등록 -->
