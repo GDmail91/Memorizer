@@ -36,6 +36,16 @@
                 android:value="com.memorizer.memorizer.memolist.MainActivity" />
         </activity>
 
+        <activity android:name=".search.SearchActivity"
+            android:label="Search Memo"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName="com.memorizer.memorizer.memolist.MainActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.memorizer.memorizer.memolist.MainActivity" />
+        </activity>
+
         <activity android:name=".MemoAlarmActivity"
             android:label="MemoAlarm"
             android:theme="@android:style/Theme.Material.Dialog"/>

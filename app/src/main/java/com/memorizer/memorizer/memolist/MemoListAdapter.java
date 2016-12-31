@@ -106,6 +106,8 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
 
     @Override
     public int getItemCount() {
+        if (this.memoDatas == null)
+            return 0;
         return this.memoDatas.size();
     }
 

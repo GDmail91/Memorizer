@@ -14,6 +14,7 @@
     <string name="next_alert">다음알림</string>
     <string name="posted_date">등록한 날짜</string>
     <string name="deleted">번 메모가 삭제되었습니다.</string>
+    <string name="memo_search">검색</string>
 
     <!-- 메모 생성 -->
     <string name="create_notice">생성/수정한 메모는 현재 시간부터 간격에 맞춰 진행됩니다.</string>
@@ -41,6 +42,7 @@
     <string name="delete">삭제</string>
     <string name="empty_memo">메모 내용이 없습니다.</string>
     <string name="memo_saved">메모가 저장되었습니다.</string>
+    <string name="label">라벨</string>
     <string name="label_name">라벨 이름</string>
     <string name="memo_create">메모생성</string>
     <string name="memo_delete">메모삭제</string>

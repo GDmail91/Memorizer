@@ -13,6 +13,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -24,6 +26,7 @@ import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
+import com.memorizer.memorizer.search.SearchActivity;
 import com.newrelic.agent.android.NewRelic;
 
 import java.util.ArrayList;
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity
         // RecyclerView를 Context 메뉴로 등록
         registerForContextMenu(recyclerView);
 
+        // MemoCreate에서 메모를 만든경우
         Intent mIntent = getIntent();
         MemoData memoData = (MemoData)mIntent.getSerializableExtra("mCreate");
         if (memoData != null) {
@@ -165,6 +169,30 @@ public class MainActivity extends AppCompatActivity
 
         if (memoListAdapter != null) {
             memoListAdapter.swap(memoDatas);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_search:
+                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

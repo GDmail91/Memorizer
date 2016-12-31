@@ -54,7 +54,7 @@
             android:layout_above="@+id/divider0"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="라벨"
+            android:text="@string/label"
             android:textSize="16dp"
             android:textColor="@color/colorPrimary" />
 

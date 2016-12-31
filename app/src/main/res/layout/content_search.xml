@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.memorizer.memorizer.search.SearchActivity"
+    tools:showIn="@layout/app_bar_search">
+
+    <!-- TODO 핫이슈 포함 시켜야함 -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/memo_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>
