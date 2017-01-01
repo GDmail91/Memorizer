@@ -25,7 +25,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private EditText searchTextView;
 
-    private ArrayList<MemoData> memoDatas;
+    private ArrayList<MemoData> memoDatas = new ArrayList<>();
     private RecyclerView recyclerView;
     private MemoListAdapter memoListAdapter;
 

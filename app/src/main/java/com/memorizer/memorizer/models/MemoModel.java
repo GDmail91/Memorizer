@@ -238,7 +238,7 @@ public class MemoModel extends DBmanager {
                 "substr(memoContent,0,25) AS memoContent, memoDuring, memoTerm, memoLabel, memoLabelPos, " +
                 "isRandom, memoTimeHour, memoTimeMinute, Posted " +
                 "FROM Memo " +
-                "WHERE memoContext LIKE ~~ " +
+                "WHERE memoContent LIKE '%"+searchText+"%' " +
                 "ORDER BY _id DESC", null);
 
         while(cursor.moveToNext()) {
