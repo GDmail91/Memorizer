@@ -17,11 +17,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Spinner;
 
 import com.memorizer.memorizer.DeveloperInfo;
 import com.memorizer.memorizer.MemoAlarmActivity;
 import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.create.MemoCreate;
+import com.memorizer.memorizer.models.DBmanager;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private MemoListAdapter memoListAdapter;
+    private Spinner filterList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,10 +80,13 @@ public class MainActivity extends AppCompatActivity
         // 스케쥴 주기 시작
         Scheduler.getScheduler().startSchedule(this);
 
+        // 필터 리스트 세팅
+        filterList = (Spinner) findViewById(R.id.filter_list);
+
         // 데이터 채우기
         setMemoDatas();
 
-        ScheduleModel scheduleModel = new ScheduleModel(this, "Memo.db", null);
+        ScheduleModel scheduleModel = new ScheduleModel(DBmanager.getInstance(this));
         Log.d("TEST", "스케쥴: "+scheduleModel.getAllData());
         scheduleModel.close();
 
@@ -163,7 +170,7 @@ public class MainActivity extends AppCompatActivity
     // memoDatas 재배치
     private void setMemoDatas() {
         // DB에서 메모목록 가져옴
-        MemoModel memoModel = new MemoModel(this, "Memo.db", null);
+        MemoModel memoModel = new MemoModel(DBmanager.getInstance(this));
         memoDatas = memoModel.getAllDataShort(); // Content 글자수 제한
         memoModel.close();
 

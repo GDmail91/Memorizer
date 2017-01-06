@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
+import com.memorizer.memorizer.models.DBmanager;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleData;
@@ -62,7 +63,7 @@ public class Scheduler {
      * @param context
      */
     public void deletePreviousAlarm(Context context) {
-        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
+        ScheduleModel scheduleModel = new ScheduleModel(DBmanager.getInstance(context));
         scheduleModel.deletePrevious();
         scheduleModel.close();
     }
@@ -73,7 +74,7 @@ public class Scheduler {
      * @param deleteMemoId Memo ID
      */
     public void deleteSelectedAlarm(Context context, int deleteMemoId) {
-        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
+        ScheduleModel scheduleModel = new ScheduleModel(DBmanager.getInstance(context));
         scheduleModel.deleteByMemoId(deleteMemoId);
         scheduleModel.close();
     }
@@ -85,14 +86,14 @@ public class Scheduler {
      */
     public void setNextAlarm(Context context) {
         // 가장 가까운 알람 가져옴
-        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
+        ScheduleModel scheduleModel = new ScheduleModel(DBmanager.getInstance(context));
         ScheduleData nextSchedule = scheduleModel.getNextData();
 
         // nextSchedule이 null이 아닐경우 등록
         if (nextSchedule != null) {
             Log.d(TAG, nextSchedule.toString());
             // 알림용 intent 등록
-            MemoModel memoModel = new MemoModel(context, "Memo.db", null);
+            MemoModel memoModel = new MemoModel(DBmanager.getInstance(context));
             MemoData memoData = memoModel.getData(nextSchedule.getMemoId());
             memoModel.close();
 
@@ -215,7 +216,7 @@ public class Scheduler {
 
         ScheduleData scheduleData = new ScheduleData(memoData.get_id(), setDay);
         // DB에 저장
-        ScheduleModel scheduleModel = new ScheduleModel(context, "Memo.db", null);
+        ScheduleModel scheduleModel = new ScheduleModel(DBmanager.getInstance(context));
 
         ArrayList<ScheduleData> sd = scheduleModel.getAllData();
         Log.d(TAG, scheduleModel.printCountOfData()+"");

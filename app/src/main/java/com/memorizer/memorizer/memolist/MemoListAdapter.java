@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.create.MemoCreate;
 import com.memorizer.memorizer.models.Constants;
+import com.memorizer.memorizer.models.DBmanager;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.ScheduleData;
 import com.memorizer.memorizer.models.ScheduleModel;
@@ -80,7 +81,7 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
         holder.memo_time.setText(makeTime(memoDatas.get(pos).getTimeOfHour(), memoDatas.get(pos).getTimeOfMinute()));
         holder.memo_posted.setText(memoDatas.get(pos).getPosted().split(" ")[0]); // 시간 제거
 
-        ScheduleModel scheduleModel = new ScheduleModel(mContext, "Memo.db", null);
+        ScheduleModel scheduleModel = new ScheduleModel(DBmanager.getInstance(mContext));
         ScheduleData nextSchedule = scheduleModel.getMemoSchedule(memoDatas.get(pos).get_id());
         if (nextSchedule != null) {
             holder.next_schedule.setVisibility(View.VISIBLE);

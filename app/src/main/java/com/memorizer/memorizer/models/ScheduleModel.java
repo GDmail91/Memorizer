@@ -1,25 +1,27 @@
 package com.memorizer.memorizer.models;
 
-import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.memorizer.memorizer.models.DBmanager.COLUMN_SCHEDULE_ALARM_DATE;
+import static com.memorizer.memorizer.models.DBmanager.COLUMN_SCHEDULE_MEMO_ID;
+import static com.memorizer.memorizer.models.DBmanager.TABLE_NAME_SCHEDULE;
+import static com.memorizer.memorizer.models.DBmanager.dbR;
+import static com.memorizer.memorizer.models.DBmanager.dbW;
+
 /**
  * Created by YS on 2016-07-11.
  */
-public class ScheduleModel extends DBmanager {
+public class ScheduleModel{
     public static final String TAG = "ScheduleModel";
-    public static final int SCHEDULE_VERSION = 3;
 
-    SQLiteDatabase dbR = getReadableDatabase();
-    SQLiteDatabase dbW = getWritableDatabase();
+    private DBmanager dBmanager;
 
-    public ScheduleModel(Context context, String name, SQLiteDatabase.CursorFactory factory) {
-        super(context, name, factory);
+    public ScheduleModel(DBmanager dBmanager) {
+        this.dBmanager=dBmanager;
     }
 
     /** 삽입 SQL
@@ -28,9 +30,10 @@ public class ScheduleModel extends DBmanager {
      * @return topNumber
      */
     public int insert(ScheduleData scheduleData) {
+        ArrayList<String> sqlList = new ArrayList<>();
         int topNumber = 0;
 
-        Cursor cursor = dbR.rawQuery("SELECT _id FROM MemoSchedule ORDER BY _id DESC LIMIT 1", null);
+        Cursor cursor = dbR.rawQuery("SELECT _id FROM "+TABLE_NAME_SCHEDULE+" ORDER BY _id DESC LIMIT 1", null);
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 topNumber = cursor.getInt(0);
@@ -40,23 +43,13 @@ public class ScheduleModel extends DBmanager {
 
         topNumber = topNumber+1;
 
-        String sql;
-        sql = "INSERT INTO MemoSchedule (_id, memoId, alarmDate) " +
+        sqlList.add("INSERT INTO "+TABLE_NAME_SCHEDULE+" (_id, "+COLUMN_SCHEDULE_MEMO_ID+", "+COLUMN_SCHEDULE_ALARM_DATE+") " +
                 "VALUES(" +
                 "'" + topNumber + "', " +
                 "'" + scheduleData.getMemoId() + "', " +
-                "'" + (int)(scheduleData.getAlarmDate().getTimeInMillis() / 1000) + "');";
+                "'" + (int)(scheduleData.getAlarmDate().getTimeInMillis() / 1000) + "');");
 
-        // DB 작업 실행
-        dbW.beginTransaction();
-        try {
-            dbW.execSQL(sql);
-            dbW.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            dbW.endTransaction(); //트랜잭션을 끝내는 메소드.
-        }
+        dBmanager.startTransaction(sqlList);
 
         return topNumber;
     }
@@ -67,21 +60,13 @@ public class ScheduleModel extends DBmanager {
      * @return id
      */
     public int update(ScheduleData scheduleData) {
-        String sql = "UPDATE MemoSchedule SET " +
-                "memoId='" + scheduleData.getMemoId() + "', " +
-                "alarmDate='" + (int)(scheduleData.getAlarmDate().getTimeInMillis() / 1000) + "' " +
-                "WHERE _id='"+ scheduleData.get_id() +"' ;";
+        ArrayList<String> sqlList = new ArrayList<>();
+        sqlList.add("UPDATE "+TABLE_NAME_SCHEDULE+" SET " +
+                COLUMN_SCHEDULE_MEMO_ID+"='" + scheduleData.getMemoId() + "', " +
+                COLUMN_SCHEDULE_ALARM_DATE+"='" + (int)(scheduleData.getAlarmDate().getTimeInMillis() / 1000) + "' " +
+                "WHERE _id='"+ scheduleData.get_id() +"' ;");
 
-        // DB 작업 실행
-        dbW.beginTransaction();
-        try {
-            dbW.execSQL(sql);
-            dbW.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            dbW.endTransaction(); //트랜잭션을 끝내는 메소드.
-        }
+        dBmanager.startTransaction(sqlList);
 
         return scheduleData.get_id();
     }
@@ -164,6 +149,7 @@ public class ScheduleModel extends DBmanager {
                 cursor.getInt(0),
                 cursor.getInt(1),
                 calendar);
+        cursor.close();
 
         return data;
     }

@@ -5,35 +5,65 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by YS on 2016-07-11.
  */
-public class DBmanager extends SQLiteOpenHelper {
+public class DBmanager {
     private static final String TAG = "DBManager";
-    protected static final int DB_VERSION = 6;
+    protected static final int DB_VERSION = 4;
+    private static final String DB_NAME = "Memo.db";
 
-    public DBmanager(Context context, String name, SQLiteDatabase.CursorFactory factory) {
-        super(context, name, factory, DB_VERSION);
+    protected static SQLiteDatabase dbR;
+    protected static SQLiteDatabase dbW;
+
+    private static DBmanager dBmanager = new DBmanager();
+    private static SQLiteOpenHelper dbHelper;
+
+    private DBmanager() {}
+
+    public static DBmanager getInstance(Context context) {
+        if (dbHelper == null) {
+            dbHelper = new SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+                @Override
+                public void onCreate(SQLiteDatabase db) {
+                    dBmanager.onCreate(db);
+                }
+
+                @Override
+                public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                    dBmanager.onUpgrade(db, oldVersion, newVersion);
+                }
+            };
+        }
+
+        dbR = dbHelper.getReadableDatabase();
+        dbW = dbHelper.getWritableDatabase();
+        return dBmanager;
     }
 
     // Memo 테이블
-    private static final String TABLE_NAME_MEMO = "Memo";
-    private static final String COLUMN_MEMO_CONTENT = "memoContent";
-    private static final String COLUMN_MEMO_DURING= "memoDuring";
-    private static final String COLUMN_MEMO_TERM = "memoTerm";
-    private static final String COLUMN_MEMO_LABEL = "memoLabel";
-    private static final String COLUMN_MEMO_LABEL_POS = "memoLabelPos";
-    private static final String COLUMN_MEMO_IS_RANDOM = "isRandom";
-    private static final String COLUMN_MEMO_HOUR = "memoTimeHour";
-    private static final String COLUMN_MEMO_MINUTE = "memoTimeMinute";
-    private static final String COLUMN_MEMO_POSTED = "posted";
+    protected static final String TABLE_NAME_MEMO = "Memo";
+    protected static final String COLUMN_MEMO_CONTENT = "memoContent";
+    protected static final String COLUMN_MEMO_DURING= "memoDuring";
+    protected static final String COLUMN_MEMO_TERM = "memoTerm";
+    protected static final String COLUMN_MEMO_LABEL = "memoLabel";
+    protected static final String COLUMN_MEMO_IS_RANDOM = "isRandom";
+    protected static final String COLUMN_MEMO_HOUR = "memoTimeHour";
+    protected static final String COLUMN_MEMO_MINUTE = "memoTimeMinute";
+    protected static final String COLUMN_MEMO_POSTED = "posted";
+
+    // Label 테이블
+    protected static final String TABLE_NAME_LABEL = "Label";
+    protected static final String COLUMN_LABEL_NAME = "labelName";
+    protected static final String COLUMN_LABEL_COLOR = "labelColor";
 
     // MemoSchedule 테이블
-    private static final String TABLE_NAME_SCHEDULE = "MemoSchedule";
-    private static final String COLUMN_SCHEDULE_MEMO_ID = "memoId";
-    private static final String COLUMN_SCHEDULE_ALARM_DATE = "alarmDate";
+    protected static final String TABLE_NAME_SCHEDULE = "MemoSchedule";
+    protected static final String COLUMN_SCHEDULE_MEMO_ID = "memoId";
+    protected static final String COLUMN_SCHEDULE_ALARM_DATE = "alarmDate";
 
-    @Override
     public void onCreate(SQLiteDatabase db) {
         // 새로운 테이블을 생성한다.
         // create table 테이블명 (컬럼명 타입 옵션);
@@ -48,18 +78,23 @@ public class DBmanager extends SQLiteOpenHelper {
                 COLUMN_MEMO_HOUR+" INTEGER, " +
                 COLUMN_MEMO_MINUTE+" INTEGER, " +
                 COLUMN_MEMO_POSTED+" DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                COLUMN_MEMO_LABEL+" TEXT, " +
-                COLUMN_MEMO_LABEL_POS+" INTEGER " +
+                COLUMN_MEMO_LABEL+" INTEGER " +
                 ");");
 
         db.execSQL("CREATE TABLE "+TABLE_NAME_SCHEDULE+" ( " +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_SCHEDULE_MEMO_ID+" INTEGER, " +
-                COLUMN_SCHEDULE_ALARM_DATE+" INTEGER);");
+                COLUMN_SCHEDULE_ALARM_DATE+" INTEGER " +
+                ");");
+
+        db.execSQL("CREATE TABLE "+TABLE_NAME_LABEL+" (" +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_LABEL_NAME+" TEXT, " +
+                COLUMN_LABEL_COLOR+" INTEGER " +
+                ");");
 
     }
 
-    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // SQLite DB 버전 관리
         Log.d(TAG, oldVersion + " => " +newVersion);
@@ -86,9 +121,12 @@ public class DBmanager extends SQLiteOpenHelper {
             case 3:
             case 4:
                 //upgrade from version 4 to 5
-                db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_LABEL + " TEXT;");
-            case 5:
-                db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_LABEL_POS + " INTEGER;");
+                db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_LABEL + " INTEGER;");
+                db.execSQL("CREATE TABLE "+TABLE_NAME_LABEL+" (" +
+                            "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            COLUMN_LABEL_NAME+" TEXT, " +
+                            COLUMN_LABEL_COLOR+" INTEGER " +
+                            ");");
         }
     }
 
@@ -102,6 +140,22 @@ public class DBmanager extends SQLiteOpenHelper {
         Log.d(TAG, oldVersion + " => " +newVersion);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_MEMO);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_SCHEDULE);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_LABEL);
         onCreate(db);
+    }
+
+    protected void startTransaction(ArrayList<String> sqlList) {
+        // DB 작업 실행
+        dBmanager.dbW.beginTransaction();
+        try {
+            for (String sql : sqlList) {
+                dBmanager.dbW.execSQL(sql);
+            }
+            dBmanager.dbW.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dBmanager.dbW.endTransaction(); //트랜잭션을 끝내는 메소드.
+        }
     }
 }
