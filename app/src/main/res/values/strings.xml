@@ -14,6 +14,7 @@
     <string name="posted_date">Posted date</string>
     <string name="deleted"> was deleted.</string>
     <string name="memo_search">Search</string>
+    <string name="filter">Filter</string>
 
     <!-- 메모 생성 -->
     <string name="create_notice">The created/edited memo will progress from the current time.</string>

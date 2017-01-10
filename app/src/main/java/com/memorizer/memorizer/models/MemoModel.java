@@ -6,18 +6,26 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.memorizer.memorizer.models.Constants.FILTER_ALARMED;
+import static com.memorizer.memorizer.models.Constants.FILTER_CREATED;
+import static com.memorizer.memorizer.models.Constants.FILTER_MODIFY;
+import static com.memorizer.memorizer.models.Constants.FILTER_NONE;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_LABEL_COLOR;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_LABEL_NAME;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_CONTENT;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_DURING;
+import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_EDITED;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_HOUR;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_IS_RANDOM;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_LABEL;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_MINUTE;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_POSTED;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_TERM;
+import static com.memorizer.memorizer.models.DBmanager.COLUMN_SCHEDULE_ALARM_DATE;
+import static com.memorizer.memorizer.models.DBmanager.COLUMN_SCHEDULE_MEMO_ID;
 import static com.memorizer.memorizer.models.DBmanager.TABLE_NAME_LABEL;
 import static com.memorizer.memorizer.models.DBmanager.TABLE_NAME_MEMO;
+import static com.memorizer.memorizer.models.DBmanager.TABLE_NAME_SCHEDULE;
 
 /**
  * Created by YS on 2016-06-21.
@@ -254,10 +262,10 @@ public class MemoModel {
         return allData;
     }
 
-    public ArrayList<MemoData> getAllDataShort() {
+    public ArrayList<MemoData> getAllDataShort(int order) {
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;
-        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+TABLE_NAME_MEMO+"._id, " +
+        String sql = "SELECT "+TABLE_NAME_MEMO+"._id, " +
                 "substr("+COLUMN_MEMO_CONTENT+",0,25) AS "+COLUMN_MEMO_CONTENT+", "+
                 COLUMN_MEMO_DURING+", "+
                 COLUMN_MEMO_TERM+", "+
@@ -267,9 +275,27 @@ public class MemoModel {
                 COLUMN_MEMO_HOUR+", "+
                 COLUMN_MEMO_MINUTE+", "+
                 COLUMN_MEMO_POSTED+" " +
-                "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
-                "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id ORDER BY "+TABLE_NAME_MEMO+"._id DESC", null);
+                "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+", "+TABLE_NAME_SCHEDULE+" " +
+                "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id, " +
+                TABLE_NAME_MEMO+"._id="+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_MEMO_ID;
+        switch (order) {
+            case FILTER_NONE:
+                sql += "ORDER BY "+TABLE_NAME_MEMO+"._id ";
+                break;
+            case FILTER_MODIFY:
+                sql += "ORDER BY "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_EDITED;
+                break;
+            case FILTER_ALARMED:
+                sql += "ORDER BY "+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_ALARM_DATE;
+                break;
+            case FILTER_CREATED:
+                sql += "ORDER BY "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_POSTED;
+                break;
+        }
 
+        sql += " DESC";
+
+        Cursor cursor = dBmanager.getDbR().rawQuery(sql, null);
         while(cursor.moveToNext()) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(2));
@@ -331,25 +357,47 @@ public class MemoModel {
         return data;
     }
 
-    public ArrayList<MemoData> getSearchData(String searchText) {
+    public ArrayList<MemoData> getSearchData(String searchText, LabelData selectedLabelFilter) {
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;
+        String sql;
         // TODO 쿼리 완성
-        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+TABLE_NAME_MEMO+"._id, " +
-                "substr("+COLUMN_MEMO_CONTENT+",0,25) AS "+COLUMN_MEMO_CONTENT+", "+
-                COLUMN_MEMO_DURING+", "+
-                COLUMN_MEMO_TERM+", "+
-                TABLE_NAME_LABEL+"."+COLUMN_LABEL_NAME+", "+
-                TABLE_NAME_LABEL+"."+COLUMN_LABEL_COLOR+", " +
-                COLUMN_MEMO_IS_RANDOM+", "+
-                COLUMN_MEMO_HOUR+", "+
-                COLUMN_MEMO_MINUTE+", "+
-                COLUMN_MEMO_POSTED+" " +
-                "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
-                "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
-                "WHERE memoContent LIKE '%"+searchText+"%' " +
-                "ORDER BY "+TABLE_NAME_MEMO+"._id DESC", null);
+        if (selectedLabelFilter == null) {
+             sql = "SELECT " + TABLE_NAME_MEMO + "._id, " +
+                    "substr(" + COLUMN_MEMO_CONTENT + ",0,25) AS " + COLUMN_MEMO_CONTENT + ", " +
+                    COLUMN_MEMO_DURING + ", " +
+                    COLUMN_MEMO_TERM + ", " +
+                    TABLE_NAME_LABEL + "." + COLUMN_LABEL_NAME + ", " +
+                    TABLE_NAME_LABEL + "." + COLUMN_LABEL_COLOR + ", " +
+                    COLUMN_MEMO_IS_RANDOM + ", " +
+                    COLUMN_MEMO_HOUR + ", " +
+                    COLUMN_MEMO_MINUTE + ", " +
+                    COLUMN_MEMO_POSTED + " " +
+                    "FROM " + TABLE_NAME_MEMO + " INNER JOIN " + TABLE_NAME_LABEL + " " +
+                    "ON " + TABLE_NAME_MEMO + "." + COLUMN_MEMO_LABEL + "=" + TABLE_NAME_LABEL + "._id " +
+                    "WHERE "+COLUMN_MEMO_CONTENT+" LIKE '%" + searchText + "%' " +
+                    "ORDER BY " + TABLE_NAME_MEMO + "._id DESC";
+        } else {
+            sql = "SELECT " + TABLE_NAME_MEMO + "._id, " +
+                    "substr(" + COLUMN_MEMO_CONTENT + ",0,25) AS " + COLUMN_MEMO_CONTENT + ", " +
+                    COLUMN_MEMO_DURING + ", " +
+                    COLUMN_MEMO_TERM + ", " +
+                    TABLE_NAME_LABEL + "." + COLUMN_LABEL_NAME + ", " +
+                    TABLE_NAME_LABEL + "." + COLUMN_LABEL_COLOR + ", " +
+                    COLUMN_MEMO_IS_RANDOM + ", " +
+                    COLUMN_MEMO_HOUR + ", " +
+                    COLUMN_MEMO_MINUTE + ", " +
+                    COLUMN_MEMO_POSTED + " " +
+                    "FROM " + TABLE_NAME_MEMO + " INNER JOIN " + TABLE_NAME_LABEL + " " +
+                    "ON " + TABLE_NAME_MEMO + "." + COLUMN_MEMO_LABEL + "=" + TABLE_NAME_LABEL + "._id " +
+                    "WHERE "+COLUMN_LABEL_NAME+"='"+selectedLabelFilter.getLabelName()+"' " +
+                    "AND "+COLUMN_LABEL_COLOR+"="+selectedLabelFilter.getLabelPosition()+" "+
+                    "AND "+COLUMN_MEMO_CONTENT+" LIKE '%" + searchText + "%' " +
+                    "ORDER BY " + TABLE_NAME_MEMO + "._id DESC";
+        }
 
+
+        Cursor cursor = dBmanager.getDbR().rawQuery(sql, null);
         while(cursor.moveToNext()) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(2));
@@ -365,6 +413,26 @@ public class MemoModel {
                     cursor.getInt(7),
                     cursor.getInt(8),
                     cursor.getString(9));
+
+            allData.add(i++, tempData);
+        }
+        cursor.close();
+
+        return allData;
+    }
+
+    public ArrayList<LabelData> getLabelList() {
+        ArrayList<LabelData> allData = new ArrayList<>();
+        int i =0;
+        // TODO 쿼리 완성
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+COLUMN_LABEL_NAME+", "+COLUMN_LABEL_COLOR+" "+
+                "FROM "+TABLE_NAME_LABEL+" " +
+                "ORDER BY "+COLUMN_LABEL_COLOR+" ASC", null);
+
+        while(cursor.moveToNext()) {
+            LabelData tempData = new LabelData(
+                    cursor.getString(0),
+                    cursor.getInt(1));
 
             allData.add(i++, tempData);
         }

@@ -1,6 +1,7 @@
 package com.memorizer.memorizer.memolist;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,12 +18,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.memorizer.memorizer.DeveloperInfo;
 import com.memorizer.memorizer.MemoAlarmActivity;
 import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.create.MemoCreate;
+import com.memorizer.memorizer.models.LabelData;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
@@ -38,11 +41,12 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
-    ArrayList<MemoData> memoDatas;
+    ArrayList<MemoData> memoDatas = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private MemoListAdapter memoListAdapter;
     private Spinner filterList;
+    private ArrayList<LabelData> labelDatas = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +85,38 @@ public class MainActivity extends AppCompatActivity
 
         // 필터 리스트 세팅
         filterList = (Spinner) findViewById(R.id.filter_list);
+        filterList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                switch (position) {
+                    case 0:
+                        editor.putInt("filter", 0);
+                        break;
+                    case 1:
+                        editor.putInt("filter", 1);
+                        break;
+                    case 2:
+                        editor.putInt("filter", 2);
+                        break;
+                    default:
+                        editor.putInt("filter", 0);
+                        break;
+
+                }
+                editor.apply();
+                setMemoDatas(pref.getInt("filter",0));
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
 
         // 데이터 채우기
-        setMemoDatas();
+        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        setMemoDatas(pref.getInt("filter",0));
 
         ScheduleModel scheduleModel = new ScheduleModel(this);
         Log.d("TEST", "스케쥴: "+scheduleModel.getAllData());
@@ -96,7 +129,8 @@ public class MainActivity extends AppCompatActivity
             public void onRefresh() {
                 // TODO 리프레쉬
                 swipeRefreshLayout.setRefreshing(false);
-                setMemoDatas();
+                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                setMemoDatas(pref.getInt("filter",0));
             }
         });
         // RecyclerView 생성
@@ -111,6 +145,11 @@ public class MainActivity extends AppCompatActivity
 
         // RecyclerView를 Context 메뉴로 등록
         registerForContextMenu(recyclerView);
+
+        // 스피너 아이템 추가
+        /*MemoModel memoModel = new MemoModel(this);
+        labelDatas = memoModel.getLabelList(); // Content 글자수 제한
+        memoModel.close();*/
 
         // MemoCreate에서 메모를 만든경우
         Intent mIntent = getIntent();
@@ -131,7 +170,8 @@ public class MainActivity extends AppCompatActivity
             case ITEM_DELETE:
                 if (resultCode == RESULT_OK) {
                     Log.d(TAG, "리프레쉬");
-                    setMemoDatas();
+                    SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                    setMemoDatas(pref.getInt("filter",0));
                 }
                 break;
 
@@ -167,10 +207,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     // memoDatas 재배치
-    private void setMemoDatas() {
+    private void setMemoDatas(int order) {
         // DB에서 메모목록 가져옴
         MemoModel memoModel = new MemoModel(this);
-        memoDatas = memoModel.getAllDataShort(); // Content 글자수 제한
+        memoDatas = memoModel.getAllDataShort(order); // Content 글자수 제한
         memoModel.close();
 
         if (memoListAdapter != null) {

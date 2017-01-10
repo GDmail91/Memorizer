@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class DBmanager extends SQLiteOpenHelper{
     private static final String TAG = "DBManager";
-    protected static final int DB_VERSION = 4;
+    protected static final int DB_VERSION = 5;
     private static final String DB_NAME = "Memo.db";
 
     private SQLiteDatabase dbR;
@@ -34,6 +34,7 @@ public class DBmanager extends SQLiteOpenHelper{
     protected static final String COLUMN_MEMO_HOUR = "memoTimeHour";
     protected static final String COLUMN_MEMO_MINUTE = "memoTimeMinute";
     protected static final String COLUMN_MEMO_POSTED = "posted";
+    protected static final String COLUMN_MEMO_EDITED = "edited";
 
     // Label 테이블
     protected static final String TABLE_NAME_LABEL = "Label";
@@ -59,7 +60,8 @@ public class DBmanager extends SQLiteOpenHelper{
                 COLUMN_MEMO_HOUR+" INTEGER, " +
                 COLUMN_MEMO_MINUTE+" INTEGER, " +
                 COLUMN_MEMO_POSTED+" DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                COLUMN_MEMO_LABEL+" INTEGER " +
+                COLUMN_MEMO_LABEL+" INTEGER, " +
+                COLUMN_MEMO_EDITED+" DATETIME DEFAULT CURRENT_TIMESTAMP " +
                 ");");
 
         db.execSQL("CREATE TABLE "+TABLE_NAME_SCHEDULE+" ( " +
@@ -100,14 +102,17 @@ public class DBmanager extends SQLiteOpenHelper{
                         COLUMN_SCHEDULE_ALARM_DATE+" INTEGER);");
             case 2:
             case 3:
-            case 4:
                 //upgrade from version 4 to 5
                 db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_LABEL + " INTEGER;");
                 db.execSQL("CREATE TABLE "+TABLE_NAME_LABEL+" (" +
-                            "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                            COLUMN_LABEL_NAME+" TEXT, " +
-                            COLUMN_LABEL_COLOR+" INTEGER " +
-                            ");");
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_LABEL_NAME+" TEXT, " +
+                        COLUMN_LABEL_COLOR+" INTEGER " +
+                        ");");
+            case 4:
+                db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_EDITED + " DATETIME;");
+            case 5:
+
         }
     }
 
