@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.memolist.MemoListAdapter;
-import com.memorizer.memorizer.models.DBmanager;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 
@@ -76,7 +75,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void onSearch(String searchText) {
         // DB에서 메모목록 가져옴
-        MemoModel memoModel = new MemoModel(DBmanager.getInstance(this));
+        MemoModel memoModel = new MemoModel(this);
         memoDatas = memoModel.getSearchData(searchText); // Content 글자수 제한
         memoModel.close();
 

@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.memolist.MainActivity;
 import com.memorizer.memorizer.models.Constants;
-import com.memorizer.memorizer.models.DBmanager;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
@@ -84,7 +83,7 @@ public class MemoCreate extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.getBoolean("is_edit")) {
-            MemoModel memoModel = new MemoModel(DBmanager.getInstance(this));
+            MemoModel memoModel = new MemoModel(this);
             this.memoData = memoModel.getData(bundle.getInt("memo_id"));
             memoModel.close();
 
@@ -316,7 +315,7 @@ public class MemoCreate extends AppCompatActivity {
                     memoData.setLabelPos(color);
 
                     // DB에 저장
-                    MemoModel memoModel = new MemoModel(DBmanager.getInstance(this));
+                    MemoModel memoModel = new MemoModel(this);
                     if (bundle != null
                     && bundle.getBoolean("is_edit")) {
                         memoModel.update(memoData);
@@ -348,10 +347,10 @@ public class MemoCreate extends AppCompatActivity {
                 return true;
 
             case R.id.memo_delete: // 메모 삭제시
-                MemoModel memoModel = new MemoModel(DBmanager.getInstance(this));
+                MemoModel memoModel = new MemoModel(this);
                 memoModel.delete(memoData);
                 memoModel.close();
-                ScheduleModel scheduleModel = new ScheduleModel(DBmanager.getInstance(this));
+                ScheduleModel scheduleModel = new ScheduleModel(this);
                 scheduleModel.deleteByMemoId(memoData.get_id());
                 scheduleModel.close();
                 Toast.makeText(this, memoData.get_id() + getString(R.string.deleted), Toast.LENGTH_SHORT).show();

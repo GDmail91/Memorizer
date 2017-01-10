@@ -1,5 +1,6 @@
 package com.memorizer.memorizer.models;
 
+import android.content.Context;
 import android.database.Cursor;
 
 import java.util.ArrayList;
@@ -17,8 +18,6 @@ import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_POSTED;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_TERM;
 import static com.memorizer.memorizer.models.DBmanager.TABLE_NAME_LABEL;
 import static com.memorizer.memorizer.models.DBmanager.TABLE_NAME_MEMO;
-import static com.memorizer.memorizer.models.DBmanager.dbR;
-import static com.memorizer.memorizer.models.DBmanager.dbW;
 
 /**
  * Created by YS on 2016-06-21.
@@ -28,13 +27,13 @@ public class MemoModel {
 
     private DBmanager dBmanager;
 
-    public MemoModel(DBmanager dBmanager) {
-        this.dBmanager = dBmanager;
+    public MemoModel(Context context) {
+        this.dBmanager = new DBmanager(context);
     }
 
     public void fuckyou() {
-        dbW.execSQL("DROP TABLE IF EXISTS Memo");
-        dbW.execSQL("DROP TABLE IF EXISTS MemoSchedule");
+        dBmanager.getDbW().execSQL("DROP TABLE IF EXISTS Memo");
+        dBmanager.getDbW().execSQL("DROP TABLE IF EXISTS MemoSchedule");
     }
 
     /** 삽입 SQL
@@ -51,7 +50,7 @@ public class MemoModel {
         String checkSql = "SELECT _id FROM "+TABLE_NAME_LABEL+" "+
                 "WHERE "+COLUMN_LABEL_NAME+"='" + memoData.getLabel() + "' " +
                 "AND "+COLUMN_LABEL_COLOR+"='" + memoData.getLabelPos() + "'";
-        Cursor checkCursor = dbR.rawQuery(checkSql, null);
+        Cursor checkCursor = dBmanager.getDbR().rawQuery(checkSql, null);
 
         if (checkCursor != null && checkCursor.moveToFirst()) {
             // 라벨이 이미 등록되어 있는 경우
@@ -59,7 +58,7 @@ public class MemoModel {
             checkCursor.close();
         } else {
             // 라벨이 없는 경우
-            Cursor labelCursor = dbR.rawQuery("SELECT _id FROM " + TABLE_NAME_LABEL + " ORDER BY _id DESC LIMIT 1", null);
+            Cursor labelCursor = dBmanager.getDbR().rawQuery("SELECT _id FROM " + TABLE_NAME_LABEL + " ORDER BY _id DESC LIMIT 1", null);
             if (labelCursor != null && labelCursor.moveToFirst()) {
                 do {
                     labelTopNumber = labelCursor.getInt(0);
@@ -79,7 +78,7 @@ public class MemoModel {
 
 
         // 메모 모델 삽입
-        Cursor cursor = dbR.rawQuery("SELECT _id FROM "+TABLE_NAME_MEMO+" ORDER BY _id DESC LIMIT 1", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT _id FROM "+TABLE_NAME_MEMO+" ORDER BY _id DESC LIMIT 1", null);
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 topNumber = cursor.getInt(0);
@@ -133,7 +132,7 @@ public class MemoModel {
         String checkSql = "SELECT _id FROM "+TABLE_NAME_LABEL+" "+
                 "WHERE "+COLUMN_LABEL_NAME+"='" + memoData.getLabel() + "' " +
                 "AND "+COLUMN_LABEL_COLOR+"='" + memoData.getLabelPos() + "'";
-        Cursor checkCursor = dbR.rawQuery(checkSql, null);
+        Cursor checkCursor = dBmanager.getDbR().rawQuery(checkSql, null);
 
         if (checkCursor != null && checkCursor.moveToFirst()) {
             // 라벨이 이미 등록되어 있는 경우
@@ -141,7 +140,7 @@ public class MemoModel {
             checkCursor.close();
         } else {
             // 라벨이 없는 경우
-            Cursor labelCursor = dbR.rawQuery("SELECT _id FROM " + TABLE_NAME_LABEL + " ORDER BY _id DESC LIMIT 1", null);
+            Cursor labelCursor = dBmanager.getDbR().rawQuery("SELECT _id FROM " + TABLE_NAME_LABEL + " ORDER BY _id DESC LIMIT 1", null);
             if (labelCursor != null && labelCursor.moveToFirst()) {
                 do {
                     labelTopNumber = labelCursor.getInt(0);
@@ -177,52 +176,52 @@ public class MemoModel {
     }
 
     public void update(String _query) {
-        dbW.execSQL(_query);
+        dBmanager.getDbW().execSQL(_query);
     }
 
     public void delete(MemoData memoData) {
-        dbW.beginTransaction();
+        dBmanager.getDbW().beginTransaction();
         try {
             int labelId = 0;
-            Cursor cursor = dbR.rawQuery("SELECT "+COLUMN_MEMO_LABEL+" FROM "+TABLE_NAME_MEMO+" WHERE _id='"+memoData.get_id()+"'", null);
+            Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+COLUMN_MEMO_LABEL+" FROM "+TABLE_NAME_MEMO+" WHERE _id='"+memoData.get_id()+"'", null);
             if (cursor != null && cursor.moveToFirst()) {
                 labelId = cursor.getInt(0);
                 cursor.close();
             }
 
-            dbW.execSQL("DELETE FROM "+TABLE_NAME_MEMO+" WHERE _id='" +memoData.get_id()+ "'");
+            dBmanager.getDbW().execSQL("DELETE FROM "+TABLE_NAME_MEMO+" WHERE _id='" +memoData.get_id()+ "'");
 
-            cursor = dbR.rawQuery("SELECT _id FROM "+TABLE_NAME_MEMO+" WHERE "+COLUMN_MEMO_LABEL+"="+labelId, null);
+            cursor = dBmanager.getDbR().rawQuery("SELECT _id FROM "+TABLE_NAME_MEMO+" WHERE "+COLUMN_MEMO_LABEL+"="+labelId, null);
             if (cursor == null) {
-                dbW.execSQL("DELETE FROM "+TABLE_NAME_LABEL+" WHERE _id='" + labelId + "'");
+                dBmanager.getDbW().execSQL("DELETE FROM "+TABLE_NAME_LABEL+" WHERE _id='" + labelId + "'");
             } else {
                 cursor.close();
             }
 
-            dbW.setTransactionSuccessful();
+            dBmanager.getDbW().setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dbW.endTransaction();
+            dBmanager.getDbW().endTransaction();
         }
     }
 
     public void deleteAll() {
-        dbW.beginTransaction();
+        dBmanager.getDbW().beginTransaction();
         try {
-            dbW.execSQL("DELETE FROM Memo");
-            dbW.setTransactionSuccessful();
+            dBmanager.getDbW().execSQL("DELETE FROM Memo");
+            dBmanager.getDbW().setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dbW.endTransaction();
+            dBmanager.getDbW().endTransaction();
         }
     }
 
     public int printCountOfData() {
         int count=0;
 
-        Cursor cursor = dbR.rawQuery("SELECT * FROM Memo ORDER BY _id DESC", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT * FROM Memo ORDER BY _id DESC", null);
         while(cursor.moveToNext()) {
             count += cursor.getInt(0);
         }
@@ -232,7 +231,7 @@ public class MemoModel {
     public ArrayList<MemoData> getAllData() {
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;
-        Cursor cursor = dbR.rawQuery("SELECT * FROM Memo ORDER BY _id DESC", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT * FROM Memo ORDER BY _id DESC", null);
         while(cursor.moveToNext()) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(2));
@@ -258,7 +257,7 @@ public class MemoModel {
     public ArrayList<MemoData> getAllDataShort() {
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;
-        Cursor cursor = dbR.rawQuery("SELECT "+TABLE_NAME_MEMO+"._id, " +
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+TABLE_NAME_MEMO+"._id, " +
                 "substr("+COLUMN_MEMO_CONTENT+",0,25) AS "+COLUMN_MEMO_CONTENT+", "+
                 COLUMN_MEMO_DURING+", "+
                 COLUMN_MEMO_TERM+", "+
@@ -297,7 +296,7 @@ public class MemoModel {
     public MemoData getData(int id) {
         MemoData data = null;
 
-        Cursor cursor = dbR.rawQuery("SELECT "+TABLE_NAME_MEMO+"._id, " +
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+TABLE_NAME_MEMO+"._id, " +
                 "substr("+COLUMN_MEMO_CONTENT+",0,25) AS "+COLUMN_MEMO_CONTENT+", "+
                 COLUMN_MEMO_DURING+", "+
                 COLUMN_MEMO_TERM+", "+
@@ -320,12 +319,12 @@ public class MemoModel {
             data.setContent(cursor.getString(1));
             data.setWhileDate(calendar);
             data.setTerm(cursor.getInt(3));
-            data.setLabel(cursor.getString(8));
-            data.setLabelPos(cursor.getInt(9));
-            data.setRandom(cursor.getInt(4));
-            data.setTimeOfHour(cursor.getInt(5));
-            data.setTimeOfMinute(cursor.getInt(6));
-            data.setPosted(cursor.getString(7));
+            data.setLabel(cursor.getString(4));
+            data.setLabelPos(cursor.getInt(5));
+            data.setRandom(cursor.getInt(6));
+            data.setTimeOfHour(cursor.getInt(7));
+            data.setTimeOfMinute(cursor.getInt(8));
+            data.setPosted(cursor.getString(9));
         }
         cursor.close();
 
@@ -336,7 +335,7 @@ public class MemoModel {
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;
         // TODO 쿼리 완성
-        Cursor cursor = dbR.rawQuery("SELECT "+TABLE_NAME_MEMO+"._id, " +
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+TABLE_NAME_MEMO+"._id, " +
                 "substr("+COLUMN_MEMO_CONTENT+",0,25) AS "+COLUMN_MEMO_CONTENT+", "+
                 COLUMN_MEMO_DURING+", "+
                 COLUMN_MEMO_TERM+", "+
@@ -375,6 +374,6 @@ public class MemoModel {
     }
 
     public void close() {
-        dbR.close();
+        dBmanager.getDbR().close();
     }
 }

@@ -10,37 +10,18 @@ import java.util.ArrayList;
 /**
  * Created by YS on 2016-07-11.
  */
-public class DBmanager {
+public class DBmanager extends SQLiteOpenHelper{
     private static final String TAG = "DBManager";
     protected static final int DB_VERSION = 4;
     private static final String DB_NAME = "Memo.db";
 
-    protected static SQLiteDatabase dbR;
-    protected static SQLiteDatabase dbW;
+    private SQLiteDatabase dbR;
+    private SQLiteDatabase dbW;
 
-    private static DBmanager dBmanager = new DBmanager();
-    private static SQLiteOpenHelper dbHelper;
-
-    private DBmanager() {}
-
-    public static DBmanager getInstance(Context context) {
-        if (dbHelper == null) {
-            dbHelper = new SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
-                @Override
-                public void onCreate(SQLiteDatabase db) {
-                    dBmanager.onCreate(db);
-                }
-
-                @Override
-                public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-                    dBmanager.onUpgrade(db, oldVersion, newVersion);
-                }
-            };
-        }
-
-        dbR = dbHelper.getReadableDatabase();
-        dbW = dbHelper.getWritableDatabase();
-        return dBmanager;
+    public DBmanager(Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
+        dbR = getReadableDatabase();
+        dbW = getWritableDatabase();
     }
 
     // Memo 테이블
@@ -146,16 +127,20 @@ public class DBmanager {
 
     protected void startTransaction(ArrayList<String> sqlList) {
         // DB 작업 실행
-        dBmanager.dbW.beginTransaction();
+        dbW.beginTransaction();
         try {
             for (String sql : sqlList) {
-                dBmanager.dbW.execSQL(sql);
+                dbW.execSQL(sql);
             }
-            dBmanager.dbW.setTransactionSuccessful();
+            dbW.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dBmanager.dbW.endTransaction(); //트랜잭션을 끝내는 메소드.
+            dbW.endTransaction(); //트랜잭션을 끝내는 메소드.
         }
     }
+
+    public SQLiteDatabase getDbR() {return dbR;}
+
+    public SQLiteDatabase getDbW() {return dbW;}
 }

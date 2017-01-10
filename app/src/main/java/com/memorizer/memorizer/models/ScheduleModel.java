@@ -1,5 +1,6 @@
 package com.memorizer.memorizer.models;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -9,8 +10,6 @@ import java.util.Calendar;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_SCHEDULE_ALARM_DATE;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_SCHEDULE_MEMO_ID;
 import static com.memorizer.memorizer.models.DBmanager.TABLE_NAME_SCHEDULE;
-import static com.memorizer.memorizer.models.DBmanager.dbR;
-import static com.memorizer.memorizer.models.DBmanager.dbW;
 
 /**
  * Created by YS on 2016-07-11.
@@ -20,8 +19,8 @@ public class ScheduleModel{
 
     private DBmanager dBmanager;
 
-    public ScheduleModel(DBmanager dBmanager) {
-        this.dBmanager=dBmanager;
+    public ScheduleModel(Context context) {
+        this.dBmanager= new DBmanager(context);
     }
 
     /** 삽입 SQL
@@ -33,7 +32,7 @@ public class ScheduleModel{
         ArrayList<String> sqlList = new ArrayList<>();
         int topNumber = 0;
 
-        Cursor cursor = dbR.rawQuery("SELECT _id FROM "+TABLE_NAME_SCHEDULE+" ORDER BY _id DESC LIMIT 1", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT _id FROM "+TABLE_NAME_SCHEDULE+" ORDER BY _id DESC LIMIT 1", null);
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 topNumber = cursor.getInt(0);
@@ -72,65 +71,65 @@ public class ScheduleModel{
     }
 
     public void update(String _query) {
-        dbW.execSQL(_query);
+        dBmanager.getDbW().execSQL(_query);
     }
 
     public void delete(int ids) {
-        dbW.beginTransaction();
+        dBmanager.getDbW().beginTransaction();
         try {
-            dbW.execSQL("DELETE FROM MemoSchedule WHERE _id='" + ids + "'");
-            dbW.setTransactionSuccessful();
+            dBmanager.getDbW().execSQL("DELETE FROM MemoSchedule WHERE _id='" + ids + "'");
+            dBmanager.getDbW().setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dbW.endTransaction();
+            dBmanager.getDbW().endTransaction();
         }
     }
 
     public void deleteByMemoId(int memoId) {
         Log.d(TAG, "삭제가??");
-        dbW.beginTransaction();
+        dBmanager.getDbW().beginTransaction();
         try {
-            dbW.execSQL("DELETE FROM MemoSchedule WHERE memoId=" + memoId);
-            dbW.setTransactionSuccessful();
+            dBmanager.getDbW().execSQL("DELETE FROM MemoSchedule WHERE memoId=" + memoId);
+            dBmanager.getDbW().setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dbW.endTransaction();
+            dBmanager.getDbW().endTransaction();
         }
-        dbW.close();
+        dBmanager.getDbW().close();
     }
 
     public void deletePrevious() {
         Log.d(TAG, "왜!?");
-        dbW.beginTransaction();
+        dBmanager.getDbW().beginTransaction();
         try {
-            dbW.execSQL("DELETE FROM MemoSchedule WHERE alarmDate<" + (int)(System.currentTimeMillis()/1000) + " OR memoId = 0");
-            dbW.setTransactionSuccessful();
+            dBmanager.getDbW().execSQL("DELETE FROM MemoSchedule WHERE alarmDate<" + (int)(System.currentTimeMillis()/1000) + " OR memoId = 0");
+            dBmanager.getDbW().setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dbW.endTransaction();
+            dBmanager.getDbW().endTransaction();
         }
-        dbW.close();
+        dBmanager.getDbW().close();
     }
 
     public void deleteAll() {
-        dbW.beginTransaction();
+        dBmanager.getDbW().beginTransaction();
         try {
-            dbW.execSQL("DELETE FROM MemoSchedule");
-            dbW.setTransactionSuccessful();
+            dBmanager.getDbW().execSQL("DELETE FROM MemoSchedule");
+            dBmanager.getDbW().setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dbW.endTransaction();
+            dBmanager.getDbW().endTransaction();
         }
     }
 
     public int printCountOfData() {
         int count=0;
 
-        Cursor cursor = dbR.rawQuery("SELECT * FROM MemoSchedule ORDER BY _id DESC", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT * FROM MemoSchedule ORDER BY _id DESC", null);
 
         count = cursor.getCount();
         cursor.close();
@@ -140,7 +139,7 @@ public class ScheduleModel{
 
     public ScheduleData getData(int id) {
 
-        Cursor cursor = dbR.rawQuery("SELECT * FROM MemoSchedule WHERE _id='"+id+"' ORDER BY _id DESC", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT * FROM MemoSchedule WHERE _id='"+id+"' ORDER BY _id DESC", null);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(cursor.getInt(2));
@@ -156,7 +155,7 @@ public class ScheduleModel{
 
     public ScheduleData getMemoSchedule(int memoId) {
 
-        Cursor cursor = dbR.rawQuery("SELECT * FROM MemoSchedule WHERE memoId='"+memoId+"' ORDER BY _id DESC LIMIT 1", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT * FROM MemoSchedule WHERE memoId='"+memoId+"' ORDER BY _id DESC LIMIT 1", null);
 
         ScheduleData data = null;
         if (cursor.getCount() != 0) {
@@ -174,21 +173,26 @@ public class ScheduleModel{
         return data;
     }
 
-    public ScheduleData getNextData() {
+    public ArrayList<ScheduleData> getNextData() { // 같은시간에 울리는것 리스트에 담아서 전달
 
         // 오름 차순 정렬후 첫번째꺼 (timeMiles와 가장 가까운 알람)
-        Cursor cursor = dbR.rawQuery("SELECT DISTINCT _id, memoId, alarmDate FROM MemoSchedule ORDER BY alarmDate ASC LIMIT 1", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT DISTINCT _id, "+COLUMN_SCHEDULE_MEMO_ID+", "+COLUMN_SCHEDULE_ALARM_DATE+" "+
+                "FROM "+TABLE_NAME_SCHEDULE+" " +
+                "WHERE "+COLUMN_SCHEDULE_ALARM_DATE+"=" +
+                "   (SELECT "+COLUMN_SCHEDULE_ALARM_DATE+" " +
+                "   FROM "+TABLE_NAME_SCHEDULE+" " +
+                "   ORDER BY "+COLUMN_SCHEDULE_ALARM_DATE+" ASC LIMIT 1) ", null);
 
-        ScheduleData data = null;
-        if (cursor.getCount() != 0) {
+        ArrayList<ScheduleData> data = new ArrayList<>();
+        while(cursor.moveToNext()) {
             cursor.moveToFirst();
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis((long) cursor.getInt(2) * 1000);
 
-            data = new ScheduleData(
+            data.add(new ScheduleData(
                     cursor.getInt(0),
                     cursor.getInt(1),
-                    calendar);
+                    calendar));
         }
         cursor.close();
 
@@ -198,7 +202,7 @@ public class ScheduleModel{
     public ScheduleData getNextDataByTime(long timeMiles) {
 
         // 오름 차순 정렬후 첫번째꺼 (timeMiles와 가장 가까운 알람)
-        Cursor cursor = dbR.rawQuery("SELECT DISTINCT memoId, alarmDate FROM MemoSchedule WHERE alarmDate>"+(int)(timeMiles/1000)+" ORDER BY alarmDate ASC LIMIT 1", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT DISTINCT memoId, alarmDate FROM MemoSchedule WHERE alarmDate>"+(int)(timeMiles/1000)+" ORDER BY alarmDate ASC LIMIT 1", null);
 
         ScheduleData data = null;
         if (cursor.getCount() != 0) {
@@ -218,7 +222,7 @@ public class ScheduleModel{
     public ArrayList<ScheduleData> getAllData() {
 
         // 오름 차순 정렬후 첫번째꺼 (timeMiles와 가장 가까운 알람)
-        Cursor cursor = dbR.rawQuery("SELECT * FROM MemoSchedule", null);
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT * FROM MemoSchedule", null);
 
         ArrayList<ScheduleData> arrData = new ArrayList<>();
         ScheduleData data;
@@ -238,7 +242,6 @@ public class ScheduleModel{
     }
 
     public void close() {
-        dbW.close();
-        dbR.close();
+        dBmanager.getDbR().close();
     }
 }
