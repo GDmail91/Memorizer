@@ -9,8 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.memorizer.memorizer.R;
@@ -30,7 +30,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "SearchActivity";
 
     private EditText searchTextView;
-    private Button labelListBtn;
+    private ImageButton labelListBtn;
 
     private ArrayList<MemoData> memoDatas = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -52,11 +52,11 @@ public class SearchActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        labelListBtn = (Button) findViewById(R.id.label_list_btn);
+        labelListBtn = (ImageButton) findViewById(R.id.label_list_btn);
         labelListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SearchActivity.this, LabelList.class);
+                Intent intent = new Intent(SearchActivity.this, LabelListDialog.class);
                 startActivityForResult(intent, LABEL_SELECT);
             }
         });
@@ -98,9 +98,15 @@ public class SearchActivity extends AppCompatActivity {
         switch (requestCode) {
             case LABEL_SELECT:
                 if (resultCode == RESULT_OK) {
-                    selectedLabelFilter = (LabelData) data.getSerializableExtra("labelFilter");
+                    if (data.getBooleanExtra("selectAll", true)) {
+                        selectedLabelFilter = null;
+                    } else {
+                        selectedLabelFilter = (LabelData) data.getSerializableExtra("labelFilter");
+                    }
+
+                    onSearch(searchTextView.getText().toString());
+                    labelListBtn.setImageResource(R.drawable.checkmark);
                 }
-                onSearch(searchTextView.getText().toString());
                 break;
         }
     }

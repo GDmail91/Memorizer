@@ -51,6 +51,11 @@
     <string name="remember">Do you remember?</string>
     <string name="memo_placeholder">Memo contents</string>
 
+    <!-- 검색 -->
+    <string name="all">ALL</string>
+    <string name="no_label">No Label</string>
+    <string name="cancel">Cancel</string>
+
     <!-- 만든이 -->
     <string name="activity_developer">Dev Info</string>
     <string name="devInfo_intro">DevGD\'s Work</string>

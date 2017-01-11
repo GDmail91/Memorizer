@@ -52,7 +52,11 @@ public class LabelListAdapter extends BaseAdapter {
 
 
         labelColorView.setImageDrawable(listViewItem.getLabelDrawable());
-        labelNameView.setText(listViewItem.getLabelName());
+        if (listViewItem.getLabelName().equals("") && listViewItem.getLabelPosition() == 0) {
+            labelNameView.setText(context.getResources().getText(R.string.no_label));
+        } else {
+            labelNameView.setText(listViewItem.getLabelName());
+        }
 
         return convertView;
     }

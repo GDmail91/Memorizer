@@ -12,6 +12,7 @@ public class LabelData implements Serializable {
     private String labelName;
     private int labelPosition;
     private Drawable labelDrawable;
+    private boolean selected = false;
 
     public LabelData(String labelName, int labelPosition) {
         this.labelName = labelName;
@@ -46,5 +47,13 @@ public class LabelData implements Serializable {
 
     public void setLabelDrawable(Drawable labelDrawable) {
         this.labelDrawable = labelDrawable;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

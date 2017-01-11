@@ -52,6 +52,11 @@
     <string name="remember">기억하시나요?</string>
     <string name="memo_placeholder">메모 내용</string>
 
+    <!-- 검색 -->
+    <string name="all">전체</string>
+    <string name="no_label">라벨 없음</string>
+    <string name="cancel">취소</string>
+
     <!-- 만든이 -->
     <string name="activity_developer">만든이</string>
     <string name="devInfo_intro">개발자 GD</string>

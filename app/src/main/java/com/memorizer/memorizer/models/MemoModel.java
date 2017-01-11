@@ -2,6 +2,7 @@ package com.memorizer.memorizer.models;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -191,7 +192,11 @@ public class MemoModel {
         dBmanager.getDbW().beginTransaction();
         try {
             int labelId = 0;
-            Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+COLUMN_MEMO_LABEL+" FROM "+TABLE_NAME_MEMO+" WHERE _id='"+memoData.get_id()+"'", null);
+            Cursor cursor = dBmanager.getDbR().rawQuery(
+                    "SELECT _id " +
+                            "FROM "+TABLE_NAME_LABEL+" " +
+                            "WHERE "+COLUMN_LABEL_NAME+"='"+memoData.getLabel()+"' " +
+                            "AND "+COLUMN_LABEL_COLOR+"="+memoData.getLabelPos(), null);
             if (cursor != null && cursor.moveToFirst()) {
                 labelId = cursor.getInt(0);
                 cursor.close();
@@ -200,9 +205,9 @@ public class MemoModel {
             dBmanager.getDbW().execSQL("DELETE FROM "+TABLE_NAME_MEMO+" WHERE _id='" +memoData.get_id()+ "'");
 
             cursor = dBmanager.getDbR().rawQuery("SELECT _id FROM "+TABLE_NAME_MEMO+" WHERE "+COLUMN_MEMO_LABEL+"="+labelId, null);
-            if (cursor == null) {
+            if (cursor != null && cursor.getCount() == 0) {
+                Log.d(TAG, "라벨 삭제 됨");
                 dBmanager.getDbW().execSQL("DELETE FROM "+TABLE_NAME_LABEL+" WHERE _id='" + labelId + "'");
-            } else {
                 cursor.close();
             }
 
@@ -275,9 +280,10 @@ public class MemoModel {
                 COLUMN_MEMO_HOUR+", "+
                 COLUMN_MEMO_MINUTE+", "+
                 COLUMN_MEMO_POSTED+" " +
-                "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+", "+TABLE_NAME_SCHEDULE+" " +
-                "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id, " +
-                TABLE_NAME_MEMO+"._id="+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_MEMO_ID;
+                "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
+                "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
+                "LEFT JOIN "+TABLE_NAME_SCHEDULE+" " +
+                "ON "+TABLE_NAME_MEMO+"._id="+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_MEMO_ID+" ";
         switch (order) {
             case FILTER_NONE:
                 sql += "ORDER BY "+TABLE_NAME_MEMO+"._id ";

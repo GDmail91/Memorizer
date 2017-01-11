@@ -20,12 +20,13 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
-            <Button
+            <ImageButton
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:text="@string/label"
-                android:textSize="13sp"
+                android:padding="8dp"
                 android:background="@drawable/label_list_btn"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/label"
                 style="?android:attr/borderlessButtonStyle"
                 android:id="@+id/label_list_btn"/>
 
