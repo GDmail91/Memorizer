@@ -81,7 +81,7 @@ public class LabelListDialog extends Activity {
                 });
     }
 
-    protected void onCancel(View v) {
+    public void onCancel(View v) {
         switch (v.getId()) {
             case R.id.cancel:
                 setResult(RESULT_CANCELED);
