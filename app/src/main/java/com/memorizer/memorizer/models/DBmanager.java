@@ -102,6 +102,7 @@ public class DBmanager extends SQLiteOpenHelper{
                         COLUMN_SCHEDULE_ALARM_DATE+" INTEGER);");
             case 2:
             case 3:
+            case 4:
                 //upgrade from version 4 to 5
                 db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_LABEL + " INTEGER;");
                 db.execSQL("CREATE TABLE "+TABLE_NAME_LABEL+" (" +
@@ -109,7 +110,6 @@ public class DBmanager extends SQLiteOpenHelper{
                         COLUMN_LABEL_NAME+" TEXT, " +
                         COLUMN_LABEL_COLOR+" INTEGER " +
                         ");");
-            case 4:
                 db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_EDITED + " DATETIME;");
             case 5:
 
