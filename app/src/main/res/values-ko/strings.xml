@@ -16,6 +16,7 @@
     <string name="deleted">번 메모가 삭제되었습니다.</string>
     <string name="memo_search">검색</string>
     <string name="filter">필터</string>
+    <string name="left_days">일 남음</string>
 
     <!-- 메모 생성 -->
     <string name="create_notice">생성/수정한 메모는 현재 시간부터 간격에 맞춰 진행됩니다.</string>

@@ -15,6 +15,7 @@
     <string name="deleted"> was deleted.</string>
     <string name="memo_search">Search</string>
     <string name="filter">Filter</string>
+    <string name="left_days">days lefts</string>
 
     <!-- 메모 생성 -->
     <string name="create_notice">The created/edited memo will progress from the current time.</string>
