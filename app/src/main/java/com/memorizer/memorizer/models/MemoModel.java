@@ -329,7 +329,7 @@ public class MemoModel {
         MemoData data = null;
 
         Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+TABLE_NAME_MEMO+"._id, " +
-                "substr("+COLUMN_MEMO_CONTENT+",0,25) AS "+COLUMN_MEMO_CONTENT+", "+
+                COLUMN_MEMO_CONTENT+", "+
                 COLUMN_MEMO_DURING+", "+
                 COLUMN_MEMO_TERM+", "+
                 TABLE_NAME_LABEL+"."+COLUMN_LABEL_NAME+", "+
