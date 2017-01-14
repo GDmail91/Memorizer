@@ -77,11 +77,13 @@ public class ScheduleModel{
     public void delete(int ids) {
         dBmanager.getDbW().beginTransaction();
         try {
+            Log.d(TAG, "스케쥴 DELETE 프로세스");
             dBmanager.getDbW().execSQL("DELETE FROM MemoSchedule WHERE _id='" + ids + "'");
             dBmanager.getDbW().setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            Log.d(TAG, "DELETE 완료");
             dBmanager.getDbW().endTransaction();
         }
     }
@@ -185,7 +187,6 @@ public class ScheduleModel{
 
         ArrayList<ScheduleData> data = new ArrayList<>();
         while(cursor.moveToNext()) {
-            cursor.moveToFirst();
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis((long) cursor.getInt(2) * 1000);
 
