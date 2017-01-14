@@ -334,6 +334,8 @@ public class MemoCreate extends AppCompatActivity {
 
                     memoModel.close();
 
+                    Toast.makeText(this, getString(R.string.memo_saved), Toast.LENGTH_SHORT).show();
+
                     Intent intent = new Intent(MemoCreate.this, MainActivity.class);
                     intent.putExtra("mCreate", memoData);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -343,7 +345,6 @@ public class MemoCreate extends AppCompatActivity {
                     Toast.makeText(this, getString(R.string.empty_memo), Toast.LENGTH_SHORT).show();
                 }
 
-                Toast.makeText(this, getString(R.string.memo_saved), Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.memo_delete: // 메모 삭제시
