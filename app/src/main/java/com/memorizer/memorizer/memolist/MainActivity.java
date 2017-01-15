@@ -156,8 +156,11 @@ public class MainActivity extends AppCompatActivity
         MemoData memoData = (MemoData)mIntent.getSerializableExtra("mCreate");
         if (memoData != null) {
             Intent popupIntent = new Intent(MainActivity.this, MemoAlarmActivity.class);
-            popupIntent.putExtra("memoId", memoData);
+            ArrayList<Integer> createdData = new ArrayList<>();
+            createdData.add(memoData.get_id());
+            popupIntent.putIntegerArrayListExtra("memoId", createdData);
             popupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            popupIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(popupIntent);
         }
 

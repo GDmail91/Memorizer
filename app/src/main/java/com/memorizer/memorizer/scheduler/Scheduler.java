@@ -24,7 +24,7 @@ import static java.lang.System.currentTimeMillis;
 public class Scheduler {
     static Scheduler scheduler = new Scheduler();
     final String TAG = "Scheduler";
-    //final int nextAlarmFlag = 200;
+    final int nextAlarmFlag = 200;
     final int addAlarmFlag = 300;
 
     private static final long NEXT = 24 * 3600 * 1000;
@@ -87,10 +87,13 @@ public class Scheduler {
         // 가장 가까운 알람 가져옴
         ScheduleModel scheduleModel = new ScheduleModel(context);
         ArrayList<ScheduleData> nextScheduleList = scheduleModel.getNextData();
+        Log.d(TAG, "같은시간에 울리는 알람 개수 : " + nextScheduleList.size());
+        ArrayList<Integer> memoIdList = new ArrayList<>();
+        long nextAlertTime = nextScheduleList.get(0).getAlarmDate().getTimeInMillis();
 
         // nextSchedule이 null이 아닐경우 등록
         for (ScheduleData nextSchedule : nextScheduleList) {
-            Log.d(TAG, nextSchedule.toString());
+            Log.d(TAG, "실제 알람 설정 : " + nextSchedule.toString());
             // 알림용 intent 등록
             MemoModel memoModel = new MemoModel(context);
             MemoData memoData = memoModel.getData(nextSchedule.getMemoId());
@@ -99,16 +102,15 @@ public class Scheduler {
             // memoData가 지워진 경우 등록하지 않음
             if (memoData != null) {
                 // 안지워진 경우 다시 등록
-                Intent intent = new Intent("com.memorizer.memorizer.nextAlarm");
-                intent.putExtra("memoId", memoData);
 
-                PendingIntent pIntent = PendingIntent.getBroadcast(context, memoData.get_id(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                Log.d(TAG, "등록하는 메모 : "+memoData.getContent());
                 long nextTime;
 
-                // 알람이 누락된 경우
+                // 알람이 누락된 경우 확인
                 Log.d(TAG, "설정:"+nextSchedule.getAlarmDate().getTimeInMillis() + ", 현재:"+System.currentTimeMillis());
                 long duringTime = System.currentTimeMillis() - nextSchedule.getAlarmDate().getTimeInMillis();
                 if (duringTime >= 0) {
+                    // 누락된 경우
                     Log.d(TAG, "누락됨");
                     nextTime = nextSchedule.getAlarmDate().getTimeInMillis() // 현재 등록된 시간
                             + (duringTime/(memoData.getTerm() * NEXT) // 남은시간/알림간격
@@ -135,22 +137,12 @@ public class Scheduler {
                     scheduleModel.update(nextSchedule);
 
                 } else {
+                    // 실제 알람 등록
                     nextTime = nextSchedule.getAlarmDate().getTimeInMillis();
 
                     if (memoData.getWhileDate().getTimeInMillis() == 0
-                    || memoData.getWhileDate().getTimeInMillis() > nextTime ) {
-                        Log.d(TAG, "다음알람 등록");
-                        // 다음 알람 등록
-                        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                        if(Build.VERSION.SDK_INT >= 23)
-                            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextSchedule.getAlarmDate().getTimeInMillis(), pIntent);
-                        else {
-                            if(Build.VERSION.SDK_INT >= 19) {
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextSchedule.getAlarmDate().getTimeInMillis(), pIntent);
-                            } else {
-                                alarmManager.set(AlarmManager.RTC_WAKEUP, nextSchedule.getAlarmDate().getTimeInMillis(), pIntent);
-                            }
-                        }
+                            || memoData.getWhileDate().getTimeInMillis() > nextTime) {
+                        memoIdList.add(memoData.get_id());
                     }
                 }
             } else {
@@ -166,6 +158,25 @@ public class Scheduler {
                 scheduleModel.delete(nextSchedule.get_id());
                 // NextAlarm 재실행
                 setNextAlarm(context);
+            }
+        }
+
+
+        if (memoIdList.size() > 0) {
+            Intent intent = new Intent("com.memorizer.memorizer.nextAlarm");
+            intent.putIntegerArrayListExtra("memoId", memoIdList);
+
+            Log.d(TAG, "다음알람 등록");
+            PendingIntent pIntent = PendingIntent.getBroadcast(context, nextAlarmFlag, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            // 다음 알람 등록
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            if (Build.VERSION.SDK_INT >= 23) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextAlertTime, pIntent);
+            } else if (Build.VERSION.SDK_INT >= 19) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextAlertTime, pIntent);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, nextAlertTime, pIntent);
             }
         }
 

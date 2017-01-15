@@ -15,5 +15,6 @@
     <color name="red">#DE2A27</color>
     <color name="orange">#FFBB00</color>
     <color name="green">#00BB44</color>
+    <color name="whiteGray">#AAAAAA</color>
 
 </resources>

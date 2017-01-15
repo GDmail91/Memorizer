@@ -185,7 +185,7 @@ public class MemoData implements Serializable{
         }
 
         Date date = dateFormat.getCalendar().getTime();
-        
+
         return dateFormat.format(date);
     }
 }

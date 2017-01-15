@@ -421,6 +421,82 @@ public class MemoModel {
         return data;
     }
 
+    public ArrayList<MemoData> getSelectedData(ArrayList<Integer> ids) {
+        ArrayList<MemoData> allData = new ArrayList<>();
+
+        String sql = "SELECT "+TABLE_NAME_MEMO+"._id, " +
+                COLUMN_MEMO_CONTENT+", "+
+                COLUMN_MEMO_DURING+", "+
+                COLUMN_MEMO_TERM+", "+
+                TABLE_NAME_LABEL+"."+COLUMN_LABEL_NAME+", "+
+                TABLE_NAME_LABEL+"."+COLUMN_LABEL_COLOR+", " +
+                COLUMN_MEMO_IS_RANDOM+", "+
+                COLUMN_MEMO_HOUR+", "+
+                COLUMN_MEMO_MINUTE+", "+
+                COLUMN_MEMO_POSTED+", " +
+                COLUMN_MEMO_EDITED+" " +
+                "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
+                "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
+                "WHERE "+TABLE_NAME_MEMO+"._id IN (";
+        for (int i=0; i<ids.size(); i++) {
+            if (i == ids.size()-1)
+                sql += ids.get(i);
+            else
+                sql += ids.get(i) + ",";
+        }
+
+        sql += ") ORDER BY "+TABLE_NAME_MEMO+"._id DESC";
+
+        Cursor cursor = dBmanager.getDbR().rawQuery(sql, null);
+        while(cursor.moveToNext()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(cursor.getLong(2));
+
+            MemoData tempData = new MemoData(
+                    cursor.getInt(0),
+                    cursor.getString(1),
+                    calendar,
+                    cursor.getInt(3),
+                    cursor.getString(4),
+                    cursor.getInt(5),
+                    cursor.getInt(6),
+                    cursor.getInt(7),
+                    cursor.getInt(8),
+                    cursor.getString(9),
+                    cursor.getString(10));
+
+            allData.add(tempData);
+        }
+        cursor.close();
+
+        return allData;
+
+        /*if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(cursor.getLong(2));
+
+            data = new MemoData();
+            data.set_id(cursor.getInt(0));
+            data.setContent(cursor.getString(1));
+            data.setWhileDate(calendar);
+            data.setTerm(cursor.getInt(3));
+            data.setLabel(cursor.getString(4));
+            data.setLabelPos(cursor.getInt(5));
+            data.setRandom(cursor.getInt(6));
+            data.setTimeOfHour(cursor.getInt(7));
+            data.setTimeOfMinute(cursor.getInt(8));
+            data.setPosted(cursor.getString(9));
+            data.setEdited(cursor.getString(10));
+
+            Log.d(TAG, data.getPosted());
+            Log.d(TAG, data.getEdited());
+        }
+        cursor.close();
+
+        return data;*/
+    }
+
     public ArrayList<MemoData> getSearchData(String searchText, LabelData selectedLabelFilter) {
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;

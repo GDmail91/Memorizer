@@ -7,24 +7,43 @@
     android:background="@color/memoPad">
 
 
-    <TextView
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:layout_alignParentTop="true"
         android:gravity="center"
-        android:text="@string/remember"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
-        android:id="@+id/title_view"
-        android:background="@color/memoPadAccent" />
+        android:background="@color/memoPadAccent"
+        android:orientation="horizontal"
+        android:id="@+id/title_header">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remember"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:id="@+id/title_view" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:text=""
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:id="@+id/message_counter" />
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title_view"
+        android:layout_below="@+id/title_header"
         android:background="#5C3901"
         android:id="@+id/label_header">
         <TextView
@@ -64,6 +83,7 @@
             android:textSize="18sp"
             android:id="@+id/message_view" />
     </ScrollView>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -76,5 +96,38 @@
         android:textSize="18sp"
         android:textColor="@color/memoPadAccent"
         android:id="@+id/alram_confirm"/>
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="@color/whiteGray"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="gone"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="@string/left_arrow"
+        android:textSize="18sp"
+        android:textColor="@color/memoPadAccent"
+        android:id="@+id/prev_alarm"/>
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="@color/whiteGray"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="@string/right_arrow"
+        android:textSize="18sp"
+        android:textColor="@color/memoPadAccent"
+        android:id="@+id/next_alarm"/>
+
 
 </RelativeLayout>
