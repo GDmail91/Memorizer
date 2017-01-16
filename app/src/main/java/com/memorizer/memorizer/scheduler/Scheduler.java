@@ -93,7 +93,6 @@ public class Scheduler {
 
         // nextSchedule이 null이 아닐경우 등록
         for (ScheduleData nextSchedule : nextScheduleList) {
-            Log.d(TAG, "실제 알람 설정 : " + nextSchedule.toString());
             // 알림용 intent 등록
             MemoModel memoModel = new MemoModel(context);
             MemoData memoData = memoModel.getData(nextSchedule.getMemoId());
@@ -103,11 +102,9 @@ public class Scheduler {
             if (memoData != null) {
                 // 안지워진 경우 다시 등록
 
-                Log.d(TAG, "등록하는 메모 : "+memoData.getContent());
                 long nextTime;
 
                 // 알람이 누락된 경우 확인
-                Log.d(TAG, "설정:"+nextSchedule.getAlarmDate().getTimeInMillis() + ", 현재:"+System.currentTimeMillis());
                 long duringTime = System.currentTimeMillis() - nextSchedule.getAlarmDate().getTimeInMillis();
                 if (duringTime >= 0) {
                     // 누락된 경우
@@ -246,8 +243,6 @@ public class Scheduler {
         ScheduleModel scheduleModel = new ScheduleModel(context);
 
         scheduleModel.insert(scheduleData);
-        Log.d(TAG, "들어가는 데이터 "+scheduleData.toString());
-        Log.d(TAG, scheduleModel.printCountOfData()+"");
         scheduleModel.close();
 
         // 변경된 스케쥴 반영

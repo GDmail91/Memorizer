@@ -159,12 +159,11 @@ public class MainActivity extends AppCompatActivity
             ArrayList<Integer> createdData = new ArrayList<>();
             createdData.add(memoData.get_id());
             popupIntent.putIntegerArrayListExtra("memoId", createdData);
+            popupIntent.putExtra("isCreated", true);
             popupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             popupIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(popupIntent);
         }
-
-
     }
 
     @Override
