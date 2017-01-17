@@ -7,7 +7,6 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.memorizer.memorizer.models.ScheduleData;
 import com.memorizer.memorizer.models.ScheduleModel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import static com.memorizer.memorizer.models.Constants.ITEM_DELETE;
 
@@ -33,14 +31,10 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
     private static final String TAG = "MemoListAdapter";
     private Context mContext;
     private ArrayList<MemoData> memoDatas;
-    private HashSet<Integer> selectedList;
-    private boolean selectAction = false;
 
     public MemoListAdapter(Context context, ArrayList<MemoData> memoData) {
         this.memoDatas = memoData;
         this.mContext = context;
-        this.selectedList = new HashSet<>();
-
     }
 
     @Override
@@ -55,10 +49,9 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         final int pos = position;
         // 각 뷰에 값넣기
-        final ViewHolder mHolder = holder;
 
         // TextView에 현재 position의 문자열 추가
-        mHolder.label.setText(memoDatas.get(pos).getLabel());
+        holder.label.setText(memoDatas.get(pos).getLabel());
         int color = 0;
         switch (memoDatas.get(pos).getLabelPos()) {
             case Constants.COLOR_BLUE:
@@ -76,72 +69,38 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
             default:
                 color = R.drawable.color_selector;
         }
-        mHolder.label.setBackground(ContextCompat.getDrawable(mContext, color));
+        holder.label.setBackground(ContextCompat.getDrawable(mContext, color));
         if (memoDatas.get(pos).getContent().length() >= 24) {
-            mHolder.memo_content.setText(memoDatas.get(pos).getContent()+"...");
+            holder.memo_content.setText(memoDatas.get(pos).getContent()+"...");
         } else {
-            mHolder.memo_content.setText(memoDatas.get(pos).getContent());
+            holder.memo_content.setText(memoDatas.get(pos).getContent());
         }
 
-        mHolder.memo_time.setText(makeTime(memoDatas.get(pos).getTimeOfHour(), memoDatas.get(pos).getTimeOfMinute()));
-        mHolder.memo_posted.setText(memoDatas.get(pos).getPosted().split(" ")[0]); // 시간 제거
-        if (selectedList.contains(pos)) {
-            mHolder.selected_layout.setVisibility(View.VISIBLE);
-        } else {
-            mHolder.selected_layout.setVisibility(View.GONE);
-        }
+        holder.memo_time.setText(makeTime(memoDatas.get(pos).getTimeOfHour(), memoDatas.get(pos).getTimeOfMinute()));
+        holder.memo_posted.setText(memoDatas.get(pos).getPosted().split(" ")[0]); // 시간 제거
 
         ScheduleModel scheduleModel = new ScheduleModel(mContext);
         ScheduleData nextSchedule = scheduleModel.getMemoSchedule(memoDatas.get(pos).get_id());
         if (nextSchedule != null) {
-            mHolder.next_schedule.setVisibility(View.VISIBLE);
-            mHolder.memo_term.setText(""+nextSchedule.getDaysNext());
+            holder.next_schedule.setVisibility(View.VISIBLE);
+            holder.memo_term.setText(""+nextSchedule.getDaysNext());
         } else {
-            mHolder.next_schedule.setVisibility(View.GONE);
+            holder.next_schedule.setVisibility(View.GONE);
         }
         scheduleModel.close();
 
-        mHolder.memo_item.setOnClickListener(new View.OnClickListener() {
+        holder.memo_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 선택 액션 중인지
-                if (selectAction) {
-                    Log.d(TAG, "short");
-                    // 선택 액션시 해당 holder의 상태를 역으로 바꿈
-                    if (selectedList.contains(pos)) {
-                        Log.d(TAG, "선택취소 됨: "+selectedList.remove(pos));
-                        mHolder.selected_layout.setVisibility(View.GONE);
-                        if (selectedList.size() == 0) {
-                            selectAction = false;
-                            ((MainActivity) mContext).setOffMenu();
-                        }
-                    } else {
-                        mHolder.selected_layout.setVisibility(View.VISIBLE);
-                        selectedList.add(pos);
-                    }
-                } else {
-                    // 뷰 누를경우 상세 보기로 이동
-                    Intent intent = new Intent(mContext, MemoCreate.class);
-                    intent.putExtra("is_edit", true);
-                    intent.putExtra("memo_id", memoDatas.get(pos).get_id());
+                // 뷰 누를경우 상세 보기로 이동
+                Intent intent = new Intent(mContext, MemoCreate.class);
+                intent.putExtra("is_edit", true);
+                intent.putExtra("memo_id", memoDatas.get(pos).get_id());
 
-                    ((AppCompatActivity) mContext).startActivityForResult(intent, ITEM_DELETE);
-
-                }
+                ((AppCompatActivity) mContext).startActivityForResult(intent, ITEM_DELETE);
             }
         });
 
-        mHolder.memo_item.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Log.d(TAG, "long");
-                selectedList.add(pos);
-                selectAction = true;
-                mHolder.selected_layout.setVisibility(View.VISIBLE);
-                ((MainActivity) mContext).setOnMenu();
-                return true;
-            }
-        });
     }
 
     @Override
@@ -160,8 +119,6 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
     public void swap(ArrayList<MemoData> memoDatas){
         this.memoDatas.clear();
         this.memoDatas.addAll(memoDatas);
-        selectedList.clear();
-        selectAction = false;
         notifyDataSetChanged();
     }
 
@@ -203,14 +160,6 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
         return hourStr +" : "+minStr+ " "+ampm;
     }
 
-    public HashSet<Integer> getSelectedItems() {
-        return selectedList;
-    }
-
-    public boolean isSelect() {
-        return selectAction;
-    }
-
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout memo_item;
@@ -220,7 +169,6 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
         TextView memo_posted;
         TextView memo_term;
         RelativeLayout next_schedule;
-        RelativeLayout selected_layout;
 
         public ViewHolder(View view) {
             super(view);
@@ -231,7 +179,6 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
             memo_time = (TextView) view.findViewById(R.id.memo_time);
             memo_posted = (TextView) view.findViewById(R.id.memo_posted);
             next_schedule = (RelativeLayout) view.findViewById(R.id.next_schedule);
-            selected_layout = (RelativeLayout) view.findViewById(R.id.selected_layout);
         }
     }
 

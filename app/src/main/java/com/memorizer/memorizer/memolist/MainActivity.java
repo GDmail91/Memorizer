@@ -34,10 +34,6 @@ import com.memorizer.memorizer.search.SearchActivity;
 import com.newrelic.agent.android.NewRelic;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
 
 import static com.memorizer.memorizer.models.Constants.ITEM_DELETE;
 
@@ -45,17 +41,12 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
-
+    ArrayList<MemoData> memoDatas = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private MemoListAdapter memoListAdapter;
     private Spinner filterList;
-
-    ArrayList<MemoData> memoDatas = new ArrayList<>();
     private ArrayList<LabelData> labelDatas = new ArrayList<>();
-
-    private boolean showMenu = false;
-    private MenuItem registrar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,43 +220,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    // 선택된 아이템 삭제
-    private void deleteSelectedItems() {
-        HashSet<Integer> selectedItems = memoListAdapter.getSelectedItems();
-        // Set을 List로 변환
-        List<Integer> selectedIds = new ArrayList<>(selectedItems);
-        // List 정렬
-        Collections.sort(selectedIds, new Comparator<Integer>() {
-            @Override
-            public int compare(Integer lhs, Integer rhs) {
-                return rhs.compareTo(lhs);
-            }
-        });
-        Log.d(TAG, selectedIds.toString());
-
-        MemoModel memoModel = new MemoModel(this);
-
-        for (Integer position : selectedIds) {
-
-            memoModel.delete(memoDatas.get(position));
-            memoDatas.remove((int) position);
-        }
-        memoModel.close();
-
-        memoListAdapter.swap(memoDatas);
-        setOffMenu();
-    }
-
-    public void setOnMenu() {
-        showMenu = true;
-        registrar.setVisible(true);
-    }
-
-    public void setOffMenu() {
-        showMenu = false;
-        registrar.setVisible(false);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
@@ -281,22 +235,12 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.action_search:
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
+                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    startActivity(intent);
                 return true;
-
-            case R.id.delete_items:
-                deleteSelectedItems();
 
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        registrar = menu.findItem(R.id.delete_items);
-        registrar.setVisible(showMenu);
-        return true;
     }
 }

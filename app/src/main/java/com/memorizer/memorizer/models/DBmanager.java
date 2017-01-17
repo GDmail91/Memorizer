@@ -136,7 +136,6 @@ public class DBmanager extends SQLiteOpenHelper{
         try {
             for (String sql : sqlList) {
                 dbW.execSQL(sql);
-                Log.d(TAG, sql);
             }
             dbW.setTransactionSuccessful();
         } catch (Exception e) {
