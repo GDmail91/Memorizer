@@ -47,6 +47,9 @@ public class MemoCreate extends AppCompatActivity {
     MemoData memoData = new MemoData();
     android.support.v7.app.AlertDialog dialog;
 
+    private static boolean isClickCreate = false; // 중복 실행 방지
+    MenuItem doneBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +127,12 @@ public class MemoCreate extends AppCompatActivity {
             isEdit = true;
             invalidateOptionsMenu();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isClickCreate = false; // 중복 실행 방지
     }
 
     public void onClickListen(View v) {
@@ -275,6 +284,7 @@ public class MemoCreate extends AppCompatActivity {
             MenuItem deleteBtn = menu.findItem(R.id.memo_delete);
             deleteBtn.setVisible(false);
         }
+        doneBtn = menu.findItem(R.id.memo_create);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -287,60 +297,60 @@ public class MemoCreate extends AppCompatActivity {
             case R.id.memo_create:
                 Log.d(TAG, alarmContent.getText().toString());
                 if (alarmContent.getText().toString().length() != 0) {
-                    Bundle bundle = getIntent().getExtras();
-                    memoData.setContent(alarmContent.getText().toString());
-                    /*RadioButton labelColor = (RadioButton) findViewById(labelCheck);
-                    labelColor.buildDrawingCache();
-                    Bitmap bitmap = labelColor.getDrawingCache();
-                    int color = bitmap.getPixel(0, 0);
-                    Log.e("ChecktedText","Background Color: " + color);
-                    labelColor.destroyDrawingCache();
-                    memoData.setLabel(""+color);*/
-                    int color = 0;
-                    switch (labelCheck) {
-                        case R.id.label_blue:
-                            color = Constants.COLOR_BLUE;
-                            break;
-                        case R.id.label_red:
-                            color = Constants.COLOR_RED;
-                            break;
-                        case R.id.label_orange:
-                            color = Constants.COLOR_ORANGE;
-                            break;
-                        case R.id.label_green:
-                            color = Constants.COLOR_GREEN;
-                            break;
+                    // 중복 실행 방지
+                    if (!isClickCreate) {
+                        isClickCreate = true;
+                        doneBtn.setVisible(false);
+                        Bundle bundle = getIntent().getExtras();
+                        memoData.setContent(alarmContent.getText().toString());
+
+                        int color = 0;
+                        switch (labelCheck) {
+                            case R.id.label_blue:
+                                color = Constants.COLOR_BLUE;
+                                break;
+                            case R.id.label_red:
+                                color = Constants.COLOR_RED;
+                                break;
+                            case R.id.label_orange:
+                                color = Constants.COLOR_ORANGE;
+                                break;
+                            case R.id.label_green:
+                                color = Constants.COLOR_GREEN;
+                                break;
+                        }
+                        memoData.setLabel(labelName.getText().toString());
+                        memoData.setLabelPos(color);
+
+                        // DB에 저장
+                        MemoModel memoModel = new MemoModel(this);
+                        if (bundle != null
+                                && bundle.getBoolean("is_edit")) {
+                            memoModel.update(memoData);
+
+                            // 알림 설정
+                            Scheduler.getScheduler().deleteSelectedAlarm(this, memoData.get_id());
+                            Scheduler.getScheduler().setSchedule(this, memoData, true);
+                        } else {
+                            memoData.set_id(memoModel.insert(memoData));
+
+                            // 알림 설정
+                            Scheduler.getScheduler().setSchedule(this, memoData, true);
+                        }
+
+                        Log.d("TEST", "설정하는 시간: " + memoData.getTimeOfHour() + ":" + memoData.getTimeOfMinute());
+
+                        memoModel.close();
+
+                        Toast.makeText(this, getString(R.string.memo_saved), Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(MemoCreate.this, MainActivity.class);
+                        intent.putExtra("mCreate", memoData);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+
                     }
-                    memoData.setLabel(labelName.getText().toString());
-                    memoData.setLabelPos(color);
-
-                    // DB에 저장
-                    MemoModel memoModel = new MemoModel(this);
-                    if (bundle != null
-                    && bundle.getBoolean("is_edit")) {
-                        memoModel.update(memoData);
-
-                        // 알림 설정
-                        Scheduler.getScheduler().deleteSelectedAlarm(this, memoData.get_id());
-                        Scheduler.getScheduler().setSchedule(this, memoData, true);
-                    } else {
-                        memoData.set_id(memoModel.insert(memoData));
-
-                        // 알림 설정
-                        Scheduler.getScheduler().setSchedule(this, memoData, true);
-                    }
-
-                    Log.d("TEST", "설정하는 시간: "+memoData.getTimeOfHour()+":"+memoData.getTimeOfMinute());
-
-                    memoModel.close();
-
-                    Toast.makeText(this, getString(R.string.memo_saved), Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(MemoCreate.this, MainActivity.class);
-                    intent.putExtra("mCreate", memoData);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
                 } else {
                     Toast.makeText(this, getString(R.string.empty_memo), Toast.LENGTH_SHORT).show();
                 }

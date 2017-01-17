@@ -122,4 +122,19 @@
             android:text="@string/memo"
             android:id="@+id/memo_content" />
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/alphaGray"
+        android:visibility="gone"
+        android:id="@+id/selected_layout">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/checkmark" />
+    </RelativeLayout>
+
 </RelativeLayout>

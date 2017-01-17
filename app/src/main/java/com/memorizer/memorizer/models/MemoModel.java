@@ -261,6 +261,8 @@ public class MemoModel {
                 cursor.close();
             }
 
+            dBmanager.getDbW().execSQL("DELETE FROM "+TABLE_NAME_SCHEDULE+" WHERE "+COLUMN_SCHEDULE_MEMO_ID+"=" + memoData.get_id());
+
             dBmanager.getDbW().setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
@@ -321,7 +323,7 @@ public class MemoModel {
     public ArrayList<MemoData> getAllDataShort(int order) {
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;
-        String sql = "SELECT "+TABLE_NAME_MEMO+"._id, " +
+        String sql = "SELECT DISTINCT "+TABLE_NAME_MEMO+"._id, " +
                 "substr("+COLUMN_MEMO_CONTENT+",0,25) AS "+COLUMN_MEMO_CONTENT+", "+
                 COLUMN_MEMO_DURING+", "+
                 COLUMN_MEMO_TERM+", "+
@@ -503,7 +505,7 @@ public class MemoModel {
         String sql;
         // TODO 쿼리 완성
         if (selectedLabelFilter == null) {
-             sql = "SELECT " + TABLE_NAME_MEMO + "._id, " +
+             sql = "SELECT DISTINCT " + TABLE_NAME_MEMO + "._id, " +
                     "substr(" + COLUMN_MEMO_CONTENT + ",0,25) AS " + COLUMN_MEMO_CONTENT + ", " +
                     COLUMN_MEMO_DURING + ", " +
                     COLUMN_MEMO_TERM + ", " +
@@ -516,10 +518,12 @@ public class MemoModel {
                     COLUMN_MEMO_EDITED+" " +
                     "FROM " + TABLE_NAME_MEMO + " INNER JOIN " + TABLE_NAME_LABEL + " " +
                     "ON " + TABLE_NAME_MEMO + "." + COLUMN_MEMO_LABEL + "=" + TABLE_NAME_LABEL + "._id " +
+                    "LEFT JOIN "+TABLE_NAME_SCHEDULE+" " +
+                    "ON "+TABLE_NAME_MEMO+"._id="+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_MEMO_ID+" "+
                     "WHERE "+COLUMN_MEMO_CONTENT+" LIKE '%" + searchText + "%' " +
                     "ORDER BY " + TABLE_NAME_MEMO + "._id DESC";
         } else {
-            sql = "SELECT " + TABLE_NAME_MEMO + "._id, " +
+            sql = "SELECT DISTINCT " + TABLE_NAME_MEMO + "._id, " +
                     "substr(" + COLUMN_MEMO_CONTENT + ",0,25) AS " + COLUMN_MEMO_CONTENT + ", " +
                     COLUMN_MEMO_DURING + ", " +
                     COLUMN_MEMO_TERM + ", " +
@@ -532,6 +536,8 @@ public class MemoModel {
                     COLUMN_MEMO_EDITED+" " +
                     "FROM " + TABLE_NAME_MEMO + " INNER JOIN " + TABLE_NAME_LABEL + " " +
                     "ON " + TABLE_NAME_MEMO + "." + COLUMN_MEMO_LABEL + "=" + TABLE_NAME_LABEL + "._id " +
+                    "LEFT JOIN "+TABLE_NAME_SCHEDULE+" " +
+                    "ON "+TABLE_NAME_MEMO+"._id="+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_MEMO_ID+" "+
                     "WHERE "+COLUMN_LABEL_NAME+"='"+selectedLabelFilter.getLabelName()+"' " +
                     "AND "+COLUMN_LABEL_COLOR+"="+selectedLabelFilter.getLabelPosition()+" "+
                     "AND "+COLUMN_MEMO_CONTENT+" LIKE '%" + searchText + "%' " +
