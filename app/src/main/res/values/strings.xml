@@ -47,6 +47,8 @@
     <string name="label_name">Label Name</string>
     <string name="memo_create">memo create</string>
     <string name="memo_delete">memo delete</string>
+    <string name="checklist">Checklist</string>
+    <string name="add_checklist">Add Checklist</string>
 
     <!-- 알람 -->
     <string name="remember">Do you remember?</string>

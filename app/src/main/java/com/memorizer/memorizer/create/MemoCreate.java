@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -109,8 +108,8 @@ public class MemoCreate extends AppCompatActivity {
                 final RelativeLayout checkBoxItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.check_item, null);
                 CheckBox cb = (CheckBox) checkBoxItem.findViewById(R.id.is_check);
                 EditText et = (EditText) checkBoxItem.findViewById(R.id.checkbox_text);
-                TextView tv = (TextView) checkBoxItem.findViewById(R.id.delete_checkbox);
-                tv.setOnClickListener(new View.OnClickListener() {
+                ImageButton deleteCheck = (ImageButton) checkBoxItem.findViewById(R.id.delete_checkbox);
+                deleteCheck.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         checklist.remove(checkBoxItem);
@@ -126,7 +125,6 @@ public class MemoCreate extends AppCompatActivity {
 
         // Markdown Editor 셋팅
         markdownView = (MarkdownView) findViewById(R.id.markdown_view);
-        markdownView.setBackgroundResource(R.color.memoPad);
 
         dialog = new AlertDialog.Builder(this).create();
 
@@ -195,8 +193,8 @@ public class MemoCreate extends AppCompatActivity {
                 cb.setChecked(checkData.isCheck());
                 EditText et = (EditText) checkBoxItem.findViewById(R.id.checkbox_text);
                 et.setText(checkData.getCheckMessage());
-                TextView tv = (TextView) checkBoxItem.findViewById(R.id.delete_checkbox);
-                tv.setOnClickListener(new View.OnClickListener() {
+                ImageButton deleteCheck = (ImageButton) checkBoxItem.findViewById(R.id.delete_checkbox);
+                deleteCheck.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         checklist.remove(checkBoxItem);

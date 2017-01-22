@@ -13,7 +13,7 @@
         android:background="@android:color/transparent"
         android:id="@+id/action_change_md" />
 
-    <ImageButton
+    <!--<ImageButton
         android:layout_height="40dp"
         android:layout_width="40dp"
         android:maxHeight="20dp"
@@ -22,5 +22,5 @@
         android:padding="4dp"
         android:src="@drawable/check_done"
         android:scaleType="fitCenter"
-        android:id="@+id/action_add_checklist" />
+        android:id="@+id/action_add_checklist" />-->
 </LinearLayout>
