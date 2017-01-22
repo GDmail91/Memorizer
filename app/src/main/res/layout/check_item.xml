@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/memoPad">
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:id="@+id/is_check"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/is_check"
+        android:layout_toRightOf="@+id/is_check"
+        android:layout_toStartOf="@+id/delete_checkbox"
+        android:layout_toLeftOf="@+id/delete_checkbox"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:hint="임시테스트"
+        android:textSize="15sp"
+        android:id="@+id/checkbox_text"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="15dp"
+        android:text="-"
+        android:textSize="40sp"
+        android:textColor="@color/red"
+        android:id="@+id/delete_checkbox"/>
+</RelativeLayout>

@@ -14,36 +14,53 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.memolist.MainActivity;
+import com.memorizer.memorizer.models.CheckListData;
 import com.memorizer.memorizer.models.Constants;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
+
+import us.feras.mdv.MarkdownView;
 
 /**
  * Created by YS on 2016-06-20.
  */
 public class MemoCreate extends AppCompatActivity {
     String TAG = "MemoCreate";
+
     EditText alarmContent;
     RadioGroup labelGroup;
-    int labelCheck;
-    boolean isEdit = false;
     EditText labelName;
     Button alarmWhileBtn, alarmTermBtn, alarmTimeBtn;
+    Button markdownChangeBtn;
+    ImageButton checklistBtn;
+    MarkdownView markdownView;
+    LinearLayout checklistView;
+
+    int labelCheck;
+    boolean isEdit = false;
+    boolean isMarkdown = false;
+    ArrayList<RelativeLayout> checklist = new ArrayList<>();
     MemoData memoData = new MemoData();
     android.support.v7.app.AlertDialog dialog;
 
@@ -65,6 +82,51 @@ public class MemoCreate extends AppCompatActivity {
         alarmTermBtn = (Button) findViewById(R.id.alarm_term_btn);
         alarmWhileBtn = (Button) findViewById(R.id.alarm_while_btn);
         alarmTimeBtn = (Button) findViewById(R.id.alarm_time_btn);
+        markdownChangeBtn = (Button) findViewById(R.id.action_change_md);
+        markdownChangeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isMarkdown) {
+                    isMarkdown = !isMarkdown;
+                    alarmContent.setVisibility(View.VISIBLE);
+                    markdownView.setVisibility(View.GONE);
+                } else {
+                    isMarkdown = !isMarkdown;
+                    markdownView.loadMarkdown(alarmContent.getText().toString());
+                    alarmContent.setVisibility(View.GONE);
+                    markdownView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        checklistBtn = (ImageButton) findViewById(R.id.action_add_checklist);
+        checklistBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checklistView.getVisibility() == View.GONE) {
+                    checklistView.setVisibility(View.VISIBLE);
+                }
+                // Inflater View 만들기
+                final RelativeLayout checkBoxItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.check_item, null);
+                CheckBox cb = (CheckBox) checkBoxItem.findViewById(R.id.is_check);
+                EditText et = (EditText) checkBoxItem.findViewById(R.id.checkbox_text);
+                TextView tv = (TextView) checkBoxItem.findViewById(R.id.delete_checkbox);
+                tv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        checklist.remove(checkBoxItem);
+                        checklistView.removeView(checkBoxItem);
+                    }
+                });
+                checklist.add(checkBoxItem);
+                checklistView.addView(checkBoxItem);
+            }
+        });
+        checklistView = (LinearLayout) findViewById(R.id.checklist_view);
+
+
+        // Markdown Editor 셋팅
+        markdownView = (MarkdownView) findViewById(R.id.markdown_view);
+        markdownView.setBackgroundResource(R.color.memoPad);
 
         dialog = new AlertDialog.Builder(this).create();
 
@@ -81,12 +143,14 @@ public class MemoCreate extends AppCompatActivity {
         setTimeRandom();
         labelGroup.check(R.id.label_none);
 
+        // 기존 데이터 수정일 경우
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.getBoolean("is_edit")) {
             MemoModel memoModel = new MemoModel(this);
             this.memoData = memoModel.getData(bundle.getInt("memo_id"));
             memoModel.close();
 
+            markdownView.loadMarkdown(memoData.getContent());
             alarmContent.setText(memoData.getContent());
             alarmTermBtn.setText(""+memoData.getTerm());
             String during;
@@ -121,8 +185,32 @@ public class MemoCreate extends AppCompatActivity {
                 labelGroup.check(pos);
             }
 
+            checklistView.setVisibility(View.VISIBLE);
+
+            for (CheckListData checkData : memoData.getCheckList()) {
+                // Inflater View 만들기
+                final RelativeLayout checkBoxItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.check_item, null);
+                CheckBox cb = (CheckBox) checkBoxItem.findViewById(R.id.is_check);
+                cb.setChecked(checkData.isCheck());
+                EditText et = (EditText) checkBoxItem.findViewById(R.id.checkbox_text);
+                et.setText(checkData.getCheckMessage());
+                TextView tv = (TextView) checkBoxItem.findViewById(R.id.delete_checkbox);
+                tv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        checklist.remove(checkBoxItem);
+                        checklistView.removeView(checkBoxItem);
+                    }
+                });
+                checklist.add(checkBoxItem);
+                checklistView.addView(checkBoxItem);
+            }
+
+
             isEdit = true;
             invalidateOptionsMenu();
+        } else {
+            markdownView.loadMarkdown("");
         }
     }
 
@@ -313,6 +401,18 @@ public class MemoCreate extends AppCompatActivity {
                     }
                     memoData.setLabel(labelName.getText().toString());
                     memoData.setLabelPos(color);
+
+                    // 체크리스트 저장
+                    ArrayList<CheckListData> checkListDatas = new ArrayList<>();
+                    for (RelativeLayout checkItem : checklist) {
+                        CheckBox cb = (CheckBox) checkItem.findViewById(R.id.is_check);
+                        EditText et = (EditText) checkItem.findViewById(R.id.checkbox_text);
+                        if (!et.getText().toString().equals("")) {
+                            checkListDatas.add(new CheckListData(cb.isChecked(), et.getText().toString()));
+                        }
+                    }
+                    memoData.setCheckList(checkListDatas);
+
 
                     // DB에 저장
                     MemoModel memoModel = new MemoModel(this);

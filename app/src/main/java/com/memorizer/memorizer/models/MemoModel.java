@@ -14,6 +14,8 @@ import static com.memorizer.memorizer.models.Constants.FILTER_MODIFY;
 import static com.memorizer.memorizer.models.Constants.FILTER_NONE;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_LABEL_COLOR;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_LABEL_NAME;
+import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_CHECKEDLIST;
+import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_CHECKLIST;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_CONTENT;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_DURING;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_EDITED;
@@ -57,15 +59,15 @@ public class MemoModel {
 
         // 라벨 모델 삽입
         int labelTopNumber = 0;
-        String checkSql = "SELECT _id FROM "+TABLE_NAME_LABEL+" "+
+        String labelSql = "SELECT _id FROM "+TABLE_NAME_LABEL+" "+
                 "WHERE "+COLUMN_LABEL_NAME+"='" + memoData.getLabel() + "' " +
                 "AND "+COLUMN_LABEL_COLOR+"='" + memoData.getLabelPos() + "'";
-        Cursor checkCursor = dBmanager.getDbR().rawQuery(checkSql, null);
+        Cursor labelCheckCursor = dBmanager.getDbR().rawQuery(labelSql, null);
 
-        if (checkCursor != null && checkCursor.moveToFirst()) {
+        if (labelCheckCursor != null && labelCheckCursor.moveToFirst()) {
             // 라벨이 이미 등록되어 있는 경우
-            labelTopNumber =  checkCursor.getInt(0);
-            checkCursor.close();
+            labelTopNumber =  labelCheckCursor.getInt(0);
+            labelCheckCursor.close();
         } else {
             // 라벨이 없는 경우
             Cursor labelCursor = dBmanager.getDbR().rawQuery("SELECT _id FROM " + TABLE_NAME_LABEL + " ORDER BY _id DESC LIMIT 1", null);
@@ -123,7 +125,8 @@ public class MemoModel {
 
         if (memoData.getWhileDate() != null) {
             sqlList.add("INSERT INTO "+TABLE_NAME_MEMO+" (_id, "+COLUMN_MEMO_CONTENT+", "+COLUMN_MEMO_DURING+", " +
-                    COLUMN_MEMO_TERM+", "+COLUMN_MEMO_LABEL+", "+COLUMN_MEMO_IS_RANDOM+", "+COLUMN_MEMO_HOUR+", "+COLUMN_MEMO_MINUTE+", "+COLUMN_MEMO_EDITED+") " +
+                    COLUMN_MEMO_TERM+", "+COLUMN_MEMO_LABEL+", "+COLUMN_MEMO_IS_RANDOM+", "+COLUMN_MEMO_HOUR+", " +
+                    COLUMN_MEMO_MINUTE+", "+COLUMN_MEMO_EDITED+", "+COLUMN_MEMO_CHECKLIST+", "+COLUMN_MEMO_CHECKEDLIST+") " +
                     "VALUES(" +
                     "'" + topNumber + "', " +
                     "'" + memoData.getContent() + "', " +
@@ -133,10 +136,13 @@ public class MemoModel {
                     "'" + memoData.isRandom() + "', " +
                     "'" + memoData.getTimeOfHour() + "', " +
                     "'" + memoData.getTimeOfMinute() + "', " +
-                    "'" + memoData.getRawEdited() + "');");
+                    "'" + memoData.getRawEdited() + "'," +
+                    "'" + memoData.getCheckMessages() + "', " +
+                    "'" + memoData.getChecks() + "' );");
         } else {
             sqlList.add("INSERT INTO "+TABLE_NAME_MEMO+" (_id, "+COLUMN_MEMO_CONTENT+", "+COLUMN_MEMO_TERM+", " +
-                    COLUMN_MEMO_LABEL+", "+COLUMN_MEMO_IS_RANDOM+", "+COLUMN_MEMO_HOUR+", "+COLUMN_MEMO_MINUTE+", "+COLUMN_MEMO_EDITED+") " +
+                    COLUMN_MEMO_LABEL+", "+COLUMN_MEMO_IS_RANDOM+", "+COLUMN_MEMO_HOUR+", "+COLUMN_MEMO_MINUTE+", " +
+                    COLUMN_MEMO_EDITED+", "+COLUMN_MEMO_CHECKLIST+", "+COLUMN_MEMO_CHECKEDLIST+") " +
                     "VALUES(" +
                     "'" + topNumber + "', " +
                     "'" + memoData.getContent() + "', " +
@@ -145,7 +151,9 @@ public class MemoModel {
                     "'" + memoData.isRandom() + "', " +
                     "'" + memoData.getTimeOfHour() + "', " +
                     "'" + memoData.getTimeOfMinute() + "', " +
-                    "'" + memoData.getRawEdited() + "');");
+                    "'" + memoData.getRawEdited() + "'," +
+                    "'" + memoData.getCheckMessages() + "', " +
+                    "'" + memoData.getChecks() + "' );");
         }
 
         // 트랜잭션 실행
@@ -225,7 +233,9 @@ public class MemoModel {
                 COLUMN_MEMO_IS_RANDOM+"='" + memoData.isRandom() + "', " +
                 COLUMN_MEMO_HOUR+"='" + memoData.getTimeOfHour() + "', " +
                 COLUMN_MEMO_MINUTE+"='" + memoData.getTimeOfMinute() + "', " +
-                COLUMN_MEMO_EDITED+"='" + memoData.getRawEdited() + "' " +
+                COLUMN_MEMO_EDITED+"='" + memoData.getRawEdited() + "', " +
+                COLUMN_MEMO_CHECKLIST+"='" + memoData.getCheckMessages() + "', " +
+                COLUMN_MEMO_CHECKEDLIST+"='" + memoData.getChecks() + "' " +
                 "WHERE _id='"+memoData.get_id()+"' ;");
 
         // 트랜잭션 실행
@@ -299,6 +309,8 @@ public class MemoModel {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(2));
 
+            ArrayList<CheckListData> checkList = checkListParse(cursor.getString(12), cursor.getString(11));
+
             MemoData tempData = new MemoData(
                     cursor.getInt(0),
                     cursor.getString(1),
@@ -310,7 +322,9 @@ public class MemoModel {
                     cursor.getInt(5),
                     cursor.getInt(6),
                     cursor.getString(7),
-                    cursor.getString(10));
+                    cursor.getString(10),
+                    checkList
+            );
 
             allData.add(i++, tempData);
         }
@@ -331,7 +345,9 @@ public class MemoModel {
                 COLUMN_MEMO_HOUR+", "+
                 COLUMN_MEMO_MINUTE+", "+
                 COLUMN_MEMO_POSTED+", " +
-                COLUMN_MEMO_EDITED+" " +
+                COLUMN_MEMO_EDITED+", " +
+                COLUMN_MEMO_CHECKLIST+", " +
+                COLUMN_MEMO_CHECKEDLIST+" " +
                 "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
                 "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
                 "LEFT JOIN "+TABLE_NAME_SCHEDULE+" " +
@@ -358,6 +374,8 @@ public class MemoModel {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(2));
 
+            ArrayList<CheckListData> checkList = checkListParse(cursor.getString(12), cursor.getString(11));
+
             MemoData tempData = new MemoData(
                     cursor.getInt(0),
                     cursor.getString(1),
@@ -369,7 +387,9 @@ public class MemoModel {
                     cursor.getInt(7),
                     cursor.getInt(8),
                     cursor.getString(9),
-                    cursor.getString(10));
+                    cursor.getString(10),
+                    checkList
+            );
 
             allData.add(i++, tempData);
         }
@@ -391,7 +411,9 @@ public class MemoModel {
                 COLUMN_MEMO_HOUR+", "+
                 COLUMN_MEMO_MINUTE+", "+
                 COLUMN_MEMO_POSTED+", " +
-                COLUMN_MEMO_EDITED+" " +
+                COLUMN_MEMO_EDITED+", " +
+                COLUMN_MEMO_CHECKLIST+", " +
+                COLUMN_MEMO_CHECKEDLIST+" " +
                 "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
                 "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
                 "WHERE "+TABLE_NAME_MEMO+"._id='"+id+"' ORDER BY "+TABLE_NAME_MEMO+"._id DESC", null);
@@ -399,6 +421,8 @@ public class MemoModel {
             cursor.moveToFirst();
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(2));
+
+            ArrayList<CheckListData> checkList = checkListParse(cursor.getString(12), cursor.getString(11));
 
             data = new MemoData();
             data.set_id(cursor.getInt(0));
@@ -412,6 +436,7 @@ public class MemoModel {
             data.setTimeOfMinute(cursor.getInt(8));
             data.setPosted(cursor.getString(9));
             data.setEdited(cursor.getString(10));
+            data.setCheckList(checkList);
 
             Log.d(TAG, data.getPosted());
             Log.d(TAG, data.getEdited());
@@ -434,7 +459,9 @@ public class MemoModel {
                 COLUMN_MEMO_HOUR+", "+
                 COLUMN_MEMO_MINUTE+", "+
                 COLUMN_MEMO_POSTED+", " +
-                COLUMN_MEMO_EDITED+" " +
+                COLUMN_MEMO_EDITED+", " +
+                COLUMN_MEMO_CHECKLIST+", " +
+                COLUMN_MEMO_CHECKEDLIST+" " +
                 "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
                 "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
                 "WHERE "+TABLE_NAME_MEMO+"._id IN (";
@@ -452,6 +479,8 @@ public class MemoModel {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(2));
 
+            ArrayList<CheckListData> checkList = checkListParse(cursor.getString(12), cursor.getString(11));
+
             MemoData tempData = new MemoData(
                     cursor.getInt(0),
                     cursor.getString(1),
@@ -463,7 +492,9 @@ public class MemoModel {
                     cursor.getInt(7),
                     cursor.getInt(8),
                     cursor.getString(9),
-                    cursor.getString(10));
+                    cursor.getString(10),
+                    checkList
+            );
 
             allData.add(tempData);
         }
@@ -504,20 +535,22 @@ public class MemoModel {
         // TODO 쿼리 완성
         if (selectedLabelFilter == null) {
              sql = "SELECT " + TABLE_NAME_MEMO + "._id, " +
-                    "substr(" + COLUMN_MEMO_CONTENT + ",0,25) AS " + COLUMN_MEMO_CONTENT + ", " +
-                    COLUMN_MEMO_DURING + ", " +
-                    COLUMN_MEMO_TERM + ", " +
-                    TABLE_NAME_LABEL + "." + COLUMN_LABEL_NAME + ", " +
-                    TABLE_NAME_LABEL + "." + COLUMN_LABEL_COLOR + ", " +
-                    COLUMN_MEMO_IS_RANDOM + ", " +
-                    COLUMN_MEMO_HOUR + ", " +
-                    COLUMN_MEMO_MINUTE + ", " +
-                    COLUMN_MEMO_POSTED + ", " +
-                    COLUMN_MEMO_EDITED+" " +
-                    "FROM " + TABLE_NAME_MEMO + " INNER JOIN " + TABLE_NAME_LABEL + " " +
-                    "ON " + TABLE_NAME_MEMO + "." + COLUMN_MEMO_LABEL + "=" + TABLE_NAME_LABEL + "._id " +
-                    "WHERE "+COLUMN_MEMO_CONTENT+" LIKE '%" + searchText + "%' " +
-                    "ORDER BY " + TABLE_NAME_MEMO + "._id DESC";
+                     "substr(" + COLUMN_MEMO_CONTENT + ",0,25) AS " + COLUMN_MEMO_CONTENT + ", " +
+                     COLUMN_MEMO_DURING + ", " +
+                     COLUMN_MEMO_TERM + ", " +
+                     TABLE_NAME_LABEL + "." + COLUMN_LABEL_NAME + ", " +
+                     TABLE_NAME_LABEL + "." + COLUMN_LABEL_COLOR + ", " +
+                     COLUMN_MEMO_IS_RANDOM + ", " +
+                     COLUMN_MEMO_HOUR + ", " +
+                     COLUMN_MEMO_MINUTE + ", " +
+                     COLUMN_MEMO_POSTED + ", " +
+                     COLUMN_MEMO_EDITED+", " +
+                     COLUMN_MEMO_CHECKLIST+", " +
+                     COLUMN_MEMO_CHECKEDLIST+" " +
+                     "FROM " + TABLE_NAME_MEMO + " INNER JOIN " + TABLE_NAME_LABEL + " " +
+                     "ON " + TABLE_NAME_MEMO + "." + COLUMN_MEMO_LABEL + "=" + TABLE_NAME_LABEL + "._id " +
+                     "WHERE "+COLUMN_MEMO_CONTENT+" LIKE '%" + searchText + "%' " +
+                     "ORDER BY " + TABLE_NAME_MEMO + "._id DESC";
         } else {
             sql = "SELECT " + TABLE_NAME_MEMO + "._id, " +
                     "substr(" + COLUMN_MEMO_CONTENT + ",0,25) AS " + COLUMN_MEMO_CONTENT + ", " +
@@ -529,7 +562,9 @@ public class MemoModel {
                     COLUMN_MEMO_HOUR + ", " +
                     COLUMN_MEMO_MINUTE + ", " +
                     COLUMN_MEMO_POSTED + ", " +
-                    COLUMN_MEMO_EDITED+" " +
+                    COLUMN_MEMO_EDITED+", " +
+                    COLUMN_MEMO_CHECKLIST+", " +
+                    COLUMN_MEMO_CHECKEDLIST+" " +
                     "FROM " + TABLE_NAME_MEMO + " INNER JOIN " + TABLE_NAME_LABEL + " " +
                     "ON " + TABLE_NAME_MEMO + "." + COLUMN_MEMO_LABEL + "=" + TABLE_NAME_LABEL + "._id " +
                     "WHERE "+COLUMN_LABEL_NAME+"='"+selectedLabelFilter.getLabelName()+"' " +
@@ -544,6 +579,8 @@ public class MemoModel {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(2));
 
+            ArrayList<CheckListData> checkList = checkListParse(cursor.getString(12), cursor.getString(11));
+
             MemoData tempData = new MemoData(
                     cursor.getInt(0),
                     cursor.getString(1),
@@ -555,7 +592,9 @@ public class MemoModel {
                     cursor.getInt(7),
                     cursor.getInt(8),
                     cursor.getString(9),
-                    cursor.getString(10));
+                    cursor.getString(10),
+                    checkList
+            );
 
             allData.add(i++, tempData);
         }
@@ -586,5 +625,17 @@ public class MemoModel {
 
     public void close() {
         dBmanager.getDbR().close();
+    }
+
+    private ArrayList<CheckListData> checkListParse(String isCheck, String checkMsg) {
+        ArrayList<CheckListData> checkList = new ArrayList<>();
+
+        String[] isCheckList = isCheck.substring(1, isCheck.length()-2).split(",");
+        String[] checkMsgList = checkMsg.substring(1, checkMsg.length()-2).split(",");
+        for (int i=0; i<isCheckList.length; i++) {
+            checkList.add(new CheckListData(Boolean.valueOf(isCheckList[i]), checkMsgList[i]));
+        }
+
+        return checkList;
     }
 }

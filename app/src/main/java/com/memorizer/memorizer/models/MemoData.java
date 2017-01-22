@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -24,6 +25,7 @@ public class MemoData implements Serializable{
     private int timeOfMinute;
     private String posted = "";
     private String edited= "";
+    private ArrayList<CheckListData> checkList = new ArrayList<>();
 
     public MemoData() {
         this.content = "";
@@ -37,7 +39,9 @@ public class MemoData implements Serializable{
         this.timeOfMinute = random.nextInt(60);
     }
 
-    public MemoData(int _id, String content, Calendar whileDate, int term, String label, int labelPos, int isRandom, int hour, int minute, String posted, String edited) {
+    public MemoData(int _id, String content, Calendar whileDate, int term, String label,
+                    int labelPos, int isRandom, int hour, int minute, String posted, String edited,
+                    ArrayList<CheckListData> checkList) {
         this._id = _id;
         this.content = content;
         this.term = term;
@@ -49,6 +53,8 @@ public class MemoData implements Serializable{
         this.timeOfMinute = minute;
         this.posted = posted;
         this.edited = edited;
+        this.checkList = checkList;
+
     }
 
     public int get_id() {
@@ -101,6 +107,26 @@ public class MemoData implements Serializable{
 
     public String getRawEdited() {
         return edited;
+    }
+
+    public ArrayList<CheckListData> getCheckList() {
+        return checkList;
+    }
+
+    public ArrayList<Boolean> getChecks() {
+        ArrayList<Boolean> tempList = new ArrayList<>();
+        for (CheckListData each : checkList) {
+            tempList.add(each.isCheck());
+        }
+        return tempList;
+    }
+
+    public ArrayList<String> getCheckMessages() {
+        ArrayList<String> tempList = new ArrayList<>();
+        for (CheckListData each : checkList) {
+            tempList.add(each.getCheckMessage());
+        }
+        return tempList;
     }
 
     public void set_id(int _id) {
@@ -156,6 +182,10 @@ public class MemoData implements Serializable{
         this.edited = changeTimeZone(edited, TimeZone.getDefault(), TimeZone.getTimeZone("GMT"));
     }
 
+    public void setCheckList(ArrayList<CheckListData> checkList) {
+        this.checkList = checkList;
+    }
+
     public String printItem() {
         String str = "ID: "+_id
                 +"\nContent: "+content
@@ -166,7 +196,8 @@ public class MemoData implements Serializable{
                 +"\nHour: "+timeOfHour
                 +"\nMinute: "+timeOfMinute
                 +"\nPosted: "+posted
-                +"\nEdited: "+edited;
+                +"\nEdited: "+edited
+                +"\nCheckList: "+checkList;
 
         return str;
     }

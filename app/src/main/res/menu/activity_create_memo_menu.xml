@@ -8,7 +8,7 @@
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/memo_create"
-        android:icon="@drawable/check_done"
+        android:icon="@drawable/checkmark"
         android:title="@string/memo_create"
         app:showAsAction="ifRoom" />
 </menu>
