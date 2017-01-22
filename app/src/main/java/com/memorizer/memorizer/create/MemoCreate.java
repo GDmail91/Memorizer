@@ -191,6 +191,7 @@ public class MemoCreate extends AppCompatActivity {
                 // Inflater View 만들기
                 final RelativeLayout checkBoxItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.check_item, null);
                 CheckBox cb = (CheckBox) checkBoxItem.findViewById(R.id.is_check);
+                Log.d(TAG, checkData.toString());
                 cb.setChecked(checkData.isCheck());
                 EditText et = (EditText) checkBoxItem.findViewById(R.id.checkbox_text);
                 et.setText(checkData.getCheckMessage());
@@ -408,6 +409,7 @@ public class MemoCreate extends AppCompatActivity {
                         CheckBox cb = (CheckBox) checkItem.findViewById(R.id.is_check);
                         EditText et = (EditText) checkItem.findViewById(R.id.checkbox_text);
                         if (!et.getText().toString().equals("")) {
+                            Log.d(TAG, "Checkbox is checked? : "+ cb.isChecked());
                             checkListDatas.add(new CheckListData(cb.isChecked(), et.getText().toString()));
                         }
                     }

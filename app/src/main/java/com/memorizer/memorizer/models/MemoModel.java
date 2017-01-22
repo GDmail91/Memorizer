@@ -630,10 +630,12 @@ public class MemoModel {
     private ArrayList<CheckListData> checkListParse(String isCheck, String checkMsg) {
         ArrayList<CheckListData> checkList = new ArrayList<>();
 
-        String[] isCheckList = isCheck.substring(1, isCheck.length()-2).split(",");
-        String[] checkMsgList = checkMsg.substring(1, checkMsg.length()-2).split(",");
-        for (int i=0; i<isCheckList.length; i++) {
-            checkList.add(new CheckListData(Boolean.valueOf(isCheckList[i]), checkMsgList[i]));
+        if (isCheck != null && !isCheck.equals("")) {
+            String[] isCheckList = isCheck.substring(1, isCheck.length() - 2).split(",");
+            String[] checkMsgList = checkMsg.substring(1, checkMsg.length() - 2).split(",");
+            for (int i = 0; i < isCheckList.length; i++) {
+                checkList.add(new CheckListData(Boolean.valueOf(isCheckList[i].trim()), checkMsgList[i].trim()));
+            }
         }
 
         return checkList;
