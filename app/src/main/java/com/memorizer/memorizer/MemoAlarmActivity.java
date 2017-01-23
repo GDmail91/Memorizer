@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.memorizer.memorizer.memolist.MainActivity;
@@ -22,6 +23,8 @@ import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 
 import java.util.ArrayList;
+
+import us.feras.mdv.MarkdownView;
 
 import static com.memorizer.memorizer.models.Constants.NOTIFY_ID;
 
@@ -35,6 +38,8 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
     private Button nextButton;
     private Button prevButton;
     private TextView messageView;
+    private MarkdownView messageMarkdown;
+    private ScrollView alarmScrollView;
     private TextView label;
     private TextView messageCounter;
     private RelativeLayout labelHeader;
@@ -55,7 +60,9 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
         nextButton.setOnClickListener(this);
         prevButton.setOnClickListener(this);
 
+        alarmScrollView = (ScrollView) findViewById(R.id.alarm_scroll_view);
         messageView = (TextView) findViewById(R.id.message_view);
+        messageMarkdown = (MarkdownView) findViewById(R.id.markdown_view);
         labelHeader = (RelativeLayout) findViewById(R.id.label_header);
         label = (TextView) findViewById(R.id.label);
         messageCounter = (TextView) findViewById(R.id.message_counter);
@@ -121,7 +128,16 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
 
             MemoData memoData = memoDatas.get(counter-1);
             Log.d(TAG, memoData.printItem());
-            messageView.setText(memoData.getContent());
+            // 본문 출력
+            if (memoData.isMarkdown()) {
+                alarmScrollView.setBackgroundResource(R.color.colorPrimary);
+                messageView.setVisibility(View.GONE);
+                messageMarkdown.setVisibility(View.VISIBLE);
+                messageMarkdown.loadMarkdown(memoData.getContent());
+            } else {
+                messageView.setText(memoData.getContent());
+            }
+
             if (memoData.getLabel().equals("") && memoData.getLabelPos() == 0) {
                 labelHeader.setVisibility(View.GONE);
             } else {

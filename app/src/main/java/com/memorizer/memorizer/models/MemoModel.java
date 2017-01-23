@@ -20,6 +20,7 @@ import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_CONTENT;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_DURING;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_EDITED;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_HOUR;
+import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_IS_MARKDOWN;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_IS_RANDOM;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_LABEL;
 import static com.memorizer.memorizer.models.DBmanager.COLUMN_MEMO_MINUTE;
@@ -126,7 +127,8 @@ public class MemoModel {
         if (memoData.getWhileDate() != null) {
             sqlList.add("INSERT INTO "+TABLE_NAME_MEMO+" (_id, "+COLUMN_MEMO_CONTENT+", "+COLUMN_MEMO_DURING+", " +
                     COLUMN_MEMO_TERM+", "+COLUMN_MEMO_LABEL+", "+COLUMN_MEMO_IS_RANDOM+", "+COLUMN_MEMO_HOUR+", " +
-                    COLUMN_MEMO_MINUTE+", "+COLUMN_MEMO_EDITED+", "+COLUMN_MEMO_CHECKLIST+", "+COLUMN_MEMO_CHECKEDLIST+") " +
+                    COLUMN_MEMO_MINUTE+", "+COLUMN_MEMO_EDITED+", "+COLUMN_MEMO_CHECKLIST+", "+COLUMN_MEMO_CHECKEDLIST+", " +
+                    COLUMN_MEMO_IS_MARKDOWN+") " +
                     "VALUES(" +
                     "'" + topNumber + "', " +
                     "'" + memoData.getContent() + "', " +
@@ -138,11 +140,13 @@ public class MemoModel {
                     "'" + memoData.getTimeOfMinute() + "', " +
                     "'" + memoData.getRawEdited() + "'," +
                     "'" + memoData.getCheckMessages() + "', " +
-                    "'" + memoData.getChecks() + "' );");
+                    "'" + memoData.getChecks() + "', " +
+                    "'" + memoData.isMarkdown() + "');");
         } else {
             sqlList.add("INSERT INTO "+TABLE_NAME_MEMO+" (_id, "+COLUMN_MEMO_CONTENT+", "+COLUMN_MEMO_TERM+", " +
                     COLUMN_MEMO_LABEL+", "+COLUMN_MEMO_IS_RANDOM+", "+COLUMN_MEMO_HOUR+", "+COLUMN_MEMO_MINUTE+", " +
-                    COLUMN_MEMO_EDITED+", "+COLUMN_MEMO_CHECKLIST+", "+COLUMN_MEMO_CHECKEDLIST+") " +
+                    COLUMN_MEMO_EDITED+", "+COLUMN_MEMO_CHECKLIST+", "+COLUMN_MEMO_CHECKEDLIST+", " +
+                    COLUMN_MEMO_IS_MARKDOWN+") " +
                     "VALUES(" +
                     "'" + topNumber + "', " +
                     "'" + memoData.getContent() + "', " +
@@ -153,7 +157,8 @@ public class MemoModel {
                     "'" + memoData.getTimeOfMinute() + "', " +
                     "'" + memoData.getRawEdited() + "'," +
                     "'" + memoData.getCheckMessages() + "', " +
-                    "'" + memoData.getChecks() + "' );");
+                    "'" + memoData.getChecks() + "', " +
+                    "'" + memoData.isMarkdown() + "');");
         }
 
         // 트랜잭션 실행
@@ -235,7 +240,8 @@ public class MemoModel {
                 COLUMN_MEMO_MINUTE+"='" + memoData.getTimeOfMinute() + "', " +
                 COLUMN_MEMO_EDITED+"='" + memoData.getRawEdited() + "', " +
                 COLUMN_MEMO_CHECKLIST+"='" + memoData.getCheckMessages() + "', " +
-                COLUMN_MEMO_CHECKEDLIST+"='" + memoData.getChecks() + "' " +
+                COLUMN_MEMO_CHECKEDLIST+"='" + memoData.getChecks() + "', " +
+                COLUMN_MEMO_IS_MARKDOWN+"='" + memoData.isMarkdown() + "' " +
                 "WHERE _id='"+memoData.get_id()+"' ;");
 
         // 트랜잭션 실행
@@ -323,6 +329,7 @@ public class MemoModel {
                     cursor.getInt(6),
                     cursor.getString(7),
                     cursor.getString(10),
+                    Boolean.valueOf(cursor.getString(13)),
                     checkList
             );
 
@@ -347,7 +354,8 @@ public class MemoModel {
                 COLUMN_MEMO_POSTED+", " +
                 COLUMN_MEMO_EDITED+", " +
                 COLUMN_MEMO_CHECKLIST+", " +
-                COLUMN_MEMO_CHECKEDLIST+" " +
+                COLUMN_MEMO_CHECKEDLIST+", " +
+                COLUMN_MEMO_IS_MARKDOWN+" " +
                 "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
                 "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
                 "LEFT JOIN "+TABLE_NAME_SCHEDULE+" " +
@@ -388,6 +396,7 @@ public class MemoModel {
                     cursor.getInt(8),
                     cursor.getString(9),
                     cursor.getString(10),
+                    Boolean.valueOf(cursor.getString(13)),
                     checkList
             );
 
@@ -413,7 +422,8 @@ public class MemoModel {
                 COLUMN_MEMO_POSTED+", " +
                 COLUMN_MEMO_EDITED+", " +
                 COLUMN_MEMO_CHECKLIST+", " +
-                COLUMN_MEMO_CHECKEDLIST+" " +
+                COLUMN_MEMO_CHECKEDLIST+", " +
+                COLUMN_MEMO_IS_MARKDOWN+" " +
                 "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
                 "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
                 "WHERE "+TABLE_NAME_MEMO+"._id='"+id+"' ORDER BY "+TABLE_NAME_MEMO+"._id DESC", null);
@@ -437,6 +447,7 @@ public class MemoModel {
             data.setPosted(cursor.getString(9));
             data.setEdited(cursor.getString(10));
             data.setCheckList(checkList);
+            data.setMarkdown(Boolean.valueOf(cursor.getString(13)));
 
             Log.d(TAG, data.getPosted());
             Log.d(TAG, data.getEdited());
@@ -461,7 +472,8 @@ public class MemoModel {
                 COLUMN_MEMO_POSTED+", " +
                 COLUMN_MEMO_EDITED+", " +
                 COLUMN_MEMO_CHECKLIST+", " +
-                COLUMN_MEMO_CHECKEDLIST+" " +
+                COLUMN_MEMO_CHECKEDLIST+", " +
+                COLUMN_MEMO_IS_MARKDOWN+" " +
                 "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
                 "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
                 "WHERE "+TABLE_NAME_MEMO+"._id IN (";
@@ -493,6 +505,7 @@ public class MemoModel {
                     cursor.getInt(8),
                     cursor.getString(9),
                     cursor.getString(10),
+                    Boolean.valueOf(cursor.getString(13)),
                     checkList
             );
 
@@ -546,7 +559,8 @@ public class MemoModel {
                      COLUMN_MEMO_POSTED + ", " +
                      COLUMN_MEMO_EDITED+", " +
                      COLUMN_MEMO_CHECKLIST+", " +
-                     COLUMN_MEMO_CHECKEDLIST+" " +
+                     COLUMN_MEMO_CHECKEDLIST+", " +
+                     COLUMN_MEMO_IS_MARKDOWN+" " +
                      "FROM " + TABLE_NAME_MEMO + " INNER JOIN " + TABLE_NAME_LABEL + " " +
                      "ON " + TABLE_NAME_MEMO + "." + COLUMN_MEMO_LABEL + "=" + TABLE_NAME_LABEL + "._id " +
                      "WHERE "+COLUMN_MEMO_CONTENT+" LIKE '%" + searchText + "%' " +
@@ -564,7 +578,8 @@ public class MemoModel {
                     COLUMN_MEMO_POSTED + ", " +
                     COLUMN_MEMO_EDITED+", " +
                     COLUMN_MEMO_CHECKLIST+", " +
-                    COLUMN_MEMO_CHECKEDLIST+" " +
+                    COLUMN_MEMO_CHECKEDLIST+", " +
+                    COLUMN_MEMO_IS_MARKDOWN+" " +
                     "FROM " + TABLE_NAME_MEMO + " INNER JOIN " + TABLE_NAME_LABEL + " " +
                     "ON " + TABLE_NAME_MEMO + "." + COLUMN_MEMO_LABEL + "=" + TABLE_NAME_LABEL + "._id " +
                     "WHERE "+COLUMN_LABEL_NAME+"='"+selectedLabelFilter.getLabelName()+"' " +
@@ -593,6 +608,7 @@ public class MemoModel {
                     cursor.getInt(8),
                     cursor.getString(9),
                     cursor.getString(10),
+                    Boolean.valueOf(cursor.getString(13)),
                     checkList
             );
 
@@ -630,7 +646,7 @@ public class MemoModel {
     private ArrayList<CheckListData> checkListParse(String isCheck, String checkMsg) {
         ArrayList<CheckListData> checkList = new ArrayList<>();
 
-        if (isCheck != null && !isCheck.equals("")) {
+        if (isCheck != null && !isCheck.equals("") && !isCheck.equals("[]")) {
             String[] isCheckList = isCheck.substring(1, isCheck.length() - 2).split(",");
             String[] checkMsgList = checkMsg.substring(1, checkMsg.length() - 2).split(",");
             for (int i = 0; i < isCheckList.length; i++) {

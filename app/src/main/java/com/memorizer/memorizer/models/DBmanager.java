@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class DBmanager extends SQLiteOpenHelper{
     private static final String TAG = "DBManager";
-    protected static final int DB_VERSION = 6;
+    protected static final int DB_VERSION = 7;
     private static final String DB_NAME = "Memo.db";
 
     private SQLiteDatabase dbR;
@@ -37,6 +37,7 @@ public class DBmanager extends SQLiteOpenHelper{
     protected static final String COLUMN_MEMO_EDITED = "edited";
     protected static final String COLUMN_MEMO_CHECKLIST = "checkList";
     protected static final String COLUMN_MEMO_CHECKEDLIST = "checkedList";
+    protected static final String COLUMN_MEMO_IS_MARKDOWN = "isMarkdown";
 
     // Label 테이블
     protected static final String TABLE_NAME_LABEL = "Label";
@@ -65,7 +66,8 @@ public class DBmanager extends SQLiteOpenHelper{
                 COLUMN_MEMO_LABEL+" INTEGER, " +
                 COLUMN_MEMO_EDITED+" DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                 COLUMN_MEMO_CHECKLIST+" TEXT, " +
-                COLUMN_MEMO_CHECKEDLIST+" TEXT " +
+                COLUMN_MEMO_CHECKEDLIST+" TEXT, " +
+                COLUMN_MEMO_IS_MARKDOWN+" INTEGER DEFAULT 0 "+
                 ");");
 
         db.execSQL("CREATE TABLE "+TABLE_NAME_SCHEDULE+" ( " +
@@ -119,6 +121,8 @@ public class DBmanager extends SQLiteOpenHelper{
                 db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_CHECKLIST+" TEXT;");
                 db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_CHECKEDLIST+" TEXT;");
             case 6:
+                db.execSQL("ALTER TABLE " + TABLE_NAME_MEMO + " ADD COLUMN " + COLUMN_MEMO_IS_MARKDOWN+" INTEGER DEFAULT 0;");
+            case 7:
         }
     }
 

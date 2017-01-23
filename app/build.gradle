@@ -9,8 +9,8 @@ android {
         applicationId "com.memorizer.memorizer"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 21
-        versionName "1.9"
+        versionCode 22
+        versionName "1.10"
     }
     buildTypes {
         release {

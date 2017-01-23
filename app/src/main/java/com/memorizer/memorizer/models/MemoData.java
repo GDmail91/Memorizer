@@ -25,6 +25,7 @@ public class MemoData implements Serializable{
     private int timeOfMinute;
     private String posted = "";
     private String edited= "";
+    private boolean isMarkdown;
     private ArrayList<CheckListData> checkList = new ArrayList<>();
 
     public MemoData() {
@@ -37,11 +38,12 @@ public class MemoData implements Serializable{
         Random random = new Random(System.currentTimeMillis());
         this.timeOfHour = random.nextInt(24);
         this.timeOfMinute = random.nextInt(60);
+        this.isMarkdown = false;
     }
 
     public MemoData(int _id, String content, Calendar whileDate, int term, String label,
                     int labelPos, int isRandom, int hour, int minute, String posted, String edited,
-                    ArrayList<CheckListData> checkList) {
+                    boolean isMarkdown, ArrayList<CheckListData> checkList) {
         this._id = _id;
         this.content = content;
         this.term = term;
@@ -53,6 +55,7 @@ public class MemoData implements Serializable{
         this.timeOfMinute = minute;
         this.posted = posted;
         this.edited = edited;
+        this.isMarkdown = isMarkdown;
         this.checkList = checkList;
 
     }
@@ -107,6 +110,10 @@ public class MemoData implements Serializable{
 
     public String getRawEdited() {
         return edited;
+    }
+
+    public boolean isMarkdown() {
+        return isMarkdown;
     }
 
     public ArrayList<CheckListData> getCheckList() {
@@ -182,6 +189,10 @@ public class MemoData implements Serializable{
         this.edited = changeTimeZone(edited, TimeZone.getDefault(), TimeZone.getTimeZone("GMT"));
     }
 
+    public void setMarkdown(boolean isMarkdown) {
+        this.isMarkdown = isMarkdown;
+    }
+
     public void setCheckList(ArrayList<CheckListData> checkList) {
         this.checkList = checkList;
     }
@@ -197,7 +208,8 @@ public class MemoData implements Serializable{
                 +"\nMinute: "+timeOfMinute
                 +"\nPosted: "+posted
                 +"\nEdited: "+edited
-                +"\nCheckList: "+checkList;
+                +"\nCheckList: "+checkList
+                +"\nisMarkdown: "+isMarkdown;
 
         return str;
     }

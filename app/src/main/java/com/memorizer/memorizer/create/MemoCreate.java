@@ -89,11 +89,13 @@ public class MemoCreate extends AppCompatActivity {
                     isMarkdown = !isMarkdown;
                     alarmContent.setVisibility(View.VISIBLE);
                     markdownView.setVisibility(View.GONE);
+                    memoData.setMarkdown(false);
                 } else {
                     isMarkdown = !isMarkdown;
                     markdownView.loadMarkdown(alarmContent.getText().toString());
                     alarmContent.setVisibility(View.GONE);
                     markdownView.setVisibility(View.VISIBLE);
+                    memoData.setMarkdown(true);
                 }
             }
         });
@@ -400,6 +402,8 @@ public class MemoCreate extends AppCompatActivity {
                     }
                     memoData.setLabel(labelName.getText().toString());
                     memoData.setLabelPos(color);
+
+                    memoData.setMarkdown(isMarkdown);
 
                     // 체크리스트 저장
                     ArrayList<CheckListData> checkListDatas = new ArrayList<>();
