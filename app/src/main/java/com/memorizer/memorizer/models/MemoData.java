@@ -1,8 +1,14 @@
 package com.memorizer.memorizer.models;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
+import java.util.TimeZone;
 
 /**
  * Created by YS on 2016-06-21.
@@ -18,6 +24,9 @@ public class MemoData implements Serializable{
     private int timeOfHour;
     private int timeOfMinute;
     private String posted = "";
+    private String edited= "";
+    private boolean isMarkdown;
+    private ArrayList<CheckListData> checkList = new ArrayList<>();
 
     public MemoData() {
         this.content = "";
@@ -29,9 +38,12 @@ public class MemoData implements Serializable{
         Random random = new Random(System.currentTimeMillis());
         this.timeOfHour = random.nextInt(24);
         this.timeOfMinute = random.nextInt(60);
+        this.isMarkdown = false;
     }
 
-    public MemoData(int _id, String content, Calendar whileDate, int term, String label, int labelPos, int isRandom, int hour, int minute, String posted) {
+    public MemoData(int _id, String content, Calendar whileDate, int term, String label,
+                    int labelPos, int isRandom, int hour, int minute, String posted, String edited,
+                    boolean isMarkdown, ArrayList<CheckListData> checkList) {
         this._id = _id;
         this.content = content;
         this.term = term;
@@ -42,6 +54,10 @@ public class MemoData implements Serializable{
         this.timeOfHour = hour;
         this.timeOfMinute = minute;
         this.posted = posted;
+        this.edited = edited;
+        this.isMarkdown = isMarkdown;
+        this.checkList = checkList;
+
     }
 
     public int get_id() {
@@ -81,7 +97,43 @@ public class MemoData implements Serializable{
     }
 
     public String getPosted() {
+        return changeTimeZone(posted, TimeZone.getTimeZone("GMT"), TimeZone.getDefault());
+    }
+
+    public String getRawPosted() {
         return posted;
+    }
+
+    public String getEdited() {
+        return changeTimeZone(edited, TimeZone.getTimeZone("GMT"), TimeZone.getDefault());
+    }
+
+    public String getRawEdited() {
+        return edited;
+    }
+
+    public boolean isMarkdown() {
+        return isMarkdown;
+    }
+
+    public ArrayList<CheckListData> getCheckList() {
+        return checkList;
+    }
+
+    public ArrayList<Boolean> getChecks() {
+        ArrayList<Boolean> tempList = new ArrayList<>();
+        for (CheckListData each : checkList) {
+            tempList.add(each.isCheck());
+        }
+        return tempList;
+    }
+
+    public ArrayList<String> getCheckMessages() {
+        ArrayList<String> tempList = new ArrayList<>();
+        for (CheckListData each : checkList) {
+            tempList.add(each.getCheckMessage());
+        }
+        return tempList;
     }
 
     public void set_id(int _id) {
@@ -130,7 +182,19 @@ public class MemoData implements Serializable{
     }
 
     public void setPosted(String posted) {
-        this.posted = posted;
+        this.posted = changeTimeZone(posted, TimeZone.getDefault(), TimeZone.getTimeZone("GMT"));
+    }
+
+    public void setEdited(String edited) {
+        this.edited = changeTimeZone(edited, TimeZone.getDefault(), TimeZone.getTimeZone("GMT"));
+    }
+
+    public void setMarkdown(boolean isMarkdown) {
+        this.isMarkdown = isMarkdown;
+    }
+
+    public void setCheckList(ArrayList<CheckListData> checkList) {
+        this.checkList = checkList;
     }
 
     public String printItem() {
@@ -142,8 +206,29 @@ public class MemoData implements Serializable{
                 +"\nisRandom: "+isRandom
                 +"\nHour: "+timeOfHour
                 +"\nMinute: "+timeOfMinute
-                +"\nPosted: "+posted;
+                +"\nPosted: "+posted
+                +"\nEdited: "+edited
+                +"\nCheckList: "+checkList
+                +"\nisMarkdown: "+isMarkdown;
 
         return str;
+    }
+
+    public String changeTimeZone(String dateString, TimeZone originZone, TimeZone TargetZone) {
+        // 나라별 시간대 변경
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormat.setTimeZone(originZone);
+
+        try {
+            // 날짜 포맷 설정
+            dateFormat.parse(dateString);
+            dateFormat.setTimeZone(TargetZone);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Date date = dateFormat.getCalendar().getTime();
+
+        return dateFormat.format(date);
     }
 }

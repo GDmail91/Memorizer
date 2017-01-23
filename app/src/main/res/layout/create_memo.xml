@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="13"
     android:background="@color/colorPrimaryDark">
 
     <android.support.design.widget.AppBarLayout
@@ -20,297 +19,351 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:text="@string/create_notice"
-        android:textAlignment="center" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
-        android:layout_margin="4dp"
-        android:minLines="6"
-        android:background="@color/memoPad"
-        android:hint="@string/write_memo"
-        android:textSize="14dp"
-        android:id="@+id/alarm_content" />
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:background="@color/memoPadAccent">
+        android:layout_height="match_parent">
 
-        <TextView
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/divider0"
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:text="@string/label"
-            android:textSize="16dp"
-            android:textColor="@color/colorPrimary" />
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_centerVertical="true"
-            android:background="@color/colorPrimaryDark"
-            android:orientation="horizontal"
-            android:id="@+id/divider0"/>
-
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider0"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@color/memoPad"
-            android:id="@+id/label_group">
-
-            <!-- TODO 컬러 픽커를 통해 한개만 띄워두고 색 바꾸는 형태로 바꿀 것 -->
-            <!-- TODO 기본 셀렉터의 경우 투명 + / 표시로 바꿀 것 -->
-            <RadioButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center_vertical"
-                android:button="@null"
-                android:background="@drawable/color_selector"
-                android:checked="false"
-                android:textOff=""
-                android:textOn=""
-                android:id="@+id/label_none"
-                style="?android:attr/borderlessButtonStyle" />
-
-            <RadioButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center_vertical"
-                android:button="@null"
-                android:background="@drawable/color_selector_blue"
-                android:checked="false"
-                android:textOff=""
-                android:textOn=""
-                android:id="@+id/label_blue"
-                style="?android:attr/borderlessButtonStyle" />
-
-            <RadioButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center_vertical"
-                android:button="@null"
-                android:background="@drawable/color_selector_red"
-                android:checked="false"
-                android:textOff=""
-                android:textOn=""
-                android:id="@+id/label_red"
-                style="?android:attr/borderlessButtonStyle"/>
-
-            <RadioButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center_vertical"
-                android:button="@null"
-                android:background="@drawable/color_selector_orange"
-                android:checked="false"
-                android:textOff=""
-                android:textOn=""
-                android:id="@+id/label_orange"
-                style="?android:attr/borderlessButtonStyle"/>
-
-            <RadioButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center_vertical"
-                android:button="@null"
-                android:background="@drawable/color_selector_green"
-                android:checked="false"
-                android:textOff=""
-                android:textOn=""
-                android:id="@+id/label_green"
-                style="?android:attr/borderlessButtonStyle"/>
-
-        </RadioGroup>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider0"
-            android:layout_alignParentBottom="true"
-            android:layout_toEndOf="@+id/label_group"
-            android:layout_toRightOf="@+id/label_group"
-            android:background="@color/memoPad"
-            android:hint="@string/label_name"
-            android:minLines="1"
-            android:maxLength="8"
-            android:textSize="13dp"
-            android:id="@+id/label_name"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:background="@color/memoPadAccent">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/divider1"
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:text="@string/term"
-            android:textSize="16dp"
-            android:textColor="@color/colorPrimary" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_centerVertical="true"
-            android:background="@color/colorPrimaryDark"
-            android:orientation="horizontal"
-            android:id="@+id/divider1"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider1"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:background="@color/memoPad"
-            style="?android:attr/borderlessButtonStyle"
-            android:text="@string/one_day"
-            android:id="@+id/alarm_term_btn"
-            android:onClick="onClickListen" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:background="@color/memoPadAccent">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/divider2"
-            android:layout_alignParentTop="true">
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="@string/end_date"
-                android:textSize="16dp"
-                android:textColor="@color/colorPrimary"
-                android:id="@+id/alarm_while"
-                />
-            <!--<Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:checked="false"/>-->
-        </RelativeLayout>
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_centerVertical="true"
-            android:background="@color/colorPrimaryDark"
-            android:orientation="horizontal"
-            android:id="@+id/divider2"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/create_notice"
+                    android:textAlignment="center" />
 
-        <Button
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp">
+
+                    <us.feras.mdv.MarkdownView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="400dp"
+                        android:background="@color/memoPad"
+                        android:id="@+id/markdown_view"
+                        android:visibility="gone"/>
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="400dp"
+                        android:gravity="top"
+                        android:background="@color/memoPad"
+                        android:hint="@string/write_memo"
+                        android:textSize="14dp"
+                        android:id="@+id/alarm_content" />
+
+                    <Button
+                        android:layout_height="50dp"
+                        android:layout_width="50dp"
+                        android:maxHeight="50dp"
+                        android:maxWidth="50dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:text="MD"
+                        android:textStyle="bold"
+                        android:id="@+id/action_change_md" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/memoPadAccent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:gravity="center_vertical"
+                            android:text="@string/checklist"
+                            android:textSize="16dp"
+                            android:textColor="@color/colorPrimary"/>
+
+                        <ImageButton
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:gravity="center_vertical"
+                            style="@style/Base.Widget.AppCompat.Button.Borderless"
+                            android:src="@drawable/plus_icon"
+                            android:scaleType="fitCenter"
+                            android:id="@+id/action_add_checklist"/>
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:id="@+id/checklist_view"/>
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:gravity="center"
+                        android:text="@string/label"
+                        android:textSize="16dp"
+                        android:textColor="@color/colorPrimary"
+                        android:background="@color/memoPadAccent"
+                        android:id="@+id/label_title" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/label_title"
+                        android:layout_toEndOf="@+id/label_title"
+                        android:background="@color/memoPad"
+                        android:scrollbars="none"
+                        android:id="@+id/label_scroll">
+                        <RadioGroup
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:id="@+id/label_group">
+
+                            <!-- TODO 컬러 픽커를 통해 한개만 띄워두고 색 바꾸는 형태로 바꿀 것 -->
+                            <!-- TODO 기본 셀렉터의 경우 투명 + / 표시로 바꿀 것 -->
+                            <RadioButton
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_gravity="center_vertical"
+                                android:button="@null"
+                                android:background="@drawable/color_selector"
+                                android:checked="false"
+                                android:textOff=""
+                                android:textOn=""
+                                android:id="@+id/label_none"
+                                style="?android:attr/borderlessButtonStyle" />
+
+                            <RadioButton
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_gravity="center_vertical"
+                                android:button="@null"
+                                android:background="@drawable/color_selector_blue"
+                                android:checked="false"
+                                android:textOff=""
+                                android:textOn=""
+                                android:id="@+id/label_blue"
+                                style="?android:attr/borderlessButtonStyle" />
+
+                            <RadioButton
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_gravity="center_vertical"
+                                android:button="@null"
+                                android:background="@drawable/color_selector_red"
+                                android:checked="false"
+                                android:textOff=""
+                                android:textOn=""
+                                android:id="@+id/label_red"
+                                style="?android:attr/borderlessButtonStyle"/>
+
+                            <RadioButton
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_gravity="center_vertical"
+                                android:button="@null"
+                                android:background="@drawable/color_selector_orange"
+                                android:checked="false"
+                                android:textOff=""
+                                android:textOn=""
+                                android:id="@+id/label_orange"
+                                style="?android:attr/borderlessButtonStyle"/>
+
+                            <RadioButton
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_gravity="center_vertical"
+                                android:button="@null"
+                                android:background="@drawable/color_selector_green"
+                                android:checked="false"
+                                android:textOff=""
+                                android:textOn=""
+                                android:id="@+id/label_green"
+                                style="?android:attr/borderlessButtonStyle"/>
+
+                        </RadioGroup>
+                    </HorizontalScrollView>
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/label_scroll"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toRightOf="@+id/label_title"
+                        android:layout_toEndOf="@+id/label_title"
+                        android:paddingStart="4dp"
+                        android:paddingLeft="4dp"
+                        android:background="@color/memoPad"
+                        android:hint="@string/label_name"
+                        android:minLines="1"
+                        android:maxLength="8"
+                        android:textSize="13dp"
+                        android:id="@+id/label_name"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/term"
+                        android:textSize="16dp"
+                        android:textColor="@color/colorPrimary"
+                        android:background="@color/memoPadAccent"
+                        android:id="@+id/term_title" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toEndOf="@+id/term_title"
+                        android:layout_toRightOf="@+id/term_title"
+                        android:gravity="center"
+                        android:background="@color/memoPad"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:text="@string/one_day"
+                        android:id="@+id/alarm_term_btn"
+                        android:onClick="onClickListen" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginBottom="4dp">
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/end_date"
+                        android:textSize="16dp"
+                        android:textColor="@color/colorPrimary"
+                        android:background="@color/memoPadAccent"
+                        android:id="@+id/alarm_while" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toEndOf="@+id/alarm_while"
+                        android:layout_toRightOf="@+id/alarm_while"
+                        android:background="@color/memoPad"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:text="@string/unlimit"
+                        android:id="@+id/alarm_while_btn"
+                        android:onClick="onClickListen" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/alert_time"
+                        android:textSize="16dp"
+                        android:textColor="@color/colorPrimary"
+                        android:background="@color/memoPadAccent"
+                        android:id="@+id/alarm_time"
+                        />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toEndOf="@+id/alarm_time"
+                        android:layout_toRightOf="@+id/alarm_time"
+                        android:background="@color/memoPad"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:text="@string/random"
+                        android:id="@+id/alarm_time_btn"
+                        android:onClick="onClickListen" />
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <!--<HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider2"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/memoPad"
-            style="?android:attr/borderlessButtonStyle"
-            android:text="@string/unlimit"
-            android:id="@+id/alarm_while_btn"
-            android:onClick="onClickListen" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:background="@color/memoPadAccent">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/divider3"
-            android:layout_alignParentTop="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/alert_time"
-                android:textSize="16dp"
-                android:textColor="@color/colorPrimary"
-                android:id="@+id/alarm_time"
-                />
-<!--
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:checked="false"/>
--->
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorPrimaryDark"
-            android:layout_centerVertical="true"
             android:orientation="horizontal"
-            android:id="@+id/divider3"/>
+            android:id="@+id/menu_group">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider3"
-            android:layout_alignParentBottom="true"
-            android:background="@color/memoPad"
-            style="?android:attr/borderlessButtonStyle"
-            android:text="@string/random"
-            android:id="@+id/alarm_time_btn"
-            android:onClick="onClickListen" />
+            <include layout="@layout/editor_toolbar" />
+
+
+            &lt;!&ndash;<ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="4dp"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@color/colorPrimary"
+                android:id="@+id/add_photo" />
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="4dp"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@color/colorPrimary" />&ndash;&gt;
+        </HorizontalScrollView>-->
     </RelativeLayout>
 </LinearLayout>

@@ -17,4 +17,7 @@ public class Constants {
     public static final int FILTER_MODIFY = 1;
     public static final int FILTER_ALARMED = 2;
     public static final int FILTER_CREATED = 3;
+
+
+    public static final int NOTIFY_ID = 1;
 }

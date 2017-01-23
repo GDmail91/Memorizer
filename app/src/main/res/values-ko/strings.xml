@@ -16,6 +16,7 @@
     <string name="deleted">번 메모가 삭제되었습니다.</string>
     <string name="memo_search">검색</string>
     <string name="filter">필터</string>
+    <string name="left_days">일 남음</string>
 
     <!-- 메모 생성 -->
     <string name="create_notice">생성/수정한 메모는 현재 시간부터 간격에 맞춰 진행됩니다.</string>
@@ -47,10 +48,14 @@
     <string name="label_name">라벨 이름</string>
     <string name="memo_create">메모생성</string>
     <string name="memo_delete">메모삭제</string>
+    <string name="checklist">체크리스트</string>
+    <string name="add_checklist">체크리스트를 추가하세요</string>
 
     <!-- 알람 -->
     <string name="remember">기억하시나요?</string>
     <string name="memo_placeholder">메모 내용</string>
+    <string name="left_arrow">&lt;</string>
+    <string name="right_arrow">&gt;</string>
 
     <!-- 검색 -->
     <string name="all">전체</string>

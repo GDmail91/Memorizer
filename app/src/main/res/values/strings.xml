@@ -15,6 +15,7 @@
     <string name="deleted"> was deleted.</string>
     <string name="memo_search">Search</string>
     <string name="filter">Filter</string>
+    <string name="left_days">days lefts</string>
 
     <!-- 메모 생성 -->
     <string name="create_notice">The created/edited memo will progress from the current time.</string>
@@ -46,10 +47,14 @@
     <string name="label_name">Label Name</string>
     <string name="memo_create">memo create</string>
     <string name="memo_delete">memo delete</string>
+    <string name="checklist">Checklist</string>
+    <string name="add_checklist">Add Checklist</string>
 
     <!-- 알람 -->
     <string name="remember">Do you remember?</string>
     <string name="memo_placeholder">Memo contents</string>
+    <string name="left_arrow">&lt;</string>
+    <string name="right_arrow">&gt;</string>
 
     <!-- 검색 -->
     <string name="all">ALL</string>

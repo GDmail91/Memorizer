@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -169,7 +168,7 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
         TextView memo_time;
         TextView memo_posted;
         TextView memo_term;
-        LinearLayout next_schedule;
+        RelativeLayout next_schedule;
 
         public ViewHolder(View view) {
             super(view);
@@ -179,7 +178,7 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
             memo_term = (TextView) view.findViewById(R.id.memo_term);
             memo_time = (TextView) view.findViewById(R.id.memo_time);
             memo_posted = (TextView) view.findViewById(R.id.memo_posted);
-            next_schedule = (LinearLayout) view.findViewById(R.id.next_schedule);
+            next_schedule = (RelativeLayout) view.findViewById(R.id.next_schedule);
         }
     }
 
