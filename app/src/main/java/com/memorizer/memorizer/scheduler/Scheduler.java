@@ -89,7 +89,6 @@ public class Scheduler {
         ArrayList<ScheduleData> nextScheduleList = scheduleModel.getNextData();
         Log.d(TAG, "같은시간에 울리는 알람 개수 : " + nextScheduleList.size());
         ArrayList<Integer> memoIdList = new ArrayList<>();
-        long nextAlertTime = nextScheduleList.get(0).getAlarmDate().getTimeInMillis();
 
         // nextSchedule이 null이 아닐경우 등록
         for (ScheduleData nextSchedule : nextScheduleList) {
@@ -165,6 +164,8 @@ public class Scheduler {
 
             Log.d(TAG, "다음알람 등록");
             PendingIntent pIntent = PendingIntent.getBroadcast(context, nextAlarmFlag, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            long nextAlertTime = nextScheduleList.get(0).getAlarmDate().getTimeInMillis();
 
             // 다음 알람 등록
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
