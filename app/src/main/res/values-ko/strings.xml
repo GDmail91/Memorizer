@@ -54,6 +54,8 @@
     <!-- 알람 -->
     <string name="remember">기억하시나요?</string>
     <string name="memo_placeholder">메모 내용</string>
+    <string name="left_arrow">&lt;</string>
+    <string name="right_arrow">&gt;</string>
 
     <!-- 검색 -->
     <string name="all">전체</string>
