@@ -31,7 +31,7 @@ import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
 import com.memorizer.memorizer.search.SearchActivity;
-import com.newrelic.agent.android.NewRelic;
+import com.splunk.mint.Mint;
 
 import java.util.ArrayList;
 
@@ -67,9 +67,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         // NewRelic 용
-        NewRelic.withApplicationToken(
-                "AAc483aa8dc9458949bf00b5e1bd56257947fdf68b"
-        ).start(this.getApplication());
+        Mint.initAndStartSession(this.getApplication(), "e4b63be0");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
