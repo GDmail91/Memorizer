@@ -8,6 +8,7 @@
     <color name="memoPad">#E3DCC1</color>
     <color name="memoPadAccent">#6C4701</color>
     <color name="memoPadDark">#7C5701</color>
+    <color name="memoPadDeepDark">#5C3901</color>
     <color name="memoPadFont">#E9AE2B</color>
 
     <color name="black">#000000</color>

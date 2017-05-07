@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@drawable/widget_shadow"
+    android:elevation="3dp">
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/memoPadAccent"
+        android:id="@+id/title_header">
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="7dp"
+            android:layout_centerVertical="true"
+            style="?android:attr/borderlessButtonStyle"
+            android:src="@drawable/pencil"
+            android:scaleType="fitCenter"
+            android:id="@+id/widget_new_memo"/>
+
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toLeftOf="@+id/widget_right_btn"
+            android:layout_centerVertical="true"
+            android:background="@drawable/widget_arrow"
+            android:text="@string/left_arrow"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:id="@+id/widget_left_btn"/>
+
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/widget_arrow"
+            android:text="@string/right_arrow"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:id="@+id/widget_right_btn"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_header"
+        android:background="@color/memoPadDeepDark"
+        android:id="@+id/label_header">
+
+        <TextView
+            android:layout_width="45dp"
+            android:layout_height="17dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:text="@string/next_alert"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:id="@+id/next"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_below="@+id/next"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:text="0000-00-00 00:00"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:id="@+id/alarm_time"/>
+        <!--
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_below="@+id/alarm_date"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:text="16:03"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:id="@+id/alarm_time"/>
+-->
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/label_border"
+            android:gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp"
+            android:id="@+id/label"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/label_header"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="10dp"
+        android:paddingLeft="10dp"
+        android:paddingEnd="10dp"
+        android:paddingRight="10dp"
+        android:background="@color/memoPad">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/memo_placeholder"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:maxLines="6"
+            android:ellipsize="end"
+            android:id="@+id/message_view" />
+<!--
+        <us.feras.mdv.MarkdownView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:id="@+id/markdown_view"  />-->
+    </RelativeLayout>
+    <!--
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/label_header"
+        android:layout_above="@+id/alram_confirm"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="10dp"
+        android:paddingLeft="10dp"
+        android:paddingEnd="10dp"
+        android:paddingRight="10dp"
+        android:background="@color/memoPad"
+        android:id="@+id/alarm_scroll_view">
+
+    </ScrollView>-->
+
+</RelativeLayout>

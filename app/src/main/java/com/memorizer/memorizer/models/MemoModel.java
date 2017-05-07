@@ -339,11 +339,72 @@ public class MemoModel {
         return allData;
     }
 
+    public MemoData getNearData(int id, boolean order) {
+        MemoData memoData = null;
+        int i =0;
+        String sql = "SELECT "+TABLE_NAME_MEMO+"._id, " +
+                "substr("+COLUMN_MEMO_CONTENT+",0,200) AS "+COLUMN_MEMO_CONTENT+", "+
+                COLUMN_MEMO_DURING+", "+
+                COLUMN_MEMO_TERM+", "+
+                TABLE_NAME_LABEL+"."+COLUMN_LABEL_NAME+", "+
+                TABLE_NAME_LABEL+"."+COLUMN_LABEL_COLOR+", " +
+                COLUMN_MEMO_IS_RANDOM+", "+
+                COLUMN_MEMO_HOUR+", "+
+                COLUMN_MEMO_MINUTE+", "+
+                COLUMN_MEMO_POSTED+", " +
+                COLUMN_MEMO_EDITED+", " +
+                COLUMN_MEMO_CHECKLIST+", " +
+                COLUMN_MEMO_CHECKEDLIST+", " +
+                COLUMN_MEMO_IS_MARKDOWN+" " +
+                "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
+                "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
+                "LEFT JOIN "+TABLE_NAME_SCHEDULE+" " +
+                "ON "+TABLE_NAME_MEMO+"._id="+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_MEMO_ID+" ";
+        if (order) {
+            sql += "WHERE "+TABLE_NAME_MEMO+"._id > " + id + " "
+                + "ORDER BY "+TABLE_NAME_MEMO+"._id ASC ";
+        } else {
+            sql += "WHERE "+TABLE_NAME_MEMO+"._id < " + id + " "
+                + "ORDER BY "+TABLE_NAME_MEMO+"._id DESC ";
+        }
+
+
+        sql += "LIMIT 1";
+
+        Cursor cursor = dBmanager.getDbR().rawQuery(sql, null);
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(cursor.getLong(2));
+
+            ArrayList<CheckListData> checkList = checkListParse(cursor.getString(12), cursor.getString(11));
+
+            memoData = new MemoData(
+                cursor.getInt(0),
+                cursor.getString(1),
+                calendar,
+                cursor.getInt(3),
+                cursor.getString(4),
+                cursor.getInt(5),
+                cursor.getInt(6),
+                cursor.getInt(7),
+                cursor.getInt(8),
+                cursor.getString(9),
+                cursor.getString(10),
+                Boolean.valueOf(cursor.getString(13)),
+                checkList
+            );
+        }
+        cursor.close();
+
+        return memoData;
+    }
+
     public ArrayList<MemoData> getAllDataShort(int order) {
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;
         String sql = "SELECT "+TABLE_NAME_MEMO+"._id, " +
-                "substr("+COLUMN_MEMO_CONTENT+",0,25) AS "+COLUMN_MEMO_CONTENT+", "+
+                "substr("+COLUMN_MEMO_CONTENT+",0,200) AS "+COLUMN_MEMO_CONTENT+", "+
                 COLUMN_MEMO_DURING+", "+
                 COLUMN_MEMO_TERM+", "+
                 TABLE_NAME_LABEL+"."+COLUMN_LABEL_NAME+", "+

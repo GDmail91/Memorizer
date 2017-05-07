@@ -81,6 +81,22 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <!-- 위젯 리시버 등록 -->
+        <receiver
+            android:name="com.memorizer.memorizer.widget.MainWidget"
+            android:label="memorizerMainWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.memorizer.memorizer.NEW_MEMO" />
+                <action android:name="com.memorizer.memorizer.LEFT_MEMO" />
+                <action android:name="com.memorizer.memorizer.RIGHT_MEMO" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/memorizer_widget_provider" />
+        </receiver>
     </application>
 
 </manifest>
