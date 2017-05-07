@@ -189,7 +189,11 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
                     new Intent(MemoAlarmActivity.this, MainActivity.class), 0);
 
             builder.setContentTitle(getString(R.string.remember));    //알림창에서의 제목
-            builder.setContentText(content.substring(0, 25));   //알림창에서의 글씨
+            //알림창에서의 글씨
+            if (content.length() < 25)
+                builder.setContentText(content.substring(0, content.length()));
+            else
+                builder.setContentText(content.substring(0, 25));
             builder.setContentIntent(intent);
 
             Notification notification = builder.build();   //Notification 객체 생성
