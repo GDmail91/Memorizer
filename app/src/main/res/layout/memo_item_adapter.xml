@@ -120,6 +120,8 @@
             android:layout_marginRight="5dp"
             android:gravity="center_vertical"
             android:text="@string/memo"
+            android:maxLines="3"
+            android:ellipsize="end"
             android:id="@+id/memo_content" />
     </RelativeLayout>
 </RelativeLayout>
