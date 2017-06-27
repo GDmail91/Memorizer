@@ -11,6 +11,7 @@ android {
         targetSdkVersion 23
         versionCode 27
         versionName "1.11.0"
+
         // Use this option when your app targets a version of the Android SDK that is less than 21:
         // multiDexEnabled = true
     }
