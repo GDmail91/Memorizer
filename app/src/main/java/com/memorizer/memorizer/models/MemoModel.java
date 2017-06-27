@@ -423,20 +423,18 @@ public class MemoModel {
                 "ON "+TABLE_NAME_MEMO+"._id="+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_MEMO_ID+" ";
         switch (order) {
             case FILTER_NONE:
-                sql += "ORDER BY "+TABLE_NAME_MEMO+"._id ";
+                sql += "ORDER BY "+TABLE_NAME_MEMO+"._id DESC";
                 break;
             case FILTER_MODIFY:
-                sql += "ORDER BY "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_EDITED;
+                sql += "ORDER BY "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_EDITED + " DESC";
                 break;
             case FILTER_ALARMED:
-                sql += "ORDER BY "+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_ALARM_DATE;
+                sql += "ORDER BY "+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_ALARM_DATE + " ASC";
                 break;
             case FILTER_CREATED:
-                sql += "ORDER BY "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_POSTED;
+                sql += "ORDER BY "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_POSTED + " DESC";
                 break;
         }
-
-        sql += " DESC";
 
         Cursor cursor = dBmanager.getDbR().rawQuery(sql, null);
         while(cursor.moveToNext()) {

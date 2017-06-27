@@ -163,26 +163,11 @@ public class MemoCreate extends AppCompatActivity {
                         memoData.getWhileDate().get(Calendar.DAY_OF_MONTH);
             }
             alarmWhileBtn.setText(during);
-            Log.d(TAG, makeTime(memoData.getTimeOfHour(), memoData.getTimeOfMinute()));
-            alarmTimeBtn.setText(makeTime(memoData.getTimeOfHour(), memoData.getTimeOfMinute()));
+            Log.d(TAG, memoData.getTime());
+            alarmTimeBtn.setText(memoData.getTime());
             labelName.setText(memoData.getLabel());
             if (memoData.getLabelPos() != 0) {
-                int pos = 0;
-                switch (memoData.getLabelPos()) {
-                    case Constants.COLOR_BLUE:
-                        pos = R.id.label_blue;
-                        break;
-                    case Constants.COLOR_RED:
-                        pos = R.id.label_red;
-                        break;
-                    case Constants.COLOR_ORANGE:
-                        pos = R.id.label_orange;
-                        break;
-                    case Constants.COLOR_GREEN:
-                        pos = R.id.label_green;
-                        break;
-                }
-                labelGroup.check(pos);
+                labelGroup.check(memoData.getLabelPosDraw());
             }
 
             checklistView.setVisibility(View.VISIBLE);
@@ -332,7 +317,7 @@ public class MemoCreate extends AppCompatActivity {
                         memoData.setTimeOfMinute(minute);
 
                         // 버튼 글자 바꿈
-                        alarmTimeBtn.setText(makeTime(hourOfDay, minute));
+                        alarmTimeBtn.setText(memoData.getTime());
 
                         // Dialog창 사라짐
                         dialog.cancel();
@@ -467,32 +452,5 @@ public class MemoCreate extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    protected String makeTime(int hourOfDay, int minute) {
-        String hourStr, minStr, ampm = "am";
-
-        if (hourOfDay >= 22) {
-            hourStr = String.valueOf(hourOfDay - 12);
-            ampm = "pm";
-        } else if (hourOfDay > 12) {
-            hourStr = "0" + String.valueOf(hourOfDay - 12);
-            ampm = "pm";
-        } else if (hourOfDay == 0) {
-            hourStr = "12";
-        } else if (hourOfDay < 10) {
-            hourStr = "0" + String.valueOf(hourOfDay);
-        } else if (hourOfDay == 12) {
-            hourStr = String.valueOf(hourOfDay);
-            ampm = "pm";
-        } else
-            hourStr = String.valueOf(hourOfDay);
-
-        if (minute < 10) {
-            minStr = "0" + String.valueOf(minute);
-        } else
-            minStr = String.valueOf(minute);
-
-        return hourStr +" : "+minStr+ " "+ampm;
     }
 }

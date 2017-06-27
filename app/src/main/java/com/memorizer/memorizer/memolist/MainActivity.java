@@ -22,8 +22,9 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.memorizer.memorizer.DeveloperInfo;
-import com.memorizer.memorizer.MemoAlarmActivity;
+import com.memorizer.memorizer.NoticeDialog;
 import com.memorizer.memorizer.R;
+import com.memorizer.memorizer.alarm.MemoAlarmDragActivity;
 import com.memorizer.memorizer.create.MemoCreate;
 import com.memorizer.memorizer.models.LabelData;
 import com.memorizer.memorizer.models.MemoData;
@@ -31,10 +32,12 @@ import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
 import com.memorizer.memorizer.search.SearchActivity;
-import com.splunk.mint.Mint;
 
 import java.util.ArrayList;
 
+import static com.memorizer.memorizer.models.Constants.FILTER_ALARMED;
+import static com.memorizer.memorizer.models.Constants.FILTER_MODIFY;
+import static com.memorizer.memorizer.models.Constants.FILTER_NONE;
 import static com.memorizer.memorizer.models.Constants.ITEM_DELETE;
 
 public class MainActivity extends AppCompatActivity
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     ArrayList<MemoData> memoDatas = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
+    private NoticeDialog noticeDialog;
     private RecyclerView recyclerView;
     private MemoListAdapter memoListAdapter;
     private Spinner filterList;
@@ -66,8 +70,8 @@ public class MainActivity extends AppCompatActivity
             });
         }
 
-        // NewRelic 용
-        Mint.initAndStartSession(this.getApplication(), "e4b63be0");
+        // Splunk Mint 용
+        //Mint.initAndStartSession(this.getApplication(), "e4b63be0");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -90,22 +94,22 @@ public class MainActivity extends AppCompatActivity
                 SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
                 switch (position) {
-                    case 0:
-                        editor.putInt("filter", 0);
+                    case FILTER_NONE:
+                        editor.putInt("filter", FILTER_NONE);
                         break;
-                    case 1:
-                        editor.putInt("filter", 1);
+                    case FILTER_MODIFY:
+                        editor.putInt("filter", FILTER_MODIFY);
                         break;
-                    case 2:
-                        editor.putInt("filter", 2);
+                    case FILTER_ALARMED:
+                        editor.putInt("filter", FILTER_ALARMED);
                         break;
                     default:
-                        editor.putInt("filter", 0);
+                        editor.putInt("filter", FILTER_NONE);
                         break;
 
                 }
                 editor.apply();
-                setMemoDatas(pref.getInt("filter",0));
+                setMemoDatas(pref.getInt("filter",FILTER_NONE));
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
@@ -115,6 +119,23 @@ public class MainActivity extends AppCompatActivity
         // 데이터 채우기
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         setMemoDatas(pref.getInt("filter",0));
+
+        if (pref.getBoolean("is_update", true)) {
+            noticeDialog = new NoticeDialog(this,
+                    getString(R.string.notice_title),
+                    getString(R.string.notice),
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            /*SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.putBoolean("is_update", false);
+                            editor.apply();*/
+                            noticeDialog.dismiss();
+                        }
+                    });
+            noticeDialog.show();
+        }
 
         ScheduleModel scheduleModel = new ScheduleModel(this);
         Log.d("TEST", "스케쥴: "+scheduleModel.getAllData());
@@ -153,7 +174,7 @@ public class MainActivity extends AppCompatActivity
         Intent mIntent = getIntent();
         MemoData memoData = (MemoData)mIntent.getSerializableExtra("mCreate");
         if (memoData != null) {
-            Intent popupIntent = new Intent(MainActivity.this, MemoAlarmActivity.class);
+            Intent popupIntent = new Intent(MainActivity.this, MemoAlarmDragActivity.class);
             ArrayList<Integer> createdData = new ArrayList<>();
             createdData.add(memoData.get_id());
             popupIntent.putIntegerArrayListExtra("memoId", createdData);

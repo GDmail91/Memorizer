@@ -1,3 +1,4 @@
+/*
 package com.memorizer.memorizer;
 
 import android.app.Activity;
@@ -28,20 +29,22 @@ import us.feras.mdv.MarkdownView;
 
 import static com.memorizer.memorizer.models.Constants.NOTIFY_ID;
 
+*/
 /**
  * Created by YS on 2016-06-27.
- */
+ *//*
+
 public class MemoAlarmActivity extends Activity implements View.OnClickListener {
     private final String TAG = "MemoAlarmActivity";
 
     private Button mConfirm;
-    private Button nextButton;
-    private Button prevButton;
+    //private Button nextButton;
+    //private Button prevButton;
     private TextView messageView;
     private MarkdownView messageMarkdown;
     private ScrollView alarmScrollView;
     private TextView label;
-    private TextView messageCounter;
+    //private TextView messageCounter;
     private RelativeLayout labelHeader;
     private static ArrayList<MemoData> memoDatas = new ArrayList<>();
     private static int counter=1;
@@ -54,18 +57,18 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
         setContentView(R.layout.activity_alarm);
 
         mConfirm = (Button) findViewById(R.id.alram_confirm);
-        nextButton = (Button) findViewById(R.id.next_alarm);
-        prevButton = (Button) findViewById(R.id.prev_alarm);
+        //nextButton = (Button) findViewById(R.id.next_alarm);
+        //prevButton = (Button) findViewById(R.id.prev_alarm);
         mConfirm.setOnClickListener(this);
-        nextButton.setOnClickListener(this);
-        prevButton.setOnClickListener(this);
+        //nextButton.setOnClickListener(this);
+        //prevButton.setOnClickListener(this);
 
         alarmScrollView = (ScrollView) findViewById(R.id.alarm_scroll_view);
         messageView = (TextView) findViewById(R.id.message_view);
         messageMarkdown = (MarkdownView) findViewById(R.id.markdown_view);
         labelHeader = (RelativeLayout) findViewById(R.id.label_header);
         label = (TextView) findViewById(R.id.label);
-        messageCounter = (TextView) findViewById(R.id.message_counter);
+        //messageCounter = (TextView) findViewById(R.id.message_counter);
 
         Intent intent = getIntent();
         Bundle intentBundle = intent.getExtras();
@@ -112,7 +115,7 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
     public void setMessageView() {
         if (memoDatas.size() > 0) {
             if (memoDatas.size() > 1) {
-                messageCounter.setText("("+counter + "/" + memoDatas.size()+")");
+                //messageCounter.setText("("+counter + "/" + memoDatas.size()+")");
 
                 if (counter == 1) {
                     nextButton.setVisibility(View.VISIBLE);
@@ -202,3 +205,4 @@ public class MemoAlarmActivity extends Activity implements View.OnClickListener 
         }
     }
 }
+*/

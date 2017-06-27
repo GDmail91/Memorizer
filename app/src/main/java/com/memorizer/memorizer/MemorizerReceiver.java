@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.memorizer.memorizer.alarm.MemoAlarmDragActivity;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
@@ -55,7 +56,7 @@ public class MemorizerReceiver extends BroadcastReceiver {
             Log.d(TAG, "리시버에서 받은 id 리스트 : "+tempDataList.toString());
 
             if (tempDataList.size() > 0) {
-                Intent popupIntent = new Intent(context.getApplicationContext(), MemoAlarmActivity.class);
+                Intent popupIntent = new Intent(context.getApplicationContext(), MemoAlarmDragActivity.class);
                 popupIntent.putIntegerArrayListExtra("memoId", tempDataList);
                 popupIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 popupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

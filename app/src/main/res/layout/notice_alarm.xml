@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="270dp"
+    android:layout_height="400dp"
+    android:layout_gravity="center">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:gravity="center"
+        android:background="@color/memoPadAccent"
+        android:textSize="18sp"
+        android:textColor="@color/memoPadPrimary"
+        android:id="@+id/notice_title"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="310dp"
+        android:layout_below="@+id/notice_title"
+        android:background="@color/memoPad"
+        android:id="@+id/notice_block">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <us.feras.mdv.MarkdownView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/notice_text"/>
+        </RelativeLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/notice_block"
+        android:background="@color/memoPadAccent"
+        android:orientation="horizontal"
+        android:gravity="end" >
+
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:background="@color/memoPadTrans"
+            android:text="@string/cancel"
+            android:textColor="@color/memoPadPrimary"
+            android:id="@+id/cancel_btn" />
+
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:background="@color/memoPadTrans"
+            android:text="@string/ok"
+            android:textColor="@color/memoPadPrimary"
+            android:id="@+id/ok_btn" />
+    </LinearLayout>
+</RelativeLayout>

@@ -51,32 +51,21 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
         // 각 뷰에 값넣기
 
         // TextView에 현재 position의 문자열 추가
-        holder.label.setText(memoDatas.get(pos).getLabel());
-        int color = 0;
-        switch (memoDatas.get(pos).getLabelPos()) {
-            case Constants.COLOR_BLUE:
-                color = R.drawable.color_selector_blue;
-                break;
-            case Constants.COLOR_RED:
-                color = R.drawable.color_selector_red;
-                break;
-            case Constants.COLOR_ORANGE:
-                color = R.drawable.color_selector_orange;
-                break;
-            case Constants.COLOR_GREEN:
-                color = R.drawable.color_selector_green;
-                break;
-            default:
-                color = R.drawable.color_selector;
+        if (memoDatas.get(position).getLabel().equals("") && memoDatas.get(position).getLabelPos() == 0) {
+            holder.label.setVisibility(View.GONE);
+        } else {
+            holder.label.setVisibility(View.VISIBLE);
+            holder.label.setText(memoDatas.get(pos).getLabel());
+            holder.label.setBackground(ContextCompat.getDrawable(mContext, memoDatas.get(pos).getLabelPosDraw()));
         }
-        holder.label.setBackground(ContextCompat.getDrawable(mContext, color));
+
         if (memoDatas.get(pos).getContent().length() >= 24) {
             holder.memo_content.setText(memoDatas.get(pos).getContent()+"...");
         } else {
             holder.memo_content.setText(memoDatas.get(pos).getContent());
         }
 
-        holder.memo_time.setText(makeTime(memoDatas.get(pos).getTimeOfHour(), memoDatas.get(pos).getTimeOfMinute()));
+        holder.memo_time.setText(memoDatas.get(pos).getTime());
         holder.memo_posted.setText(memoDatas.get(pos).getPosted().split(" ")[0]); // 시간 제거
 
         ScheduleModel scheduleModel = new ScheduleModel(mContext);
@@ -130,34 +119,6 @@ public class MemoListAdapter extends RecyclerView.Adapter<MemoListAdapter.ViewHo
     // 외부에서 아이템 삭제 요청 시 사용
     public void remove(int _position) {
         this.memoDatas.remove(_position);
-    }
-
-
-    protected String makeTime(int hourOfDay, int minute) {
-        String hourStr, minStr, ampm = "am";
-
-        if (hourOfDay >= 22) {
-            hourStr = String.valueOf(hourOfDay - 12);
-            ampm = "pm";
-        } else if (hourOfDay > 12) {
-            hourStr = "0" + String.valueOf(hourOfDay - 12);
-            ampm = "pm";
-        } else if (hourOfDay == 0) {
-            hourStr = "12";
-        } else if (hourOfDay < 10) {
-            hourStr = "0" + String.valueOf(hourOfDay);
-        } else if (hourOfDay == 12) {
-            hourStr = String.valueOf(hourOfDay);
-            ampm = "pm";
-        } else
-            hourStr = String.valueOf(hourOfDay);
-
-        if (minute < 10) {
-            minStr = "0" + String.valueOf(minute);
-        } else
-            minStr = String.valueOf(minute);
-
-        return hourStr +" : "+minStr+ " "+ampm;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Activity to be launched,when you first install widget(drag n drop widget to homescreen) we will ignore this now -->
+<!-- the layout of the widget,just like setContentView(id) of Activity-->
+<!-- Minimum width and height of the widget -->
+<!-- Image to be seen when you go to select a widget -->
+<!-- How to resize the widget -->
+<!-- Update interval i.e. @ this interval WidgetProvider onUpdate method will be called -->
+<!-- Default is 30 min,you can set lower value,but it will take 30 min ,but it takes higher value than 30 min-->
+<!-- 30 min =30x60x1000 -->
+
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/widget_memo_list"
+    android:minHeight="220dip"
+    android:minWidth="220dip"
+    android:previewImage="@drawable/widget_list_preview"
+    android:resizeMode="vertical|horizontal"
+    android:updatePeriodMillis="1800000"/>

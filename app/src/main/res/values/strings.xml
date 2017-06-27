@@ -16,6 +16,9 @@
     <string name="memo_search">Search</string>
     <string name="filter">Filter</string>
     <string name="left_days">days lefts</string>
+    <string name="memo_loading_widget">Loading notes&#8230;</string>
+    <string name="memo_not_regist_widget">Not Registered</string>
+    <string name="memo_created">Posted</string>
 
     <!-- 메모 생성 -->
     <string name="create_notice">The created/edited memo will progress from the current time.</string>
@@ -60,6 +63,14 @@
     <string name="all">ALL</string>
     <string name="no_label">No Label</string>
     <string name="cancel">Cancel</string>
+
+    <!-- 위젯 -->
+    <string name="widget_select_name">Memorizer Preview</string>
+    <string name="widget_list_name">Memorizer List View</string>
+
+    <!-- 공지 -->
+    <string name="notice_title">Update Notes(v1.11.0)</string>
+    <string name="notice">- Now we can swipe memos when the memo alert in same time.\n- Added widget(List, Select).\n- Fixed filter function.\n- Changed main view\'s design (memo list).</string>
 
     <!-- 만든이 -->
     <string name="activity_developer">Dev Info</string>

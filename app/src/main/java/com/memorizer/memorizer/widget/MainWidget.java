@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.memorizer.memorizer.R;
@@ -31,6 +32,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class MainWidget extends AppWidgetProvider {
 
+    private static final String TAG = "WIDGET TEST";
     static ArrayList<MemoData> memoDatas = new ArrayList<>();
     private static int curIndex = -1;
     private static final int LEFT = 1;  // 최근 메모
@@ -59,7 +61,9 @@ public class MainWidget extends AppWidgetProvider {
 
         // Custom Recevier
         else if(Constants.NEW_MEMO.equals(action)){
-            callActivity(context);
+            Intent newMemoIntent = new Intent(context, MemoCreate.class);
+            newMemoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            callActivity(context, newMemoIntent);
         } else if (Constants.LEFT_MEMO.equals(action)) {
             // TODO get left memo if exist
             //memoChange(context, LEFT);
@@ -70,6 +74,19 @@ public class MainWidget extends AppWidgetProvider {
             //memoChange(context, RIGHT);
             AppWidgetManager manager = AppWidgetManager.getInstance(context);
             setUI(context, manager, manager.getAppWidgetIds(new ComponentName(context, getClass())), RIGHT);
+        } else if (Constants.OPEN_MEMO.equals(action)) {
+            SharedPreferences pref = context.getSharedPreferences("pref", MODE_PRIVATE);
+
+            int memoId = pref.getInt(STR_WIDGET_INDEX, 0);
+            if (memoId > 0) {
+                Intent openMemoIntent = new Intent(context, MemoCreate.class);
+                openMemoIntent.putExtra("is_edit", true);
+                openMemoIntent.putExtra("memo_id", pref.getInt(STR_WIDGET_INDEX, 0));
+
+                openMemoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                callActivity(context, openMemoIntent);
+            }
         }
     }
 
@@ -106,15 +123,18 @@ public class MainWidget extends AppWidgetProvider {
         Intent newMemoIntent = new Intent(Constants.NEW_MEMO);
         Intent leftMemoIntent = new Intent(Constants.LEFT_MEMO);
         Intent rightMemoIntent = new Intent(Constants.RIGHT_MEMO);
+        Intent openMemoIntent = new Intent(Constants.OPEN_MEMO);
 
         PendingIntent pIntentNewMemo = PendingIntent.getBroadcast(context, 0, newMemoIntent, 0);
         PendingIntent pIntentLeftMemo = PendingIntent.getBroadcast(context, 0, leftMemoIntent, 0);
         PendingIntent pIntentRightMemo = PendingIntent.getBroadcast(context, 0, rightMemoIntent, 0);
+        PendingIntent pIntentOpenMemo = PendingIntent.getBroadcast(context, 0, openMemoIntent, 0);
 
 
         views.setOnClickPendingIntent(R.id.widget_new_memo, pIntentNewMemo);
         views.setOnClickPendingIntent(R.id.widget_left_btn, pIntentLeftMemo);
         views.setOnClickPendingIntent(R.id.widget_right_btn, pIntentRightMemo);
+        views.setOnClickPendingIntent(R.id.message_view, pIntentOpenMemo);
 
         SharedPreferences pref = context.getSharedPreferences("pref", MODE_PRIVATE);
         MemoModel memoModel = new MemoModel(context);
@@ -127,8 +147,8 @@ public class MainWidget extends AppWidgetProvider {
             memoData = memoModel.getData(pref.getInt(STR_WIDGET_INDEX, 0)); // Content 글자수 제한
         }
         memoModel.close();
+        SharedPreferences.Editor editor = pref.edit();
         if (memoData != null) {
-            SharedPreferences.Editor editor = pref.edit();
             editor.putInt(STR_WIDGET_INDEX, memoData.get_id());
             editor.apply();
 
@@ -140,6 +160,23 @@ public class MainWidget extends AppWidgetProvider {
 
             views.setTextViewText(R.id.message_view, memoData.getContent());
             views.setTextViewText(R.id.alarm_time, datetime);
+
+            if (memoData.getLabel().equals("") && memoData.getLabelPos() == 0) {
+                views.setViewVisibility(R.id.label, View.GONE);
+            } else {
+                views.setViewVisibility(R.id.label, View.VISIBLE);
+                views.setInt(R.id.label, "setBackgroundResource", memoData.getLabelPosDraw());
+                //views.setImageViewResource(R.id.label, color);
+                views.setTextViewText(R.id.label, memoData.getLabel());
+            }
+        } else {
+            Log.d(TAG, "memo data null");
+            /*editor.putInt(STR_WIDGET_INDEX, -1);
+            editor.apply();*/
+
+            //views.setTextViewText(R.id.message_view, context.getString(R.string.memo_not_regist_widget));
+            //views.setTextViewText(R.id.alarm_time, context.getString(R.string.memo_not_regist_widget));
+            //views.setViewVisibility(R.id.label, View.GONE);
         }
 
         /*if (memoDatas.size() == 0) {
@@ -189,10 +226,9 @@ public class MainWidget extends AppWidgetProvider {
     /**
      * Activity 호출 (Intent.FLAG_ACTIVITY_NEW_TASK)
      */
-    private void callActivity(Context context){
+    private void callActivity(Context context, Intent intent){
         Log.d(TAG, "callActivity()");
-        Intent intent = new Intent(context, MemoCreate.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         context.startActivity(intent);
     }
 

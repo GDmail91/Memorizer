@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="448dp"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center"
+        android:background="@color/memoPadAccent"
+        android:orientation="horizontal"
+        android:id="@+id/title_header">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remember"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:id="@+id/title_view" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/alarm_confirm"
+        android:layout_below="@+id/title_header"
+        android:id="@+id/viewpager" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/memoPadDeepDark"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_above="@+id/indicator"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="@string/ok"
+        android:textSize="18sp"
+        android:textColor="@color/memoPadPrimary"
+        android:id="@+id/alarm_confirm"/>
+
+    <me.relex.circleindicator.CircleIndicator
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/indicator" />
+</RelativeLayout>

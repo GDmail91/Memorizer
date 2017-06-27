@@ -21,6 +21,7 @@ public class Constants {
     public static final String NEW_MEMO = "com.memorizer.memorizer.NEW_MEMO";
     public static final String LEFT_MEMO = "com.memorizer.memorizer.LEFT_MEMO";
     public static final String RIGHT_MEMO = "com.memorizer.memorizer.RIGHT_MEMO";
+    public static final String OPEN_MEMO = "com.memorizer.memorizer.OPEN_MEMO";
 
 
     public static final int NOTIFY_ID = 1;

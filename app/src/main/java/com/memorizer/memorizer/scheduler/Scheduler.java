@@ -225,10 +225,10 @@ public class Scheduler {
                         memoData.getTimeOfMinute(),
                         0);
             } else {
-                setDay.setTimeInMillis(currentTimeMillis() + (memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
+                //setDay.setTimeInMillis(currentTimeMillis() + (memoData.getTerm() * NEXT)); // 현재 날짜에서 Term 기간만큼 증가후 저장
                 Log.d(TAG, "다음꺼!");
                 //setDay.setTimeInMillis(System.currentTimeMillis() + ((long) memoData.getTerm() * 60 * 1000));
-                //setDay.setTimeInMillis(System.currentTimeMillis());
+                setDay.setTimeInMillis(System.currentTimeMillis()); // TEST용
                 setDay.set(
                         setDay.get(Calendar.YEAR),
                         setDay.get(Calendar.MONTH),

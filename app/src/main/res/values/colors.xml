@@ -5,11 +5,13 @@
     <color name="colorPrimaryTrans">#00000000</color>
     <color name="colorAccent">#4983EE</color>
 
-    <color name="memoPad">#E3DCC1</color>
-    <color name="memoPadAccent">#6C4701</color>
-    <color name="memoPadDark">#7C5701</color>
+    <color name="memoPadPrimary">#FFFFFF</color>
+    <color name="memoPadPrimaryDark">#CCCCCC</color>
+    <color name="memoPadTrans">#00000000</color>
+    <color name="memoPad">#F2E4BB</color>
+    <color name="memoPadAccent">#73532C</color>
+    <color name="memoPadDark">#D9B972</color>
     <color name="memoPadDeepDark">#5C3901</color>
-    <color name="memoPadFont">#E9AE2B</color>
 
     <color name="black">#000000</color>
     <color name="blue">#0072C5</color>
@@ -18,4 +20,5 @@
     <color name="green">#00BB44</color>
     <color name="whiteGray">#AAAAAA</color>
 
+    <color name="littleTrans">#07000000</color>
 </resources>

@@ -1,5 +1,7 @@
 package com.memorizer.memorizer.models;
 
+import com.memorizer.memorizer.R;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -84,6 +86,28 @@ public class MemoData implements Serializable{
         return labelPos;
     }
 
+    public int getLabelPosDraw() {
+        int color = 0;
+        switch (getLabelPos()) {
+            case Constants.COLOR_BLUE:
+                color = R.drawable.color_selector_blue;
+                break;
+            case Constants.COLOR_RED:
+                color = R.drawable.color_selector_red;
+                break;
+            case Constants.COLOR_ORANGE:
+                color = R.drawable.color_selector_orange;
+                break;
+            case Constants.COLOR_GREEN:
+                color = R.drawable.color_selector_green;
+                break;
+            default:
+                color = R.drawable.color_selector;
+        }
+
+        return color;
+    }
+
     public boolean isRandom() {
         return isRandom;
     }
@@ -94,6 +118,10 @@ public class MemoData implements Serializable{
 
     public int getTimeOfMinute() {
         return timeOfMinute;
+    }
+
+    public String getTime() {
+        return makeTime(timeOfHour, timeOfMinute);
     }
 
     public String getPosted() {
@@ -230,5 +258,32 @@ public class MemoData implements Serializable{
         Date date = dateFormat.getCalendar().getTime();
 
         return dateFormat.format(date);
+    }
+
+    protected String makeTime(int hourOfDay, int minute) {
+        String hourStr, minStr, ampm = "am";
+
+        if (hourOfDay >= 22) {
+            hourStr = String.valueOf(hourOfDay - 12);
+            ampm = "pm";
+        } else if (hourOfDay > 12) {
+            hourStr = "0" + String.valueOf(hourOfDay - 12);
+            ampm = "pm";
+        } else if (hourOfDay == 0) {
+            hourStr = "12";
+        } else if (hourOfDay < 10) {
+            hourStr = "0" + String.valueOf(hourOfDay);
+        } else if (hourOfDay == 12) {
+            hourStr = String.valueOf(hourOfDay);
+            ampm = "pm";
+        } else
+            hourStr = String.valueOf(hourOfDay);
+
+        if (minute < 10) {
+            minStr = "0" + String.valueOf(minute);
+        } else
+            minStr = String.valueOf(minute);
+
+        return hourStr +" : "+minStr+ " "+ampm;
     }
 }

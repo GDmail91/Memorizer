@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:elevation="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/memoPadAccent"
+        android:id="@+id/title_header">
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="7dp"
+            android:layout_centerVertical="true"
+            style="?android:attr/borderlessButtonStyle"
+            android:src="@drawable/pencil"
+            android:scaleType="fitCenter"
+            android:id="@+id/widget_new_memo"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/title_header"
+        android:background="@color/memoPadDeepDark"
+        android:id="@+id/spliter"
+        android:orientation="horizontal" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spliter"
+        android:dividerHeight="2dp"
+        android:divider="@color/memoPadTrans"
+        android:id="@+id/widget_memo_list"/>
+</RelativeLayout>

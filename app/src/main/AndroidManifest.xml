@@ -47,12 +47,14 @@
         </activity>
 
         <activity android:name=".search.LabelListDialog"
-            android:label="LabelList"
-            android:theme="@android:style/Theme.Material.Dialog"/>
+            android:theme="@style/NoActionBar"/>
 
-        <activity android:name=".MemoAlarmActivity"
-            android:label="MemoAlarm"
-            android:theme="@android:style/Theme.Material.Dialog"/>
+        <!--<activity android:name=".MemoAlarmActivity"
+            android:theme="@style/NoActionBar"/>-->
+
+        <activity android:name=".alarm.MemoAlarmDragActivity"
+            android:theme="@style/NoActionBar"
+            android:label=" "/>
 
         <activity android:name=".DeveloperInfo"
             android:label="@string/activity_developer"
@@ -85,18 +87,35 @@
         <!-- 위젯 리시버 등록 -->
         <receiver
             android:name="com.memorizer.memorizer.widget.MainWidget"
-            android:label="memorizerMainWidget">
+            android:label="@string/widget_select_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.memorizer.memorizer.NEW_MEMO" />
                 <action android:name="com.memorizer.memorizer.LEFT_MEMO" />
                 <action android:name="com.memorizer.memorizer.RIGHT_MEMO" />
+                <action android:name="com.memorizer.memorizer.OPEN_MEMO" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/memorizer_widget_provider" />
         </receiver>
+
+        <!-- 위젯 리스트 리시버 등록 -->
+        <receiver
+            android:name="com.memorizer.memorizer.widget.ListWidget"
+            android:label="@string/widget_list_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.memorizer.memorizer.OPEN_MEMO" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/memorizer_widget_list_provider" />
+        </receiver>
+
+        <service
+            android:name="com.memorizer.memorizer.widget.WidgetListService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

@@ -17,6 +17,9 @@
     <string name="memo_search">검색</string>
     <string name="filter">필터</string>
     <string name="left_days">일 남음</string>
+    <string name="memo_loading_widget">메모 불러오는 중&#8230;</string>
+    <string name="memo_not_regist_widget">없음</string>
+    <string name="memo_created">생성일</string>
 
     <!-- 메모 생성 -->
     <string name="create_notice">생성/수정한 메모는 현재 시간부터 간격에 맞춰 진행됩니다.</string>
@@ -61,6 +64,14 @@
     <string name="all">전체</string>
     <string name="no_label">라벨 없음</string>
     <string name="cancel">취소</string>
+
+    <!-- 위젯 -->
+    <string name="widget_select_name">메모라이저 프리뷰</string>
+    <string name="widget_list_name">메모라이저 리스트</string>
+
+    <!-- 공지 -->
+    <string name="notice_title">업데이트 내용(v1.11.0)</string>
+    <string name="notice">- 이제 알림이 동시에 뜨면 넘겨서 볼 수 있습니다.\n- 위젯(리스트형, 선택형)이 추가되었습니다.\n- 정렬 버튼이 수정되었습니다.\n- 메인화면(메모 리스트) 디자인이 변경되었습니다.</string>
 
     <!-- 만든이 -->
     <string name="activity_developer">만든이</string>
