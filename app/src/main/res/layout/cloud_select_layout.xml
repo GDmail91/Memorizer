@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="270dp"
+    android:layout_gravity="center"
+    android:padding="20dp"
+    android:background="@color/memoPadPrimary">
+
+    <RelativeLayout
+        android:id="@+id/progresscircle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:padding="5dp"
+            android:background="@drawable/ripple_button"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:id="@+id/dropbox_btn">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/dropbox_logo"/>
+            <TextView
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/not_connected"
+                android:textColor="@color/black"
+                android:id="@+id/dropbox_linked"/>
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:visibility="visible"
+                android:background="@color/red"
+                android:scaleType="fitCenter"
+                android:src="@drawable/unlink_white"
+                android:id="@+id/dropbox_unlink"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:padding="5dp"
+            android:background="@drawable/ripple_button"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:id="@+id/google_drive_btn">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/google_drive_logo"/>
+            <TextView
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/not_connected"
+                android:textColor="@color/black"
+                android:id="@+id/google_drive_linked"/>
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:visibility="gone"
+                android:background="@color/red"
+                android:scaleType="fitCenter"
+                android:src="@drawable/unlink_white"
+                android:id="@+id/google_drive_unlink"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/ripple_button"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:id="@+id/one_drive_btn">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/one_drive_logo"/>
+            <TextView
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/not_connected"
+                android:textColor="@color/black"
+                android:id="@+id/one_drive_linked"/>
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:visibility="gone"
+                android:background="@color/red"
+                android:scaleType="fitCenter"
+                android:src="@drawable/unlink_white"
+                android:id="@+id/one_drive_unlink"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        style="?attr/borderlessButtonStyle"
+        android:background="@drawable/ripple_button"
+        android:text="@string/ok"
+        android:textColor="@color/memoPadAccent"
+        android:id="@+id/ok_btn" />
+</RelativeLayout>

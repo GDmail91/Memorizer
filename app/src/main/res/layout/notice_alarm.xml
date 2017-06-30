@@ -42,7 +42,15 @@
         <Button
             android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:background="@color/memoPadTrans"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            style="?attr/borderlessButtonStyle"
+            android:clickable="true"
+            android:background="@drawable/ripple_button"
             android:text="@string/cancel"
             android:textColor="@color/memoPadPrimary"
             android:id="@+id/cancel_btn" />
@@ -50,7 +58,15 @@
         <Button
             android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:background="@color/memoPadTrans"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            style="?attr/borderlessButtonStyle"
+            android:clickable="true"
+            android:background="@drawable/ripple_button"
             android:text="@string/ok"
             android:textColor="@color/memoPadPrimary"
             android:id="@+id/ok_btn" />

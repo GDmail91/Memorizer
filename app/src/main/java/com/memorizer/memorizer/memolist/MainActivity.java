@@ -2,6 +2,8 @@ package com.memorizer.memorizer.memolist;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,10 +23,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
+import com.cloudrail.si.CloudRail;
+import com.memorizer.memorizer.BuildConfig;
+import com.memorizer.memorizer.CloudLinkerDialog;
 import com.memorizer.memorizer.DeveloperInfo;
 import com.memorizer.memorizer.NoticeDialog;
 import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.alarm.MemoAlarmDragActivity;
+import com.memorizer.memorizer.backup.CloudService;
 import com.memorizer.memorizer.create.MemoCreate;
 import com.memorizer.memorizer.models.LabelData;
 import com.memorizer.memorizer.models.MemoData;
@@ -32,6 +38,7 @@ import com.memorizer.memorizer.models.MemoModel;
 import com.memorizer.memorizer.models.ScheduleModel;
 import com.memorizer.memorizer.scheduler.Scheduler;
 import com.memorizer.memorizer.search.SearchActivity;
+import com.splunk.mint.Mint;
 
 import java.util.ArrayList;
 
@@ -47,10 +54,13 @@ public class MainActivity extends AppCompatActivity
     ArrayList<MemoData> memoDatas = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private NoticeDialog noticeDialog;
+    private CloudLinkerDialog cloudLinkerDialog;
     private RecyclerView recyclerView;
     private MemoListAdapter memoListAdapter;
     private Spinner filterList;
     private ArrayList<LabelData> labelDatas = new ArrayList<>();
+
+    private static final String BROWSABLE = "android.intent.category.BROWSABLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +81,11 @@ public class MainActivity extends AppCompatActivity
         }
 
         // Splunk Mint 용
-        //Mint.initAndStartSession(this.getApplication(), "e4b63be0");
+        String buildtype = BuildConfig.BUILD_TYPE;
+        if (buildtype.equals("release")) {
+            //Do some admin stuff here.
+            Mint.initAndStartSession(this.getApplication(), "e4b63be0");
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -120,21 +134,32 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         setMemoDatas(pref.getInt("filter",0));
 
-        if (pref.getBoolean("is_update", true)) {
-            noticeDialog = new NoticeDialog(this,
-                    getString(R.string.notice_title),
-                    getString(R.string.notice),
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            /*SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = pref.edit();
-                            editor.putBoolean("is_update", false);
-                            editor.apply();*/
-                            noticeDialog.dismiss();
-                        }
-                    });
-            noticeDialog.show();
+        // 앱 버전 확인
+        final String version;
+        try {
+            PackageInfo i = getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = i.versionName;
+
+            // 업데이트 되었을 경우
+            if (!version.equals(pref.getString("version", "")) || buildtype.equals("debug")) {
+                noticeDialog = new NoticeDialog(this,
+                        getString(R.string.notice_title),
+                        getString(R.string.notice),
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("version", version);
+                                editor.apply();
+                                noticeDialog.dismiss();
+                            }
+                        });
+                noticeDialog.show();
+            }
+
+        } catch(PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
 
         ScheduleModel scheduleModel = new ScheduleModel(this);
@@ -183,6 +208,9 @@ public class MainActivity extends AppCompatActivity
             popupIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(popupIntent);
         }
+
+        // Cloud 연결
+        CloudService.getInstance().prepare(this);
     }
 
     @Override
@@ -220,11 +248,28 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.made_of) {
             Intent intent = new Intent(MainActivity.this, DeveloperInfo.class);
             startActivity(intent);
+        } else if (id == R.id.backup_setting){
+            cloudLinkerDialog = new CloudLinkerDialog(this);
+            cloudLinkerDialog.show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if(intent.getCategories().contains(BROWSABLE)) {
+            // Here we pass the response to the SDK which will automatically
+            // complete the authentication process
+            CloudRail.setAuthenticationResponse(intent);
+/*
+            SharedPreferences pref = getSharedPreferences("pref", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("googledrivePersistent", storage.get().saveAsString()).apply();*/
+        }
+        super.onNewIntent(intent);
     }
 
     // memoDatas 재배치

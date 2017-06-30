@@ -42,7 +42,7 @@
 
     <style name="NoActionBar" parent="Theme.AppCompat">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/littleTrans</item>
+        <item name="android:windowBackground">@color/memoPadTrans</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>

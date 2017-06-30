@@ -9,8 +9,8 @@ android {
         applicationId "com.memorizer.memorizer"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 27
-        versionName "1.11.0"
+        versionCode 29
+        versionName "1.11.1"
 
         // Use this option when your app targets a version of the Android SDK that is less than 21:
         // multiDexEnabled = true
@@ -47,8 +47,15 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
+    //compile 'com.google.android.gms:play-services-drive:8.4.0'
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
 
     compile 'us.feras.mdv:markdownview:1.1.0' // Markdown 에디터
     compile 'me.relex:circleindicator:1.2.2@aar'
+
+    // Dropbox
+    //compile 'com.dropbox.core:dropbox-core-sdk:2.1.1'
+
+    // All in one Cloud api
+    compile 'com.cloudrail:cloudrail-si-android:2.14.2'
 }

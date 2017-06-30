@@ -23,6 +23,11 @@ public class Constants {
     public static final String RIGHT_MEMO = "com.memorizer.memorizer.RIGHT_MEMO";
     public static final String OPEN_MEMO = "com.memorizer.memorizer.OPEN_MEMO";
 
+    public static final int DONE = 0;
+    public static final int DROPBOX_DONE = 1;
+    public static final int GOOGLE_DONE = 2;
+    public static final int ONE_DONE = 3;
+
 
     public static final int NOTIFY_ID = 1;
 }

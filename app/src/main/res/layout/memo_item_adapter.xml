@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
     android:padding="1dp"
     android:elevation="4dp"
@@ -11,7 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/memoPad">
 
         <RelativeLayout
@@ -126,6 +126,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:maxHeight="120dp"
             android:layout_toStartOf="@+id/memo_info"
             android:layout_toLeftOf="@+id/memo_info"
             android:layout_marginStart="5dp"

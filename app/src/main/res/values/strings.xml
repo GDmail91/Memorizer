@@ -3,6 +3,7 @@
     <string name="activity_memo_create">Create Memo</string>
 
     <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
     <!-- 메모 Content -->
     <string name="memo">Memo</string>
@@ -62,7 +63,6 @@
     <!-- 검색 -->
     <string name="all">ALL</string>
     <string name="no_label">No Label</string>
-    <string name="cancel">Cancel</string>
 
     <!-- 위젯 -->
     <string name="widget_select_name">Memorizer Preview</string>
@@ -71,6 +71,12 @@
     <!-- 공지 -->
     <string name="notice_title">Update Notes(v1.11.0)</string>
     <string name="notice">- Now we can swipe memos when the memo alert in same time.\n- Added widget(List, Select).\n- Fixed filter function.\n- Changed main view\'s design (memo list).</string>
+
+    <!-- 설정용 -->
+    <string name="cloud_disconnect">This process will disconnect cloud storage. Are you sure disconnect this storage?</string>
+    <string name="not_connected">Not connected</string>
+    <string name="connected">connected</string>
+    <string name="backup_setting">Backup Setting</string>
 
     <!-- 만든이 -->
     <string name="activity_developer">Dev Info</string>
