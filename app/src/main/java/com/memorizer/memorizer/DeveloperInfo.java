@@ -9,9 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.cloudrail.si.types.CloudMetaData;
-import com.memorizer.memorizer.backup.CloudLinker;
-import com.memorizer.memorizer.backup.CloudManager;
+import com.memorizer.memorizer.backup.CloudService;
 
 /**
  * Created by YS on 2016-06-29.
@@ -41,46 +39,8 @@ public class DeveloperInfo extends AppCompatActivity {
 
     private void getUsername() {
         Log.d(TAG, "getUsername");
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "get Linker");
-                String username = "";
-                CloudManager cm = CloudManager.getInstance(DeveloperInfo.this);
-
-                for (CloudLinker link : cm.getConnectedLinker()) {
-                    CloudMetaData info = link.storage.get().getMetadata("/memorizer_app");
-                    username += info.getFolder();
-                    //username += link.storage.get().exists("/memorizer_app") + " ";
-                }
-                Log.d(TAG, "check all done");
-
-                Log.d(TAG, "Connect Cloud Storage by : " + username);
-            }
-        }).start();
-
-        /*new AsyncTask<String, Void, String>() {
-
-            @Override
-            protected String doInBackground(String... params) {
-                Log.d(TAG, "get Linker");
-                String username = "";
-                CloudManager cm = CloudManager.getInstance(DeveloperInfo.this);
-
-                for (CloudLinker link : cm.getConnectedLinker()) {
-                    username += link.storage.get().exists("/memorizer_app") + " ";
-                }
-                Log.d(TAG, "check all done");
-
-                return username;
-            }
-
-            @Override
-            protected void onPostExecute(String username) {
-                Log.d(TAG, "Connect Cloud Storage by : " + username);
-            }
-        }.execute("");*/
+        CloudService.getInstance().getFileList(CloudService.Linker.DropboxLinker);
+        CloudService.getInstance().getFileList(CloudService.Linker.GoogleDriveLinker);
     }
 
     @Override

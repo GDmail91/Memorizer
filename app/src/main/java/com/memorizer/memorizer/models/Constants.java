@@ -18,10 +18,18 @@ public class Constants {
     public static final int FILTER_ALARMED = 2;
     public static final int FILTER_CREATED = 3;
 
+    // String
     public static final String NEW_MEMO = "com.memorizer.memorizer.NEW_MEMO";
     public static final String LEFT_MEMO = "com.memorizer.memorizer.LEFT_MEMO";
     public static final String RIGHT_MEMO = "com.memorizer.memorizer.RIGHT_MEMO";
     public static final String OPEN_MEMO = "com.memorizer.memorizer.OPEN_MEMO";
+
+    public static final String DROPBOX_PERSISTENT = "dropboxPersistent";
+    public static final String DROPBOX_USER = "dropboxUser";
+    public static final String GOOGLE_DIRVE_PERSISTENT = "googledrivePersistent";
+    public static final String GOOGLE_DRIVE_USER = "googleUser";
+    public static final String ONE_DRIVE_PERSISTENT = "onedrivePersistent";
+    public static final String ONE_DRIVE_USER = "onedriveUser";
 
     public static final int DONE = 0;
     public static final int DROPBOX_DONE = 1;

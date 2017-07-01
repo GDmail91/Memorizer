@@ -22,12 +22,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/cloud_select_box">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_height="65dp"
             android:padding="5dp"
             android:background="@drawable/ripple_button"
             android:gravity="center_vertical"
@@ -40,20 +40,34 @@
                 android:layout_marginEnd="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/dropbox_logo"/>
-            <TextView
+
+            <RelativeLayout
                 android:layout_width="130dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/not_connected"
-                android:textColor="@color/black"
-                android:id="@+id/dropbox_linked"/>
+                android:layout_height="55dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/not_connected"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:id="@+id/dropbox_linked"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:layout_below="@+id/dropbox_linked"
+                    android:gravity="center"
+                    android:textSize="10sp"
+                    android:id="@+id/dropbox_id"/>
+            </RelativeLayout>
 
             <ImageButton
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:padding="5dp"
                 style="@style/Base.Widget.AppCompat.Button.Borderless"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:background="@color/red"
                 android:scaleType="fitCenter"
                 android:src="@drawable/unlink_white"
@@ -62,8 +76,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_height="65dp"
             android:padding="5dp"
             android:background="@drawable/ripple_button"
             android:gravity="center_vertical"
@@ -76,13 +89,27 @@
                 android:layout_marginEnd="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/google_drive_logo"/>
-            <TextView
+
+            <RelativeLayout
                 android:layout_width="130dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/not_connected"
-                android:textColor="@color/black"
-                android:id="@+id/google_drive_linked"/>
+                android:layout_height="55dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/not_connected"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:id="@+id/google_drive_linked"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:layout_below="@+id/google_drive_linked"
+                    android:gravity="center"
+                    android:textSize="10sp"
+                    android:id="@+id/google_drive_id"/>
+            </RelativeLayout>
             <ImageButton
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -97,7 +124,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="65dp"
             android:padding="5dp"
             android:background="@drawable/ripple_button"
             android:gravity="center_vertical"
@@ -110,13 +137,27 @@
                 android:layout_marginEnd="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/one_drive_logo"/>
-            <TextView
+
+            <RelativeLayout
                 android:layout_width="130dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/not_connected"
-                android:textColor="@color/black"
-                android:id="@+id/one_drive_linked"/>
+                android:layout_height="55dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/not_connected"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:id="@+id/one_drive_linked"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:layout_below="@+id/one_drive_linked"
+                    android:gravity="center"
+                    android:textSize="10sp"
+                    android:id="@+id/one_drive_id"/>
+            </RelativeLayout>
             <ImageButton
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -135,6 +176,7 @@
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_below="@+id/cloud_select_box"
         style="?attr/borderlessButtonStyle"
         android:background="@drawable/ripple_button"
         android:text="@string/ok"
