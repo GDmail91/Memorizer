@@ -2,7 +2,6 @@ package com.memorizer.memorizer.models;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -103,8 +102,8 @@ public class MemoModel {
 
         // Editdate 설정
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getTimeZone("GMT"));  // GMT 0 로 변경
         calendar.setTimeInMillis(System.currentTimeMillis());
+        //calendar.setTimeZone(TimeZone.getTimeZone("GMT"));  // GMT 0 로 변경
         // Editdate DATETIME 형식은 0 이 추가되어야 함
         String edittime = calendar.get(Calendar.YEAR) + "-";
         if ((calendar.get(Calendar.MONTH)+1) < 10) edittime += "0"+(calendar.get(Calendar.MONTH)+1) + "-";
@@ -122,7 +121,7 @@ public class MemoModel {
         if (calendar.get(Calendar.SECOND) < 10) edittime += "0"+calendar.get(Calendar.SECOND);
         else edittime += calendar.get(Calendar.SECOND);
 
-        memoData.setEdited(edittime);
+        memoData.setEdited(edittime, TimeZone.getDefault());
 
         if (memoData.getWhileDate() != null) {
             sqlList.add("INSERT INTO "+TABLE_NAME_MEMO+" (_id, "+COLUMN_MEMO_CONTENT+", "+COLUMN_MEMO_DURING+", " +
@@ -208,8 +207,8 @@ public class MemoModel {
 
         // Editdate 설정
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getTimeZone("GMT"));  // GMT 0 로 변경
         calendar.setTimeInMillis(System.currentTimeMillis());
+        //calendar.setTimeZone(TimeZone.getTimeZone("GMT"));  // GMT 0 로 변경
         // Editdate DATETIME 형식은 0 이 추가되어야 함
         String edittime = calendar.get(Calendar.YEAR) + "-";
         if ((calendar.get(Calendar.MONTH)+1) < 10) edittime += "0"+(calendar.get(Calendar.MONTH)+1) + "-";
@@ -227,22 +226,27 @@ public class MemoModel {
         if (calendar.get(Calendar.SECOND) < 10) edittime += "0"+calendar.get(Calendar.SECOND);
         else edittime += calendar.get(Calendar.SECOND);
 
-        memoData.setEdited(edittime);
+        memoData.setEdited(edittime, TimeZone.getDefault());
+        String temp = memoData.getCheckMessages().toString();
+        if (temp.length() > 3) {
+            temp = temp.substring(1, temp.length()-1);
+        } else {
+            temp = "";
+        }
 
         // 메모 업데이트
-        sqlList.add("UPDATE "+TABLE_NAME_MEMO+" SET " +
-                COLUMN_MEMO_CONTENT+"='" + memoData.getContent() + "', " +
-                COLUMN_MEMO_DURING+"='" + memoData.getWhileDate().getTimeInMillis() + "', " +
-                COLUMN_MEMO_TERM+"='" + memoData.getTerm() + "', " +
-                COLUMN_MEMO_LABEL+"='" + labelTopNumber + "', " +
-                COLUMN_MEMO_IS_RANDOM+"='" + memoData.isRandom() + "', " +
-                COLUMN_MEMO_HOUR+"='" + memoData.getTimeOfHour() + "', " +
-                COLUMN_MEMO_MINUTE+"='" + memoData.getTimeOfMinute() + "', " +
-                COLUMN_MEMO_EDITED+"='" + memoData.getRawEdited() + "', " +
-                COLUMN_MEMO_CHECKLIST+"='" + memoData.getCheckMessages() + "', " +
-                COLUMN_MEMO_CHECKEDLIST+"='" + memoData.getChecks() + "', " +
-                COLUMN_MEMO_IS_MARKDOWN+"='" + memoData.isMarkdown() + "' " +
-                "WHERE _id='"+memoData.get_id()+"' ;");
+        sqlList.add("INSERT OR REPLACE INTO "+TABLE_NAME_MEMO+" " +
+                "(_id,"+COLUMN_MEMO_CONTENT+"," +COLUMN_MEMO_DURING+","+COLUMN_MEMO_TERM+","+
+                COLUMN_MEMO_LABEL+","+COLUMN_MEMO_IS_RANDOM+","+COLUMN_MEMO_HOUR+","+COLUMN_MEMO_MINUTE+","+
+                COLUMN_MEMO_POSTED+","+COLUMN_MEMO_EDITED+","+COLUMN_MEMO_CHECKLIST+","+COLUMN_MEMO_CHECKEDLIST+","+COLUMN_MEMO_IS_MARKDOWN +") "+
+
+                "VALUES ("+memoData.get_id() +"," +
+                "'" + memoData.getContent() + "', '" + memoData.getWhileDate().getTimeInMillis() + "', " +
+                "'" + memoData.getTerm() + "', '" + labelTopNumber + "', " +
+                "'" + memoData.isRandom() + "', '" + memoData.getTimeOfHour() + "', " +
+                "'" + memoData.getTimeOfMinute() + "', '" + memoData.getRawPosted() + "', " +
+                "'" + memoData.getRawEdited() + "', '" + temp + "', " +
+                "'" + memoData.getChecks() + "', '" + memoData.isMarkdown() + "') ;");
 
         // 트랜잭션 실행
         dBmanager.startTransaction(sqlList);
@@ -272,7 +276,7 @@ public class MemoModel {
 
             cursor = dBmanager.getDbR().rawQuery("SELECT _id FROM "+TABLE_NAME_MEMO+" WHERE "+COLUMN_MEMO_LABEL+"="+labelId, null);
             if (cursor != null && cursor.getCount() == 0) {
-                Log.d(TAG, "라벨 삭제 됨");
+                // 라벨 삭제 됨
                 dBmanager.getDbW().execSQL("DELETE FROM "+TABLE_NAME_LABEL+" WHERE _id='" + labelId + "'");
                 cursor.close();
             }
@@ -310,7 +314,26 @@ public class MemoModel {
     public ArrayList<MemoData> getAllData() {
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;
-        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT * FROM Memo ORDER BY _id DESC", null);
+        String sql = "SELECT "+TABLE_NAME_MEMO+"._id, " +
+                "substr("+COLUMN_MEMO_CONTENT+",0,200) AS "+COLUMN_MEMO_CONTENT+", "+
+                COLUMN_MEMO_DURING+", "+
+                COLUMN_MEMO_TERM+", "+
+                TABLE_NAME_LABEL+"."+COLUMN_LABEL_NAME+", "+
+                TABLE_NAME_LABEL+"."+COLUMN_LABEL_COLOR+", " +
+                COLUMN_MEMO_IS_RANDOM+", "+
+                COLUMN_MEMO_HOUR+", "+
+                COLUMN_MEMO_MINUTE+", "+
+                COLUMN_MEMO_POSTED+", " +
+                COLUMN_MEMO_EDITED+", " +
+                COLUMN_MEMO_CHECKLIST+", " +
+                COLUMN_MEMO_CHECKEDLIST+", " +
+                COLUMN_MEMO_IS_MARKDOWN+" " +
+                "FROM "+TABLE_NAME_MEMO+" INNER JOIN "+TABLE_NAME_LABEL+" " +
+                "ON "+TABLE_NAME_MEMO+"."+COLUMN_MEMO_LABEL+"="+TABLE_NAME_LABEL+"._id " +
+                "LEFT JOIN "+TABLE_NAME_SCHEDULE+" " +
+                "ON "+TABLE_NAME_MEMO+"._id="+TABLE_NAME_SCHEDULE+"."+COLUMN_SCHEDULE_MEMO_ID+" " +
+                "ORDER BY "+TABLE_NAME_MEMO+"._id DESC ";
+        Cursor cursor = dBmanager.getDbR().rawQuery(sql, null);
         while(cursor.moveToNext()) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(cursor.getLong(2));
@@ -322,17 +345,16 @@ public class MemoModel {
                     cursor.getString(1),
                     calendar,
                     cursor.getInt(3),
-                    cursor.getString(8),
-                    cursor.getInt(9),
-                    cursor.getInt(4),
+                    cursor.getString(4),
                     cursor.getInt(5),
                     cursor.getInt(6),
-                    cursor.getString(7),
+                    cursor.getInt(7),
+                    cursor.getInt(8),
+                    cursor.getString(9),
                     cursor.getString(10),
                     Boolean.valueOf(cursor.getString(13)),
                     checkList
             );
-
             allData.add(i++, tempData);
         }
 
@@ -508,8 +530,6 @@ public class MemoModel {
             data.setCheckList(checkList);
             data.setMarkdown(Boolean.valueOf(cursor.getString(13)));
 
-            Log.d(TAG, data.getPosted());
-            Log.d(TAG, data.getEdited());
         }
         cursor.close();
 
@@ -706,13 +726,56 @@ public class MemoModel {
         ArrayList<CheckListData> checkList = new ArrayList<>();
 
         if (isCheck != null && !isCheck.equals("") && !isCheck.equals("[]")) {
-            String[] isCheckList = isCheck.substring(1, isCheck.length() - 2).split(",");
-            String[] checkMsgList = checkMsg.substring(1, checkMsg.length() - 2).split(",");
+            String[] isCheckList = isCheck.split(",");
+            String[] checkMsgList = checkMsg.split(",");
             for (int i = 0; i < isCheckList.length; i++) {
                 checkList.add(new CheckListData(Boolean.valueOf(isCheckList[i].trim()), checkMsgList[i].trim()));
             }
         }
 
         return checkList;
+    }
+
+    public int getTopNumber() {
+        Cursor cursor = dBmanager.getDbR().rawQuery("SELECT "+TABLE_NAME_MEMO+"._id " +
+                "FROM "+TABLE_NAME_MEMO+" " +
+                "ORDER BY "+TABLE_NAME_MEMO+"._id DESC", null);
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            return cursor.getInt(0);
+        }
+        cursor.close();
+
+        return 0;
+    }
+
+    public boolean needUpdate(int id, String postedDate, Long remoteFileModifyDate) {
+        MemoData memoData = null;
+
+        Cursor cursor = dBmanager.getDbR().rawQuery(
+                "SELECT "+TABLE_NAME_MEMO+"._id, " +
+                COLUMN_MEMO_POSTED + ", " +
+                COLUMN_MEMO_EDITED + " " +
+                "FROM "+TABLE_NAME_MEMO+" " +
+                "WHERE _id=" + id + " " +
+                "AND "+COLUMN_MEMO_POSTED + "='"+postedDate + "' " +
+                "ORDER BY "+TABLE_NAME_MEMO+"._id DESC", null);
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            memoData = new MemoData();
+            memoData.setPosted(cursor.getString(1));
+            memoData.setEdited(cursor.getString(2));
+
+        }
+        cursor.close();
+
+        if (memoData != null) {
+            if (remoteFileModifyDate == null) {
+                remoteFileModifyDate = memoData.getPostedToLong();
+            }
+            return memoData.getEditedToLong() < remoteFileModifyDate;
+        }
+
+        return true;
     }
 }

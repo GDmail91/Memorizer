@@ -60,6 +60,13 @@
                     android:gravity="center"
                     android:textSize="10sp"
                     android:id="@+id/dropbox_id"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:layout_below="@+id/dropbox_linked"
+                    android:gravity="center"
+                    android:textSize="10sp"
+                    android:id="@+id/dropbox_id"/>
             </RelativeLayout>
 
             <ImageButton

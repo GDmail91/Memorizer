@@ -1,7 +1,14 @@
 package com.memorizer.memorizer.models;
 
+import android.content.Context;
+import android.text.Html;
+import android.text.TextUtils;
+
 import com.memorizer.memorizer.R;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -9,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.TimeZone;
 
@@ -53,6 +61,25 @@ public class MemoData implements Serializable{
         this.label = label;
         this.labelPos = labelPos;
         this.isRandom = Boolean.valueOf(""+isRandom);
+        this.timeOfHour = hour;
+        this.timeOfMinute = minute;
+        this.posted = posted;
+        this.edited = edited;
+        this.isMarkdown = isMarkdown;
+        this.checkList = checkList;
+
+    }
+
+    public MemoData(int _id, String content, Calendar whileDate, int term, String label,
+                    int labelPos, boolean isRandom, int hour, int minute, String posted, String edited,
+                    boolean isMarkdown, ArrayList<CheckListData> checkList) {
+        this._id = _id;
+        this.content = content;
+        this.term = term;
+        this.whileDate = whileDate;
+        this.label = label;
+        this.labelPos = labelPos;
+        this.isRandom = isRandom;
         this.timeOfHour = hour;
         this.timeOfMinute = minute;
         this.posted = posted;
@@ -210,11 +237,19 @@ public class MemoData implements Serializable{
     }
 
     public void setPosted(String posted) {
-        this.posted = changeTimeZone(posted, TimeZone.getDefault(), TimeZone.getTimeZone("GMT"));
+        this.posted = posted;
+    }
+
+    public void setPosted(String posted, TimeZone timezone) {
+        this.posted = changeTimeZone(posted, timezone, TimeZone.getTimeZone("GMT"));
     }
 
     public void setEdited(String edited) {
-        this.edited = changeTimeZone(edited, TimeZone.getDefault(), TimeZone.getTimeZone("GMT"));
+        this.edited = edited;
+    }
+
+    public void setEdited(String edited, TimeZone timezone) {
+        this.edited = changeTimeZone(edited, timezone, TimeZone.getTimeZone("GMT"));
     }
 
     public void setMarkdown(boolean isMarkdown) {
@@ -242,7 +277,7 @@ public class MemoData implements Serializable{
         return str;
     }
 
-    public String changeTimeZone(String dateString, TimeZone originZone, TimeZone TargetZone) {
+    public static String changeTimeZone(String dateString, TimeZone originZone, TimeZone TargetZone) {
         // 나라별 시간대 변경
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(originZone);
@@ -258,6 +293,86 @@ public class MemoData implements Serializable{
         Date date = dateFormat.getCalendar().getTime();
 
         return dateFormat.format(date);
+    }
+
+    public Long getPostedToLong() {
+
+        // 나라별 시간대 변경
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        try {
+            // 날짜 포맷 설정
+            dateFormat.parse(posted);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateFormat.getCalendar().getTimeInMillis();
+    }
+
+    public Long getEditedToLong() {
+
+        // 나라별 시간대 변경
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        try {
+            // 날짜 포맷 설정
+            dateFormat.parse(edited);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateFormat.getCalendar().getTimeInMillis();
+    }
+
+    public String getFileName() {
+        return posted.replace(":","_") + " " + _id + ".json";
+    }
+
+    public File saveFile(Context context) {
+        try {
+            File tempFile = File.createTempFile(getFileName(), null, context.getCacheDir());
+            BufferedWriter fw = new BufferedWriter(new FileWriter(tempFile, true));
+
+            // 파일안에 메모 정보 쓰기
+            fw.write("{");
+            fw.write("\"id\":"+_id+",");
+            fw.write("\"content\":\"" + TextUtils.htmlEncode(content)+ "\",");
+            fw.write("\"term\":"+term+",");
+            fw.write("\"whileDate\":"+whileDate.getTimeInMillis()+",");
+            fw.write("\"label\":\""+ TextUtils.htmlEncode(label)+"\",");
+            fw.write("\"labelPos\":"+labelPos+",");
+            fw.write("\"isRandom\":"+isRandom+",");
+            fw.write("\"timeOfHour\":"+timeOfHour+",");
+            fw.write("\"timeOfMinute\":"+timeOfMinute+",");
+            fw.write("\"posted\":\""+posted+"\",");
+            fw.write("\"edited\":\""+edited+"\",");
+            fw.write("\"isMarkdown\":"+isMarkdown+",");
+            String isCheck = "";
+            String checkMessage = "";
+            Iterator<CheckListData> listIter = checkList.iterator();
+            while (listIter.hasNext()) {
+                CheckListData data = listIter.next();
+                isCheck += data.isCheck();
+                checkMessage += TextUtils.htmlEncode(data.getCheckMessage());
+                if (listIter.hasNext()) {
+                    isCheck += ",";
+                    checkMessage += ",";
+                }
+            }
+            fw.write("\"isCheck\":\"" + isCheck + "\",");
+            fw.write("\"checkMessage\":\"" + checkMessage + "\"");
+            fw.write("}");
+            fw.flush();
+
+            fw.close();
+
+            return tempFile;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     protected String makeTime(int hourOfDay, int minute) {

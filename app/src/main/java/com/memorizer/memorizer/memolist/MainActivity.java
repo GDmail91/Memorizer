@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -32,6 +34,7 @@ import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.alarm.MemoAlarmDragActivity;
 import com.memorizer.memorizer.backup.CloudService;
 import com.memorizer.memorizer.create.MemoCreate;
+import com.memorizer.memorizer.models.Constants;
 import com.memorizer.memorizer.models.LabelData;
 import com.memorizer.memorizer.models.MemoData;
 import com.memorizer.memorizer.models.MemoModel;
@@ -211,6 +214,9 @@ public class MainActivity extends AppCompatActivity
 
         // Cloud 연결
         CloudService.getInstance().prepare(this);
+
+        // File Sync
+        CloudService.getInstance().syncWithCloud(refreshHandler);
     }
 
     @Override
@@ -283,6 +289,16 @@ public class MainActivity extends AppCompatActivity
             memoListAdapter.swap(memoDatas);
         }
     }
+
+    public Handler refreshHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == Constants.REFRESH) {
+                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                setMemoDatas(pref.getInt("filter",0));
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

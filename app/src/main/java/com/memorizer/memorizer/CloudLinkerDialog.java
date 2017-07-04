@@ -65,6 +65,26 @@ public class CloudLinkerDialog extends AppCompatDialog {
         }
     };
 
+    private Handler usageHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == Constants.DONE) {
+                String usage = (String) msg.obj;
+                switch (msg.arg1) {
+                    case Constants.DROPBOX_DONE :
+                        dropboxLoggedUserView.setText(dropboxLoggedUserView.getText() + usage);
+                        break;
+                    case Constants.GOOGLE_DONE:
+                        googleDriveLoggedUserView.setText(googleDriveLoggedUserView.getText() + usage);
+                        break;
+                    case Constants.ONE_DONE:
+                        oneDriveLoggedUserView.setText(oneDriveLoggedUserView.getText() + usage);
+                        break;
+                }
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +145,7 @@ public class CloudLinkerDialog extends AppCompatDialog {
             dropboxTextView.setText(getContext().getString(R.string.connected));
             dropboxLoggedUserView.setText(pref.getString(DROPBOX_USER, ""));
             dropboxLoggedUserView.setVisibility(View.VISIBLE);
+            CloudService.getInstance().getAllocated(CloudService.Linker.DropboxLinker, usageHandler);
         }
         // Google Drive
         if (!CloudService.getInstance().isConnected(CloudService.Linker.GoogleDriveLinker)) {
@@ -139,6 +160,7 @@ public class CloudLinkerDialog extends AppCompatDialog {
             googleDriveTextView.setText(getContext().getString(R.string.connected));
             googleDriveLoggedUserView.setText(pref.getString(GOOGLE_DRIVE_USER, ""));
             googleDriveLoggedUserView.setVisibility(View.VISIBLE);
+            CloudService.getInstance().getAllocated(CloudService.Linker.GoogleDriveLinker, usageHandler);
         }
 
         // One Drive
@@ -154,6 +176,7 @@ public class CloudLinkerDialog extends AppCompatDialog {
             oneDriveTextView.setText(getContext().getString(R.string.connected));
             oneDriveLoggedUserView.setText(pref.getString(ONE_DRIVE_USER, ""));
             oneDriveLoggedUserView.setVisibility(View.VISIBLE);
+            CloudService.getInstance().getAllocated(CloudService.Linker.OneDriveLinker, usageHandler);
         }
     }
 

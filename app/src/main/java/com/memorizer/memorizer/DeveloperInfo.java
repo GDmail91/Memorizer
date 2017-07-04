@@ -5,11 +5,8 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
-
-import com.memorizer.memorizer.backup.CloudService;
 
 /**
  * Created by YS on 2016-06-29.
@@ -33,14 +30,6 @@ public class DeveloperInfo extends AppCompatActivity {
 
         emailBtn = (TextView) findViewById(R.id.email_txt);
         Linkify.addLinks(emailBtn, Linkify.EMAIL_ADDRESSES);
-
-        getUsername();
-    }
-
-    private void getUsername() {
-        Log.d(TAG, "getUsername");
-        CloudService.getInstance().getFileList(CloudService.Linker.DropboxLinker);
-        CloudService.getInstance().getFileList(CloudService.Linker.GoogleDriveLinker);
     }
 
     @Override

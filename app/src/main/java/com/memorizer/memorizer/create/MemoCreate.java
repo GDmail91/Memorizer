@@ -26,6 +26,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.memorizer.memorizer.R;
+import com.memorizer.memorizer.backup.CloudService;
 import com.memorizer.memorizer.memolist.MainActivity;
 import com.memorizer.memorizer.models.CheckListData;
 import com.memorizer.memorizer.models.Constants;
@@ -167,7 +168,21 @@ public class MemoCreate extends AppCompatActivity {
             alarmTimeBtn.setText(memoData.getTime());
             labelName.setText(memoData.getLabel());
             if (memoData.getLabelPos() != 0) {
-                labelGroup.check(memoData.getLabelPosDraw());
+                //labelGroup.check(memoData.getLabelPosDraw());
+                switch (memoData.getLabelPos()){
+                    case 1:
+                        labelGroup.check(R.id.label_blue);
+                        break;
+                    case 2:
+                        labelGroup.check(R.id.label_red);
+                        break;
+                    case 3:
+                        labelGroup.check(R.id.label_orange);
+                        break;
+                    case 4:
+                        labelGroup.check(R.id.label_green);
+                        break;
+                }
             }
 
             checklistView.setVisibility(View.VISIBLE);
@@ -425,6 +440,9 @@ public class MemoCreate extends AppCompatActivity {
 
                     Toast.makeText(this, getString(R.string.memo_saved), Toast.LENGTH_SHORT).show();
 
+                    // 서버 동기화
+                    CloudService.getInstance().onUpdate(memoData);
+
                     Intent intent = new Intent(MemoCreate.this, MainActivity.class);
                     intent.putExtra("mCreate", memoData);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -444,6 +462,9 @@ public class MemoCreate extends AppCompatActivity {
                 scheduleModel.deleteByMemoId(memoData.get_id());
                 scheduleModel.close();
                 Toast.makeText(this, memoData.get_id() + getString(R.string.deleted), Toast.LENGTH_SHORT).show();
+
+                // 서버 동기화
+                //CloudService.getInstance().onDelete(memoData);
 
                 // 메인 화면 돌아감
                 setResult(RESULT_OK);

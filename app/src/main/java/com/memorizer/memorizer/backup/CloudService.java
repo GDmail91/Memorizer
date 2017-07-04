@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
 import android.util.Log;
 
 import com.cloudrail.si.CloudRail;
@@ -17,12 +18,29 @@ import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
 import com.cloudrail.si.types.CloudMetaData;
+import com.cloudrail.si.types.SpaceAllocation;
+import com.memorizer.memorizer.models.CheckListData;
 import com.memorizer.memorizer.models.Constants;
+import com.memorizer.memorizer.models.MemoData;
+import com.memorizer.memorizer.models.MemoModel;
+import com.memorizer.memorizer.scheduler.Scheduler;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.memorizer.memorizer.models.Constants.APP_DIR;
 import static com.memorizer.memorizer.models.Constants.DROPBOX_PERSISTENT;
 import static com.memorizer.memorizer.models.Constants.DROPBOX_USER;
 import static com.memorizer.memorizer.models.Constants.GOOGLE_DIRVE_PERSISTENT;
@@ -257,5 +275,236 @@ public class CloudService {
                 throw new IllegalArgumentException("Unknown service!");
         }
         editor.apply();
+    }
+
+    public void onDelete(final MemoData memoData) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (CloudService.Linker linkerName : CloudService.Linker.values()) {
+                    if (CloudService.getInstance().isConnected(linkerName)) {
+                        CloudStorage linker = CloudService.getInstance().getService(linkerName);
+                        // 디렉토리가 있을 경우
+                        if (linker.exists(APP_DIR)) {
+                            linker.delete(APP_DIR + "/" + memoData.getFileName());
+                        }
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public void onUpdate(final MemoData memoData) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // DB 에서 이름으로 스트림, size, 수정날짜 가져옴
+                File memoFile = memoData.saveFile(context);
+                String fileName = memoData.getFileName();
+
+                FileInputStream inputStream = null;
+                try {
+                    inputStream = new FileInputStream(memoFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                Long fileSize = memoFile.length();
+                Long modifiedDate = memoData.getEditedToLong();
+
+                for (CloudService.Linker linkerName : CloudService.Linker.values()) {
+                    if (CloudService.getInstance().isConnected(linkerName)) {
+                        CloudStorage linker = CloudService.getInstance().getService(linkerName);
+                        // 디렉토리가 있을 경우
+                        if (linker.exists(APP_DIR)) {
+                            // 파일 있는지 확인
+                            if (linker.exists(APP_DIR + "/" + fileName)) {
+                                // 파일 있다면 메타정보 확인
+                                CloudMetaData metaData = linker.getMetadata(APP_DIR + "/" + fileName);
+
+                                Long modifyTime = metaData.getModifiedAt();
+                                if (modifyTime <= modifiedDate) { // 수정시간이 최종 수정시간보다 작으면
+                                    // 파일이름, 인풋스트림, 파일크기, 덮어씀
+                                    linker.upload(APP_DIR + "/" + fileName, inputStream, fileSize, true);
+                                }
+                            } else {
+                                // 바로 덮어씀
+                                linker.upload(APP_DIR + "/" + fileName, inputStream, fileSize, true);
+                            }
+                        } else {
+                            // 디렉토리 생성후 파일 생성
+                            linker.createFolder(APP_DIR);
+                            linker.upload(APP_DIR + "/" + fileName, inputStream, fileSize, true);
+                        }
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public void syncWithCloud(final Handler mHandler) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Linker linkerName : Linker.values()) {
+                    if (CloudService.getInstance().isConnected(linkerName)) {
+                        CloudStorage linker = CloudService.getInstance().getService(linkerName);
+                        // 디렉토리 생성
+                        if (!linker.exists(APP_DIR)) {
+                            linker.createFolder(APP_DIR);
+                        }
+
+                        // 서버에서 Pull
+                        List<CloudMetaData> childrenList = linker.getChildren(APP_DIR);
+                        for (CloudMetaData children : childrenList) {
+                            String remoteFileName = children.getName();
+
+                            String[] temp = remoteFileName.split(" ");
+                            String postedDate = temp[0]+" "+temp[1];
+                            int id = Integer.valueOf(temp[2].replace(".json", ""));
+                            Long remoteFileModifyDate = children.getModifiedAt();
+
+                            MemoModel memoModel = new MemoModel(context);
+
+                            // 해당 메모가 업데이트가 필요한경우
+                            if (memoModel.needUpdate(id, postedDate.replace("_", ":"), remoteFileModifyDate)) {
+                                try {
+                                    InputStream inputStream = linker.download(APP_DIR+"/"+remoteFileName);
+                                    JSONParser jsonParser = new JSONParser();
+                                    JSONObject jsonObject = (JSONObject)jsonParser.parse(
+                                            new InputStreamReader(inputStream, "UTF-8"));
+
+                                    String[] isCheck = ((String) jsonObject.get("isCheck")).split(",");
+                                    String[] checkMessage = ((String) jsonObject.get("checkMessage")).split(",");
+
+                                    ArrayList<CheckListData> checklist = new ArrayList<>();
+
+                                    int i = 0;
+                                    while (i < isCheck.length) {
+                                        checklist.add(
+                                                new CheckListData(
+                                                        Boolean.valueOf(isCheck[i]),
+                                                        Html.fromHtml(checkMessage[i]).toString()));
+                                        i++;
+                                    }
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTimeInMillis((Long) jsonObject.get("whileDate"));
+
+                                    MemoData remoteMemo = new MemoData(
+                                            id,
+                                            Html.fromHtml((String) jsonObject.get("content")).toString(),
+                                            calendar,
+                                            Integer.valueOf(((Long) jsonObject.get("term")).toString()),
+                                            Html.fromHtml((String) jsonObject.get("label")).toString(),
+                                            Integer.valueOf(((Long) jsonObject.get("labelPos")).toString()),
+                                            (Boolean) jsonObject.get("isRandom"),
+                                            Integer.valueOf(((Long) jsonObject.get("timeOfHour")).toString()),
+                                            Integer.valueOf(((Long) jsonObject.get("timeOfMinute")).toString()),
+                                            (String) jsonObject.get("posted"),
+                                            (String) jsonObject.get("edited"),
+                                            (Boolean) jsonObject.get("isMarkdown"),
+                                            checklist);
+
+                                    // 파일 업데이트
+                                    memoModel.update(remoteMemo);
+
+                                    // 알림 설정
+                                    Scheduler.getScheduler().deleteSelectedAlarm(context, remoteMemo.get_id());
+                                    Scheduler.getScheduler().setSchedule(context, remoteMemo, true);
+                                } catch (IOException | org.json.simple.parser.ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            memoModel.close();
+                        }
+
+                        // 로컬에서 Push
+                        MemoModel memoModel = new MemoModel(context);
+                        // 등록된 메모 가져오기
+                        ArrayList<MemoData> allData = memoModel.getAllData();
+                        for (MemoData memoData : allData) {
+                            // 임시 파일 생성후 스트림 가져옴
+                            File memoFile = memoData.saveFile(context);
+                            String fileName = memoData.getFileName();
+
+                            memoModel.close();
+
+                            FileInputStream inputStream = null;
+                            try {
+                                inputStream = new FileInputStream(memoFile);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+
+                            Long fileSize = memoFile.length();
+                            Long modifiedDate = memoData.getEditedToLong();
+
+                            // 파일 있는지 확인
+                            if (linker.exists(APP_DIR + "/" + fileName)) {
+                                // 파일 있다면 메타정보 확인
+                                CloudMetaData metaData = linker.getMetadata(APP_DIR + "/" + fileName);
+
+                                Long modifyTime = metaData.getModifiedAt();
+                                if (modifyTime <= modifiedDate) { // 수정시간이 최종 수정시간보다 작으면
+                                    // 파일이름, 인풋스트림, 파일크기, 덮어씀
+                                    linker.upload(APP_DIR + "/" + fileName, inputStream, fileSize, true);
+                                }
+                            } else {
+                                // 바로 덮어씀
+                                linker.upload(APP_DIR + "/" + fileName, inputStream, fileSize, true);
+                            }
+                        }
+                    }
+                }
+
+                if (mHandler != null) {
+                    Message message = new Message();
+                    message.what = Constants.REFRESH;
+                    mHandler.sendMessage(message);
+                }
+            }
+        }).start();
+    }
+
+    public void getAllocated(final CloudService.Linker linkerName, final Handler mHandler) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (CloudService.getInstance().isConnected(linkerName)) {
+                    SpaceAllocation alloc = CloudService.getInstance().getService(linkerName).getAllocation();
+                    Message message = Message.obtain(mHandler);
+                    message.what = Constants.DONE;
+                    switch (linkerName) {
+                        case DropboxLinker:
+                            message.arg1 = Constants.DROPBOX_DONE;
+                            break;
+                        case GoogleDriveLinker:
+                            message.arg1 = Constants.GOOGLE_DONE;
+                            break;
+                        case OneDriveLinker:
+                            message.arg1 = Constants.ONE_DONE;
+                            break;
+                    }
+                    message.obj = "(" + toByteString(alloc.getUsed()) + "/"
+                            + toByteString(alloc.getTotal()) + ")";
+                    mHandler.sendMessage(message);
+                }
+            }
+        }).start();
+    }
+
+    private static String toByteString(Long usage) {
+        if (usage > 1000000000) {
+            // GB
+            return usage/1000000000 + " GB";
+        } else if (usage > 1000000) {
+            // MB
+            return usage/1000000 + " MB";
+        } else if (usage > 1000) {
+            // KB
+            return usage/1000 + " KB";
+        } else {
+            return usage + " B";
+        }
     }
 }
