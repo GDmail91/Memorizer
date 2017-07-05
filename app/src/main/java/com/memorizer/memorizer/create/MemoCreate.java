@@ -464,7 +464,7 @@ public class MemoCreate extends AppCompatActivity {
                 Toast.makeText(this, memoData.get_id() + getString(R.string.deleted), Toast.LENGTH_SHORT).show();
 
                 // 서버 동기화
-                //CloudService.getInstance().onDelete(memoData);
+                CloudService.getInstance().onDelete(memoData);
 
                 // 메인 화면 돌아감
                 setResult(RESULT_OK);

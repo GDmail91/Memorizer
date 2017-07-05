@@ -19,6 +19,7 @@ import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
 import com.cloudrail.si.types.CloudMetaData;
 import com.cloudrail.si.types.SpaceAllocation;
+import com.memorizer.memorizer.R;
 import com.memorizer.memorizer.models.CheckListData;
 import com.memorizer.memorizer.models.Constants;
 import com.memorizer.memorizer.models.MemoData;
@@ -76,14 +77,14 @@ public class CloudService {
     private void initDropbox() {
         dropbox.set(new Dropbox(
                 context,
-                "yjifdzmw3rbxksr",
-                "art4q5vkrfatbh5"));
+                context.getResources().getString(R.string.dropbox_id),
+                context.getResources().getString(R.string.dropbox_sec)));
     }
 
     private void initGoogleDrive() {
         googledrive.set(new GoogleDrive(
                 context,
-                "920389922391-r6tnenk9scn4vh2qgjlc1rosh6fgvm33.apps.googleusercontent.com",
+                context.getResources().getString(R.string.google_id),
                 "",
                 "com.memorizer.memorizer:/oauth2redirect",
                 ""));
@@ -92,8 +93,8 @@ public class CloudService {
 
     private void initOneDrive() {
         onedrive.set(new OneDrive(context,
-                "6f0055e9-005d-4289-8c99-c72a00f0a504",
-                "Xx1sbgQLMN2vckQs7jP0qmS"));
+                context.getResources().getString(R.string.one_id),
+                context.getResources().getString(R.string.one_sec)));
     }
 
     // --------- Public Methods -----------
