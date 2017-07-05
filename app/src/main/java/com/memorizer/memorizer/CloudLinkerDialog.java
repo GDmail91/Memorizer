@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.memorizer.memorizer.backup.CloudService;
 import com.memorizer.memorizer.models.Constants;
 
+import static com.memorizer.memorizer.backup.CloudLinker.Linker;
 import static com.memorizer.memorizer.models.Constants.DROPBOX_USER;
 import static com.memorizer.memorizer.models.Constants.GOOGLE_DRIVE_USER;
 import static com.memorizer.memorizer.models.Constants.ONE_DRIVE_USER;
@@ -133,7 +134,7 @@ public class CloudLinkerDialog extends AppCompatDialog {
         SharedPreferences pref = getOwnerActivity().getPreferences(Context.MODE_PRIVATE);
 
         // Dropbox
-        if (!CloudService.getInstance().isConnected(CloudService.Linker.DropboxLinker)) {
+        if (!CloudService.getInstance().isConnected(Linker.DropboxLinker)) {
             dropboxUnlinkButton.setVisibility(View.GONE); // Unlink 제거
             dropboxButton.setOnClickListener(dropboxClickListener); // Link 등록
             dropboxTextView.setText(getContext().getString(R.string.not_connected));
@@ -145,10 +146,10 @@ public class CloudLinkerDialog extends AppCompatDialog {
             dropboxTextView.setText(getContext().getString(R.string.connected));
             dropboxLoggedUserView.setText(pref.getString(DROPBOX_USER, ""));
             dropboxLoggedUserView.setVisibility(View.VISIBLE);
-            CloudService.getInstance().getAllocated(CloudService.Linker.DropboxLinker, usageHandler);
+            CloudService.getInstance().getAllocated(Linker.DropboxLinker, usageHandler);
         }
         // Google Drive
-        if (!CloudService.getInstance().isConnected(CloudService.Linker.GoogleDriveLinker)) {
+        if (!CloudService.getInstance().isConnected(Linker.GoogleDriveLinker)) {
             googleDriveUnlinkButton.setVisibility(View.GONE); // Unlink 제거
             googleDriveButton.setOnClickListener(googleDriveClickListener); // Link 등록
             googleDriveTextView.setText(getContext().getString(R.string.not_connected));
@@ -160,11 +161,11 @@ public class CloudLinkerDialog extends AppCompatDialog {
             googleDriveTextView.setText(getContext().getString(R.string.connected));
             googleDriveLoggedUserView.setText(pref.getString(GOOGLE_DRIVE_USER, ""));
             googleDriveLoggedUserView.setVisibility(View.VISIBLE);
-            CloudService.getInstance().getAllocated(CloudService.Linker.GoogleDriveLinker, usageHandler);
+            CloudService.getInstance().getAllocated(Linker.GoogleDriveLinker, usageHandler);
         }
 
         // One Drive
-        if (!CloudService.getInstance().isConnected(CloudService.Linker.OneDriveLinker)) {
+        if (!CloudService.getInstance().isConnected(Linker.OneDriveLinker)) {
             oneDriveUnlinkButton.setVisibility(View.GONE); // Unlink 제거
             oneDriveButton.setOnClickListener(oneDriveClickListener); // Link 등록
             oneDriveTextView.setText(getContext().getString(R.string.not_connected));
@@ -176,7 +177,7 @@ public class CloudLinkerDialog extends AppCompatDialog {
             oneDriveTextView.setText(getContext().getString(R.string.connected));
             oneDriveLoggedUserView.setText(pref.getString(ONE_DRIVE_USER, ""));
             oneDriveLoggedUserView.setVisibility(View.VISIBLE);
-            CloudService.getInstance().getAllocated(CloudService.Linker.OneDriveLinker, usageHandler);
+            CloudService.getInstance().getAllocated(Linker.OneDriveLinker, usageHandler);
         }
     }
 
@@ -190,10 +191,10 @@ public class CloudLinkerDialog extends AppCompatDialog {
             public void onClick(View v) {
                 // Dropbox 연결
                 progressCircle.setVisibility(View.VISIBLE);
-                if (CloudService.getInstance().isConnected(CloudService.Linker.DropboxLinker)) {
-                    showAlert(context, CloudService.Linker.DropboxLinker);
+                if (CloudService.getInstance().isConnected(Linker.DropboxLinker)) {
+                    showAlert(context, Linker.DropboxLinker);
                 } else {
-                    CloudService.getInstance().connect(CloudService.Linker.DropboxLinker, mHandler);
+                    CloudService.getInstance().connect(Linker.DropboxLinker, mHandler);
                 }
             }
         };
@@ -202,10 +203,10 @@ public class CloudLinkerDialog extends AppCompatDialog {
             public void onClick(View v) {
                 // Google drive 연결
                 progressCircle.setVisibility(View.VISIBLE);
-                if (CloudService.getInstance().isConnected(CloudService.Linker.GoogleDriveLinker)) {
-                    showAlert(context, CloudService.Linker.GoogleDriveLinker);
+                if (CloudService.getInstance().isConnected(Linker.GoogleDriveLinker)) {
+                    showAlert(context, Linker.GoogleDriveLinker);
                 } else {
-                    CloudService.getInstance().connect(CloudService.Linker.GoogleDriveLinker, mHandler);
+                    CloudService.getInstance().connect(Linker.GoogleDriveLinker, mHandler);
                 }
             }
         };
@@ -214,16 +215,16 @@ public class CloudLinkerDialog extends AppCompatDialog {
             public void onClick(View v) {
                 // TODO One drive 연결
                 progressCircle.setVisibility(View.VISIBLE);
-                if (CloudService.getInstance().isConnected(CloudService.Linker.OneDriveLinker)) {
-                    showAlert(context, CloudService.Linker.OneDriveLinker);
+                if (CloudService.getInstance().isConnected(Linker.OneDriveLinker)) {
+                    showAlert(context, Linker.OneDriveLinker);
                 } else {
-                    CloudService.getInstance().connect(CloudService.Linker.OneDriveLinker, mHandler);
+                    CloudService.getInstance().connect(Linker.OneDriveLinker, mHandler);
                 }
             }
         };
     }
 
-    private void showAlert(Context context, final CloudService.Linker linker) {
+    private void showAlert(Context context, final Linker linker) {
         new AlertDialog.Builder(context)
             .setMessage(R.string.cloud_disconnect)
             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

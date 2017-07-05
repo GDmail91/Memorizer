@@ -2,16 +2,13 @@ package com.memorizer.memorizer.backup;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Message;
-import android.util.Log;
 
-import com.cloudrail.si.CloudRail;
-import com.cloudrail.si.exceptions.AuthenticationException;
 import com.cloudrail.si.exceptions.ParseException;
 import com.cloudrail.si.services.GoogleDrive;
-import com.memorizer.memorizer.models.Constants;
+import com.memorizer.memorizer.R;
 
-import static android.content.Context.MODE_PRIVATE;
+import static com.memorizer.memorizer.models.Constants.GOOGLE_DIRVE_PERSISTENT;
+import static com.memorizer.memorizer.models.Constants.GOOGLE_DRIVE_USER;
 
 /**
  * Created by soo13 on 2017-06-29.
@@ -21,69 +18,56 @@ public class GoogleDriveLinker extends CloudLinker {
     private static final String TAG = "GoogleDriveLinker";
 
     @Override
+    public void initLinker() {
+        linker.set(new GoogleDrive(
+                context,
+                context.getResources().getString(R.string.google_id),
+                "",
+                "com.memorizer.memorizer:/oauth2redirect",
+                ""));
+        ((GoogleDrive) linker.get()).useAdvancedAuthentication();
+
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+
+        try {
+            String  persistent = sharedPreferences.getString(GOOGLE_DIRVE_PERSISTENT, null);
+            if (persistent != null) linker.get().loadAsString(persistent);
+        } catch (ParseException e) {}
+    }
+
+
+    @Override
     public boolean isConnected() {
-        SharedPreferences pref = mContext.getSharedPreferences("pref", MODE_PRIVATE);
-        try {
-            final String persistent = pref.getString("googledrivePersistent", null);
-            if (persistent != null && storage.get() != null) {
-                storage.get().loadAsString(persistent);
-                return true;
-            } else if (persistent != null) {
-                try {
-                    storage.get().loadAsString(persistent);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return true;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return false;
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+        boolean isConnected = false;
+        if (sharedPreferences.getString(GOOGLE_DIRVE_PERSISTENT, null) != null)
+            isConnected = true;
+
+        return isConnected;
     }
 
     @Override
-    protected void load() {
-        CloudRail.setAppKey("59532b678f61ae2abef337ac");
-
-        try {
-            storage.set(new GoogleDrive(
-                    mContext,
-                    "920389922391-r6tnenk9scn4vh2qgjlc1rosh6fgvm33.apps.googleusercontent.com",
-                    "", "com.memorizer.memorizer:/oauth2redirect", ""));
-            ((GoogleDrive) storage.get()).useAdvancedAuthentication();
-
-        } catch(AuthenticationException e) {
-            e.printStackTrace();
-        }
+    public void disconnect() {
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(GOOGLE_DIRVE_PERSISTENT, null);
+        editor.apply();
     }
 
     @Override
-    protected void linking() {
-        new Thread() {
-            @Override
-            public void run() {
-                SharedPreferences pref = mContext.getSharedPreferences("pref", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString("googledrivePersistent", storage.get().saveAsString()).apply();
-
-                storage.get().login();
-
-                Log.d(TAG, "is Calling back?");
-                Message message = Message.obtain(mHandler, Constants.GOOGLE_DONE);
-                mHandler.sendMessage(message);
-            }
-        }.start();
+    public void connect() {
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(GOOGLE_DRIVE_USER, linker.get().getUserLogin());
+        editor.apply();
     }
 
     @Override
-    protected void unlinking() {
-        // 연결해지는 pref 값 변경으로만 해결
-        SharedPreferences pref = mContext.getSharedPreferences("pref", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("googledrivePersistent", null).apply();
+    public void storePersistent() {
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        Message message = Message.obtain(mHandler, Constants.GOOGLE_DONE);
-        mHandler.sendMessage(message);
+        editor.putString(GOOGLE_DIRVE_PERSISTENT, linker.get().saveAsString());
+        editor.apply();
     }
 }

@@ -2,17 +2,13 @@ package com.memorizer.memorizer.backup;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Message;
-import android.util.Log;
 
-import com.cloudrail.si.CloudRail;
-import com.cloudrail.si.exceptions.AuthenticationException;
-import com.cloudrail.si.exceptions.HttpException;
 import com.cloudrail.si.exceptions.ParseException;
 import com.cloudrail.si.services.Dropbox;
-import com.memorizer.memorizer.models.Constants;
+import com.memorizer.memorizer.R;
 
-import static android.content.Context.MODE_PRIVATE;
+import static com.memorizer.memorizer.models.Constants.DROPBOX_PERSISTENT;
+import static com.memorizer.memorizer.models.Constants.DROPBOX_USER;
 
 /**
  * Created by soo13 on 2017-06-29.
@@ -23,74 +19,53 @@ public class DropboxLinker extends CloudLinker {
     private static final String TAG = "DropboxLinker";
 
     @Override
+    public void initLinker() {
+        linker.set(new Dropbox(
+                context,
+                context.getResources().getString(R.string.dropbox_id),
+                context.getResources().getString(R.string.dropbox_sec)));
+
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+
+        try {
+            String persistent = sharedPreferences.getString(DROPBOX_PERSISTENT, null);
+            if (persistent != null) linker.get().loadAsString(persistent);
+        } catch (ParseException e) {}
+    }
+
+
+    @Override
     public boolean isConnected() {
-        Log.d(TAG, "isConnected");
-        SharedPreferences pref = mContext.getSharedPreferences("pref", MODE_PRIVATE);
-        try {
-            final String persistent = pref.getString("dropboxPersistent", null);
-            if (persistent != null && storage.get() != null) {
-                Log.d(TAG, "connected!");
-                storage.get().loadAsString(persistent);
-                return true;
-            } else if (persistent != null) {
-                load();
-                try {
-                    storage.get().loadAsString(persistent);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return true;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return false;
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+        boolean isConnected = false;
+        if (sharedPreferences.getString(DROPBOX_PERSISTENT, null) != null)
+            isConnected = true;
+
+        return isConnected;
     }
 
     @Override
-    protected void load() {
-        CloudRail.setAppKey("59532b678f61ae2abef337ac");
-
-        try {
-            storage.set(new Dropbox(
-                    mContext,
-                    "yjifdzmw3rbxksr",
-                    "art4q5vkrfatbh5"));
-        } catch(HttpException e) {
-            // 네트워크 실패시 연결 해제
-            e.printStackTrace();
-        } catch(AuthenticationException e) {
-            // 인증실패시 연결 해제
-            e.printStackTrace();
-        }
+    public void disconnect() {
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(DROPBOX_PERSISTENT, null);
+        editor.apply();
     }
 
     @Override
-    protected void linking() {
-        Log.d(TAG, "linking");
-        new Thread() {
-            @Override
-            public void run() {
-                storage.get().login();
-
-                SharedPreferences pref = mContext.getSharedPreferences("pref", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString("dropboxPersistent", storage.get().saveAsString()).apply();
-                Message message = Message.obtain(mHandler, Constants.DROPBOX_DONE);
-                mHandler.sendMessage(message);
-            }
-        }.start();
+    public void connect() {
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(DROPBOX_USER, linker.get().getUserLogin());
+        editor.apply();
     }
 
     @Override
-    protected void unlinking() {
-        Log.d(TAG, "unlinking");
-        // 연결해지는 pref 값 변경으로만 해결
-        SharedPreferences pref = mContext.getSharedPreferences("pref", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("dropboxPersistent", null).apply();
+    public void storePersistent() {
+        SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        Message message = Message.obtain(mHandler, Constants.DROPBOX_DONE);
-        mHandler.sendMessage(message);
+        editor.putString(DROPBOX_PERSISTENT, linker.get().saveAsString());
+        editor.apply();
     }
 }
