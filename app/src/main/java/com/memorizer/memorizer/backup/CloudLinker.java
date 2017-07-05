@@ -104,7 +104,7 @@ public abstract class CloudLinker {
         }
     }
 
-    public void sync() {
+    public void syncPull() {
         if (isConnected()) {
             // 디렉토리 생성
             if (!linker.get().exists(APP_DIR)) {
@@ -132,10 +132,19 @@ public abstract class CloudLinker {
                 }
                 memoModel.close();
             }
+        }
+    }
+
+    public void syncPush() {
+        if (isConnected()) {
+            // 디렉토리 생성
+            if (!linker.get().exists(APP_DIR)) {
+                linker.get().createFolder(APP_DIR);
+            }
 
             // 로컬에서 Push
             MemoModel memoModel = new MemoModel(context);
-            // 등록된 메모 가져오기
+            // 로컬에서 메모 목록 가져옴
             ArrayList<MemoData> allData = memoModel.getAllData();
             memoModel.close();
             for (MemoData memoData : allData) {

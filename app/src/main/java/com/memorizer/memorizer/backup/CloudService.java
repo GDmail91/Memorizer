@@ -38,6 +38,11 @@ public class CloudService {
         }
     }
 
+    /**
+     * Cloud 연결하는 Linker 객체 가져옴
+     * @param linker 연결할 Linker (Cloud service 제공자)
+     * @return CloudLinker
+     */
     public CloudLinker getService(Linker linker) {
         CloudLinker cloudLinker = null;
 
@@ -58,10 +63,20 @@ public class CloudService {
         return cloudLinker;
     }
 
+    /**
+     * 해당 Linker 가 연결상태인지 확인
+     * @param linker 확인할 Linker (Cloud service 제공자)
+     * @return boolean
+     */
     public boolean isConnected(Linker linker) {
         return getService(linker).isConnected();
     }
 
+    /**
+     * 해당 Linker 의 연결해제
+     * @param linker 연결해제할 Linker
+     * @param mHandler 완료 후 반환될 Handler
+     */
     public void disconnect(Linker linker, Handler mHandler) {
         getService(linker).disconnect();
 
@@ -69,6 +84,11 @@ public class CloudService {
         mHandler.sendMessage(message);
     }
 
+    /**
+     * 해당 Linker 연결
+     * @param linker 연결할 Linker
+     * @param mHandler 완료 후 반환될 Handler
+     */
     public void connect(final Linker linker, final Handler mHandler) {
         new Thread(new Runnable() {
             @Override
@@ -81,6 +101,10 @@ public class CloudService {
         }).start();
     }
 
+    /**
+     * Cloud 에서 해당 메모파일 삭제
+     * @param memoData 삭제할 MemoData
+     */
     public void onDelete(final MemoData memoData) {
         new Thread(new Runnable() {
             @Override
@@ -92,6 +116,10 @@ public class CloudService {
         }).start();
     }
 
+    /**
+     * Cloud 에 메모 업데이트
+     * @param memoData 업데이트할 MemoData
+     */
     public void onUpdate(final MemoData memoData) {
         new Thread(new Runnable() {
             @Override
@@ -103,12 +131,25 @@ public class CloudService {
         }).start();
     }
 
+    /**
+     * 서버와 데이터 Sync
+     * Pull 과 Push 를 별도로 함 (모든 Cloud 로 부터 Pull 을 받고 난 다음에
+     * Push 를 해야 Cloud 마다 데이터 무결성을 유지할 수 있음
+     * @param mHandler 완료 후 반환할 Handler
+     */
     public void syncWithCloud(final Handler mHandler) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                // 연결된 링커마다 Pull 작업
                 for (Linker linkerName : Linker.values()) {
-                    getService(linkerName).sync();
+                    getService(linkerName).syncPull();
+                }
+
+                // 연결된 링커마다 Push 작업
+                for (Linker linkerName : Linker.values()) {
+                    getService(linkerName).syncPush();
                 }
 
                 if (mHandler != null) {
@@ -120,10 +161,16 @@ public class CloudService {
         }).start();
     }
 
+    /**
+     * 해당 Cloud 의 남은 용량 확인
+     * @param linkerName 확인할 Linker
+     * @param mHandler 완료 후 반환할 Handler
+     */
     public void getAllocated(final Linker linkerName, final Handler mHandler) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                // 연결된 링커의 용량 가져옴
                 SpaceAllocation alloc = getService(linkerName).getAllocation();
 
                 if (alloc != null) {
