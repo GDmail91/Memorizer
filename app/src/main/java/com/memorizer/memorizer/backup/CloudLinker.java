@@ -25,7 +25,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static android.R.attr.id;
 import static com.memorizer.memorizer.models.Constants.APP_DIR;
 
 /**
@@ -178,7 +177,7 @@ public abstract class CloudLinker {
             calendar.setTimeInMillis((Long) jsonObject.get("whileDate"));
 
             MemoData remoteMemo = new MemoData(
-                    id,
+                    Integer.valueOf(((Long) jsonObject.get("id")).toString()),
                     Html.fromHtml((String) jsonObject.get("content")).toString(),
                     calendar,
                     Integer.valueOf(((Long) jsonObject.get("term")).toString()),

@@ -7,7 +7,9 @@
     android:padding="1dp"
     android:elevation="4dp"
     android:background="@color/memoPadAccent"
-    android:id="@+id/memo_item">
+    android:id="@+id/memo_item"
+    tools:context="com.memorizer.memorizer.memolist.MainActivity"
+    tools:showIn="@layout/content_main">
 
     <RelativeLayout
         android:layout_width="match_parent"

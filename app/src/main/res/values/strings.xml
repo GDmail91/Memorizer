@@ -84,4 +84,12 @@
     <string name="contact">Please contact me by mail at the following\nquestions or problems are discovered.</string>
     <string name="email" translatable="false">GDmail91@gmail.com</string>
     <string name="copyright" translatable="false">Copyright ⓒ 2016 DevGD. All rights reserved.</string>
+
+    <!-- id -->
+    <string name="google_id">920389922391-r6tnenk9scn4vh2qgjlc1rosh6fgvm33.apps.googleusercontent.com</string>
+    <string name="dropbox_id">yjifdzmw3rbxksr</string>
+    <string name="dropbox_sec">art4q5vkrfatbh5</string>
+    <string name="one_id">6f0055e9-005d-4289-8c99-c72a00f0a504</string>
+    <string name="one_sec">Xx1sbgQLMN2vckQs7jP0qmS</string>
+
 </resources>

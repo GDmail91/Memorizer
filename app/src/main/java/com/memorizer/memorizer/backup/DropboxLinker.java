@@ -56,7 +56,7 @@ public class DropboxLinker extends CloudLinker {
     public void connect() {
         SharedPreferences sharedPreferences = context.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(DROPBOX_USER, linker.get().getUserLogin());
+        editor.putString(DROPBOX_USER, linker.get().getUserName());
         editor.apply();
     }
 
