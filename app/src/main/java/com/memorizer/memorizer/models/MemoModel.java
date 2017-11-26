@@ -39,8 +39,15 @@ public class MemoModel {
 
     private DBmanager dBmanager;
 
+    private Context context;
+
+    /*
     public MemoModel(Context context) {
         this.dBmanager = new DBmanager(context);
+    }
+    */
+    public MemoModel(Context context) {
+        this.context = context;
     }
 
     public void fuckyou() {
@@ -423,6 +430,7 @@ public class MemoModel {
     }
 
     public ArrayList<MemoData> getAllDataShort(int order) {
+        DBmanager dbManager = new DBmanager(context);
         ArrayList<MemoData> allData = new ArrayList<>();
         int i =0;
         String sql = "SELECT "+TABLE_NAME_MEMO+"._id, " +
@@ -485,6 +493,7 @@ public class MemoModel {
         }
         cursor.close();
 
+        dBmanager.getDbR().close();
         return allData;
     }
 
