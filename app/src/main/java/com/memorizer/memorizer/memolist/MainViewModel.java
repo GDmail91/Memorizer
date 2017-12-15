@@ -38,6 +38,7 @@ import java.util.ArrayList;
 public class MainViewModel implements ViewModel {
     private Activity context;
     private PrefModel prefModel;
+    private CloudLinkerDialog cloudLinkerDialog;
 
     private static final String BROWSABLE = "android.intent.category.BROWSABLE";
 
@@ -48,6 +49,13 @@ public class MainViewModel implements ViewModel {
 
     @Override
     public void onCreate() {
+        // 스케쥴 주기 시작
+        Scheduler.getScheduler().startSchedule(context);
+
+        ScheduleModel scheduleModel = new ScheduleModel(context);
+        Log.d("TEST", "스케쥴: "+scheduleModel.getAllData());
+        scheduleModel.close();
+
         setDatas();
     }
 
@@ -78,55 +86,6 @@ public class MainViewModel implements ViewModel {
         }
     }
 
-    public NavigationView.OnNavigationItemSelectedListener navigationSelectedListener
-            = new NavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(MenuItem item) {
-            // Handle navigation view item clicks here.
-            int id = item.getItemId();
-
-            if (id == R.id.made_of) {
-                Intent intent = new Intent(context, DeveloperInfo.class);
-                context.startActivity(intent);
-            } else if (id == R.id.backup_setting){
-                cloudLinkerDialog = new CloudLinkerDialog(context);
-                cloudLinkerDialog.show();
-            }
-
-            drawer.closeDrawer(GravityCompat.START);
-            return true;
-        }
-    };
-
-    public View.OnClickListener fabClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(context, MemoCreate.class);
-            context.startActivity(intent);
-        }
-    };
-
-    public AdapterView.OnItemSelectedListener filterListSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            prefModel.setFilter(position);
-            setMemoDatas();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-    };
-
-    public SwipeRefreshLayout.OnRefreshListener swipeRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            // TODO 리프레쉬
-            swipeRefreshLayout.setRefreshing(false);
-            setMemoDatas();
-        }
-    };
 
 
     public void checkMemoCreated() {
@@ -175,7 +134,7 @@ public class MainViewModel implements ViewModel {
     // memoDatas 재배치
     public void setMemoDatas() {
         // DB에서 메모목록 가져옴
-        MemoModel memoModel = new MemoModel(this);
+        MemoModel memoModel = new MemoModel(context);
         memoDatas = memoModel.getAllDataShort(prefModel.getFilter()); // Content 글자수 제한
 
         if (memoListAdapter != null) {
@@ -196,28 +155,21 @@ public class MainViewModel implements ViewModel {
 
     private void setDatas() {
 
-        // 스케쥴 주기 시작
-        Scheduler.getScheduler().startSchedule(this);
-
-        ScheduleModel scheduleModel = new ScheduleModel(this);
-        Log.d("TEST", "스케쥴: "+scheduleModel.getAllData());
-        scheduleModel.close();
-
         // 스피너 아이템 추가
         /*MemoModel memoModel = new MemoModel(this);
         labelDatas = memoModel.getLabelList(); // Content 글자수 제한
         memoModel.close();*/
 
-        mainViewModel.checkMemoCreated();
+        checkMemoCreated();
 
         // memoListAdapter 생성하면서 연결
         memoListAdapter = new MemoListAdapter(this, memoDatas);
         recyclerView.setAdapter(memoListAdapter);
 
         // 데이터 채우기
-        mainViewModel.setMemoDatas();
+        setMemoDatas();
 
         // 앱 버전 확인
-        mainViewModel.checkAppVersion();
+        checkAppVersion();
     }
 }
